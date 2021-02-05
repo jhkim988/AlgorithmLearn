@@ -1,7 +1,7 @@
 class CloneArray{
 	public static void main(String[] args) {
 		int[] a = {1, 2, 3, 4, 5};
-		int[] b = a.clone(); // bê°€ ë°°ì—´ aì˜ "ë³µì œ"ë¥¼ ì°¸ì¡°í•œë‹¤.
+		int[] b = a.clone(); // b°¡ ¹è¿­ aÀÇ "º¹Á¦"¸¦ ÂüÁ¶ÇÑ´Ù.
 		
 		b[3] = 0;
 		
