@@ -1,5 +1,5 @@
 class Exercise {
-	// Q1 ë„¤ ê°’ì˜ ìµœëŒ“ê°’ì„ êµ¬í•˜ëŠ” max4 ë©”ì„œë“œë¥¼ ì‘ì„±í•˜ì„¸ìš”.
+	// Q1 ³× °ªÀÇ ÃÖ´ñ°ªÀ» ±¸ÇÏ´Â max4 ¸Ş¼­µå¸¦ ÀÛ¼ºÇÏ¼¼¿ä.
 	static int max4(int a, int b, int c, int d) {
 		int max = a;
 		if (max < b)
@@ -11,7 +11,7 @@ class Exercise {
 		return max;
 	}
 
-	// Q2 ì„¸ ê°’ì˜ ìµœì†Ÿê°’ì„ êµ¬í•˜ëŠ” min3 ë©”ì„œë“œë¥¼ ì‘ì„±í•˜ì„¸ìš”.
+	// Q2 ¼¼ °ªÀÇ ÃÖ¼Ú°ªÀ» ±¸ÇÏ´Â min3 ¸Ş¼­µå¸¦ ÀÛ¼ºÇÏ¼¼¿ä.
 	static int min3(int a, int b, int c) {
 		int min = a;
 		if (min > b)
@@ -21,7 +21,7 @@ class Exercise {
 		return min;
 	}
 
-	// Q3 ë„¤ ê°’ì˜ ìµœì†Ÿê°’ì„ êµ¬í•˜ëŠ” min4 ë©”ì„œë“œë¥¼ ì‘ì„±í•˜ì„¸ìš”.
+	// Q3 ³× °ªÀÇ ÃÖ¼Ú°ªÀ» ±¸ÇÏ´Â min4 ¸Ş¼­µå¸¦ ÀÛ¼ºÇÏ¼¼¿ä.
 	static int min4(int a, int b, int c, int d) {
 		int min = a;
 		if (min > b) min = b;
