@@ -1,8 +1,8 @@
 import java.util.Scanner;
 
 class BinSearch {
-	// Binary Search - ê²€ìƒ‰ ëŒ€ìƒ(ë°°ì—´)ì´ ì˜¤ë¦„ì°¨ìˆœ(í˜¹ì€ ë‚´ë¦¼ì°¨ìˆœ)ìœ¼ë¡œ ì •ë ¬ë¼ ìˆìŒì„ ê°€ì •í•˜ê³  ì°¾ëŠ”ë‹¤.
-	// ê²€ìƒ‰ì„ ë°˜ë³µí•  ë•Œë§ˆë‹¤ ê²€ìƒ‰ ë²”ìœ„ê°€ ì ˆë°˜ì´ ë˜ê¸° ë•Œë¬¸ì— í‰ê·  log(n)íšŒ ë¹„êµí•œë‹¤.
+	// Binary Search - °Ë»ö ´ë»ó(¹è¿­)ÀÌ ¿À¸§Â÷¼ø(È¤Àº ³»¸²Â÷¼ø)À¸·Î Á¤·ÄµÅ ÀÖÀ½À» °¡Á¤ÇÏ°í Ã£´Â´Ù.
+	// °Ë»öÀ» ¹İº¹ÇÒ ¶§¸¶´Ù °Ë»ö ¹üÀ§°¡ Àı¹İÀÌ µÇ±â ¶§¹®¿¡ Æò±Õ log(n)È¸ ºñ±³ÇÑ´Ù.
 	static int binSearch(int[] a, int n, int key) {
 		int pl = 0;
 		int pr = n - 1;
@@ -23,11 +23,11 @@ class BinSearch {
 	public static void main(String[] args) {
 		Scanner stdIn = new Scanner(System.in);
 
-		System.out.print("ìš”ì†Ÿìˆ˜ : ");
+		System.out.print("¿ä¼Ú¼ö : ");
 		int num = stdIn.nextInt();
 		int[] x = new int[num];
 
-		System.out.println("ì˜¤ë¦„ì°¨ìˆœìœ¼ë¡œ ì…ë ¥í•˜ì„¸ìš”.");
+		System.out.println("¿À¸§Â÷¼øÀ¸·Î ÀÔ·ÂÇÏ¼¼¿ä.");
 		System.out.print("x[0] : ");
 		x[0] = stdIn.nextInt();
 
@@ -38,16 +38,16 @@ class BinSearch {
 			} while (x[i] < x[i - 1]);
 		}
 
-		System.out.print("ê²€ìƒ‰í•  ê°’ : ");
+		System.out.print("°Ë»öÇÒ °ª : ");
 		int ky = stdIn.nextInt();
 		stdIn.close();
 
 		int idx = binSearch(x, num, ky);
 
 		if (idx == -1)
-			System.out.println("ê·¸ ê°’ì˜ ìš”ì†Œê°€ ì—†ìŠµë‹ˆë‹¤.");
+			System.out.println("±× °ªÀÇ ¿ä¼Ò°¡ ¾ø½À´Ï´Ù.");
 		else
-			System.out.println(ky + "ì€(ëŠ”) x[" + idx + "]ì— ìˆìŠµë‹ˆë‹¤.");
+			System.out.println(ky + "Àº(´Â) x[" + idx + "]¿¡ ÀÖ½À´Ï´Ù.");
 
 	}
 }
