@@ -2,37 +2,85 @@ class Exercise05_05 {
 	// Q5 다음 recur3 메서드를 비재귀적으로 구현하세요
 	static void recur3(int n) {
 		if (n > 0) {
-			System.out.println("시작 " + n);
 			recur3(n - 1);
 			recur3(n - 2);
 			System.out.println(n);
 		}
 	}
 
-	// recur(1) - recur(0) recur(-1) - 1 출력 == 1 출력
-	// recur(2) - recur(1) recur(0) 2 출력 == 1 2 출력
-	// recur(3) - recur(2) recur(1) 3 출력 == 1 2 1 3 출력
-	// recur(4) - recur(3) recur(2) 4 출력 == 1 2 1 3 1 2 4 출력
-
-	// 4 - 3 2 %4 - (2 1 %3) (1 0 %2) %4 - ((1 0 %2) (0 -1 %1) %3) ((0 -1 %1) () %2)
-	// %4
-	// 4를 저장 3을 저장 2 저장
 	static void recur3_while(int n) {
 		IntStack s1 = new IntStack(n * n);
-		IntStack s2 = new IntStack(n * n);
+		IntStack s2 = new IntStack(n * n); // s2에는 실행상태를 넣는 값을 넣어준다.
+		// 0이면 n - 1로 recur, 1이면 n - 2로 recur, 2면 print하도록 한다.
+		
+		n = 4;
+		int sw = 0;
 		
 		while (true) {
 			if (n > 0) {
+				System.out.println("(" + n + ", " + sw + ")");
 				s1.push(n);
-				n = n - 1;
+				s2.push(sw);
+				
+				if (s2.peek() == 0) {
+					n = n - 1;
+					continue;
+				} else if (s2.peek() == 1){
+					n = n - 2;
+					sw = 0;
+					continue;
+				}
+			} do {
+				n = s1.pop();
+				sw = s2.pop() + 1;
+				System.out.println("pop");
+				System.out.println("(" + n + ", " + sw + ")");
+				
+				System.out.print("s1 : ");
+				s1.dump();
+				System.out.print("s2 : ");
+				s2.dump();
+				
+				if (sw == 2) {
+					System.out.println(n);
+					if (s2.isEmpty() == true) {
+						return;
+					}
+				}
+			} while (sw == 2);
+		}
+	}
+
+	static void recur3_solution(int n) {
+		int[] nstk = new int[100];
+		int[] sstk = new int[100];
+		int ptr = -1;
+		int sw = 0;
+
+		while (true) {
+			if (n > 0) {
+				ptr++;
+				nstk[ptr] = n;
+				sstk[ptr] = sw;
+
+				if (sw == 0)
+					n = n - 1;
+				else if (sw == 1) {
+					n = n - 2;
+					sw = 0;
+				}
 				continue;
 			}
-			if (s1.isEmpty() != true) {
-				n = s1.pop();
-				s2.push(n);
-				
-				System.out.println(n);
-			}
+			do {
+				n = nstk[ptr];
+				sw = sstk[ptr--] + 1;
+
+				if (sw == 2) {
+					System.out.println(n);
+					if (ptr < 0)
+						return;
+				}
+			} while (sw == 2);
 		}
 	}
 
