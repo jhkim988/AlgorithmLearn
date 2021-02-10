@@ -9,16 +9,13 @@ class Exercise05_05 {
 	}
 
 	static void recur3_while(int n) {
-		IntStack s1 = new IntStack(n * n);
-		IntStack s2 = new IntStack(n * n); // s2에는 실행상태를 넣는 값을 넣어준다.
+		IntStack s1 = new IntStack(n);
+		IntStack s2 = new IntStack(n); // s2에는 실행상태를 넣는 값을 넣어준다.
 		// 0이면 n - 1로 recur, 1이면 n - 2로 recur, 2면 print하도록 한다.
-		
-		n = 4;
 		int sw = 0;
 		
 		while (true) {
 			if (n > 0) {
-				System.out.println("(" + n + ", " + sw + ")");
 				s1.push(n);
 				s2.push(sw);
 				
@@ -33,13 +30,6 @@ class Exercise05_05 {
 			} do {
 				n = s1.pop();
 				sw = s2.pop() + 1;
-				System.out.println("pop");
-				System.out.println("(" + n + ", " + sw + ")");
-				
-				System.out.print("s1 : ");
-				s1.dump();
-				System.out.print("s2 : ");
-				s2.dump();
 				
 				if (sw == 2) {
 					System.out.println(n);
