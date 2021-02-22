@@ -1,0 +1,14 @@
+Summary
+N개의 객체에 대해, Union-Find를 M회 시행
+
+알고리즘별 수행시간
+Quick find - MN
+Quick Union - MN
+weighted QU - N + MlgN
+QU + path compression - N + MlgN
+weighted QU + path compression - N + Mlg*N
+
+lg*는 iterate log function, N을 1로 바꾸기 위해 lg를 취해야 하는 횟수
+lg*1 = 0, lg*2 = 1, lg*4 = 2, lg*16 = 3, ...
+
+주의 - weighted QU에서, 트리의 'height'가 아닌 'size'로 비교한다. 트리의 size란 노드의 개수를 의미한다.
