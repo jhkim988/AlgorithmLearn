@@ -19,5 +19,6 @@ public class ThreeSum {
 		StdOut.println(count(a));
 		double time = stopwatch.elapsedTime();
 		System.out.println("time : " + time);
+		
 	}
 }

@@ -1,7 +1,7 @@
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
-public class WeightedQuickUnionUF {
+public class WeightedQuickUnionUF { // 객체 오버헤드 16바이트.. 모두 합쳐 8N + 88 ~ 8N
 	// 1. 큰 트리와 작은 트리를 합칠 때, 큰 트리를 작은 트리 아래에 넣으면 트리의 길이가 점점 길어진다.
 	// 2. 각 트리의 요소 수를 계속 기록해서 트리의 규모를 파악하고, 큰 트리 아래에 작은 트리를 넣도록 한다.
 
@@ -13,8 +13,8 @@ public class WeightedQuickUnionUF {
 	private int[] sz;
 
 	WeightedQuickUnionUF(int N) {
-		id = new int[N];
-		sz = new int[N];
+		id = new int[N]; // 8 + 4N + 24바이트
+		sz = new int[N]; // 포인터(참조) + int[]array
 		for (int i = 0; i < N; ++i) {
 			id[i] = i;
 			sz[i] = 1;

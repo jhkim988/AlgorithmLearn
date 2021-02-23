@@ -1,0 +1,159 @@
+Q1
+3-SUM in quadratic time.
+Design an algorithm for the 3-SUM problem that takes time proportional to n^2 in the worst case.
+You may assume that you can sort the n integers in time proportional to n^2 or better.
+
+sol1)
+int N = 10;
+int[] a = new int[N];
+for(int i = 0; i < N; ++i){
+	int x = - a[x];
+	int lo = 0;
+	int hi = N - 1;
+	
+	while(lo <= hi) { // traverse a
+		if (a[lo] + a[hi] > x)
+			hi--;
+		else if (a[lo] + a[hi] < x)
+			lo++;
+		else
+			count++; 
+	}	
+}
+
+Q2
+Search in a bitonic array.
+An array is bitonic if it is comprised of an increasing sequence of integers followed immediately by a decreasing sequence of integers.
+Write a program that, given a bitonic array of nn distinct integer values, determines whether a given integer is in the array.
+Standard version: Use ~ 3lgn compares in the worst case.
+Signing bonus: Use ~ 2lgn compares in the worst case
+(and prove that no algorithm can guarantee to perform fewer than ~ 2lgn compares in the worst case).
+
+sol2-1)
+int N = 10;
+int[] a = new int[N];
+int key;
+
+// Find Maximum integer - lg(N)
+int ptr1 = 0;
+int ptr2 = N - 1;
+int maxIdx;
+while(ptr1 <= ptr2) {
+	int mid = (ptr1 + ptr2) / 2;
+	if (a[mid + 1] > a[mid]) // mid is in incresing part
+		ptr1 = mid + 1;
+	else if (a[mid + 1] < a[mid]) // mid is in decresing part
+		ptr2 = mid - 1;
+}
+
+if (a[ptr1] > a[ptr2])
+	maxIdx = ptr1;
+else
+	maxIdx = ptr2;
+	
+// increasing part - binary search - lg(N)
+ptr1 = 0;
+ptr2 = maxIdx;
+while(ptr1 <= ptr2) {
+	int mid = (ptr1 + ptr2) / 2;
+	if (a[mid] > key)
+		ptr2 = mid - 1;
+	else if (a[mid] < key)
+		ptr1 = mid + 1;
+	else
+		return mid;
+}
+
+// decresing part - binary search - lg(N)
+prt1 = maxIdx;
+ptr2 = N - 1;
+while(ptr1 <= ptr2) {
+	int mid = (ptr1 + ptr2) / 2;
+	if (a[mid] > key)
+		ptr1 = mid + 1;
+	else if (a[mid] < key)
+		ptr2 = mid - 1;
+	else
+		return mid;
+}
+return -1;
+
+sol2-2)
+// maximum index를 찾을 필요가 없다.
+int N = 10;
+int[] a = new int[N];
+int key;
+
+public static int binarySearch(int[] a, int start, int end, int key, boolean inc) {
+	// inc == true면 increasing, inc == false면 decreasing
+	int ptr1 = start;
+	int ptr2 = end;
+	
+	while(ptr1 <= ptr2) {
+		int mid = (ptr1 + ptr2) / 2;
+		if (inc ? (a[mid] > key) : (a[mid] < key))
+			ptr2 = mid - 1;
+		else if (inc ? (a[mid] < key) : (a[mid] > key))
+			ptr1 = mid + 1;
+		else
+			return mid;
+	}
+	return -1;
+}
+
+public static int bitonicSearch(int[] a, int start, int end, int key) {
+	int result = -1;
+	int mid = (start + end) / 2;
+	
+	if (a[mid] == key) return mid;
+	
+	if (end - start <= 1) {
+		return (a[start] == key) ? start : ((a[end] == key) ? end : -1);
+	}
+	
+	
+	if (a[mid + 1] > a[mid]) { // mid is in increasing part
+		if (a[mid] > key) {
+			result = binarySearch(a, start, mid, key, true);
+			if (result != -1)
+				return result;
+		} else
+			bitonicSearch(a, mid, end, key);
+	} else if (a[mid + 1] < a[mid]) { // mid is in decreasing part
+		if (a[mid] > key) {
+			result = binarySearch(a, mid, end, key, false);
+			if (result != -1)
+				return result;
+		} else
+			bitonicSearch(a, start, mid, key);
+	}
+}
+
+// proof
+// 결정트리(decision tree)를 생각해보면, 검색알고리즘은 찾는 경우 n개와 찾지 못하는 경우 1개가 있다.
+// 따라서 총 n + 1개의 leaf node가 있고, 비교(<, >, =)를 기반으로 하기 때문에 3진 트리이다.
+// 따라서 minumum depth는 log_3(n+1)이다.
+// 따라서 (최악의 경우에) 검색 알고리즘의 시간복잡도 하한은 log_3(n+1) = lg(n+2)/lg(3)이다.
+
+Consider decision tree for any algorithm for solving 'search in a bitonic array' problem.
+There are (n + 1) - leaf nodes.(+1 : Not found)
+And It is ternary tree(<, >, =).
+Its minimum depth is log_3(n+1).
+Therefore lower bound of search algorithm is log_3(n+1) in worst case..
+
+Q3
+Egg drop.
+Suppose that you have an n-story building (with floors 1 through n) and plenty of eggs.
+An egg breaks if it is dropped from floor T or higher and does not break otherwise.
+Your goal is to devise a strategy to determine the value of  T given the following limitations on the number of eggs and tosses:
+
+Version 0: 1 egg, ≤ T tosses.
+Version 1: ~ 1lgn eggs and ~ 1lgn tosses.
+Version 2: ~ lgT eggs and ~ 2lgT tosses.
+Version 3: 2 eggs and ~ 2sqrt(n) tosses.
+Version 4: 2 eggs and ≤c sqrt(T) tosses for some fixed constant c.
+
+sol)
+Version 0: Throw 1 egg from the 1st to the T floor in order until cracked.
+Version 1: Use Binary Search. 
+Version 2: 

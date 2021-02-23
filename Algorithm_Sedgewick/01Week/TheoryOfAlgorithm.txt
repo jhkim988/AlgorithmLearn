@@ -1,0 +1,19 @@
+Theory of Algorithm
+
+Big theta
+- theta(N^2): 상하계 모두 N^2으로 돼 있다.
+
+Big O
+- O(N^2): 알고리즘의 상계가 N^2
+
+Big Omega
+- omega(N^2): 알고리즘의 하계가 N^2
+
+1-sum problem
+- Upperbound: Brute-force 알고리즘으로 모든 원소를 찾아보면 O(N)
+- Lowerbound: 하나라도 놓치면 0일지도 모르기 때문에 모두 확인해봐야한다. 즉 omega(N)
+- theta(N)
+
+3-sum problem
+- Upperbound: Brute-force - O(N^3), We found: O(N^2logN)
+- LowerBound: Omega(N) - 한 번씩은 모두 확인해야봐야 한다..

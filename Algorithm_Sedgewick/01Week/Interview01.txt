@@ -1,0 +1,46 @@
+Q1
+Social network connectivity.
+Given a social network containing n members and a log file containing m timestamps
+at which times pairs of members formed friendships,
+design an algorithm to determine the earliest time at which all members are connected
+(i.e., every member is a friend of a friend of a friend ... of a friend).
+Assume that the log file is sorted by timestamp and that friendship is an equivalence relation.
+The running time of your algorithm should be mlogn or better and use extra space proportional to n.
+
+Sol1)
+Store the number of connected components additionally in the union-find class.
+The initial value of the number of connected components is the same as the number of objects(n).
+Each time a tree is merged into another tree, the number of components is subtracted by one.
+This way, you can traverse the timestamp and see if all members are connected (the number of components equals to 1).
+Using the weighted quick union-find method, the running time can be kept within mlogn.
+
+
+Q2
+Union-find with specific canonical element.
+Add a method find() to the union-find data type so that find(i) returns the largest element in the connected component containing i.
+The operations, union(), connected(), find() should all take logarithmic time or better.
+For example, if one of the connected components is {1,2,6,9},
+then the find() method should return 9 for each of the four elements in the connected components.
+
+Sol2)
+Create a largest-number array like a size array.
+When union is performed, the largest-number array is updated while merging the tree.
+When you call the find(i) method, you can find the root(i) index of the largest-number array.
+Therefore, it can be processed in logn time.
+
+Q3
+Successor with delete.
+Given a set of nn integers  S={0,1,...,n−1} and a sequence of requests of the following form:
+
+Remove x from S
+Find the successor of x: the smallest y in SS such that y≥x.
+design a data type so that all operations (except construction) take logarithmic time or better in the worst case.
+
+Sol3)
+Consider a boolean type array of length n.
+All are initialized to have a value of true.
+Remove x: Change the element at index x to false in the array. And the union-find method is applied to the deleted elements.
+If x + 1 or x-1 were deleted, union them.
+find successor of x: If the element at index x is true, return x.
+Otherwise, it means that x has been deleted, so the maximum value of the connected component to which x belongs + 1 is returned.
+We know that finding the maximum value of the connected component can be done within log n in problem 2.
