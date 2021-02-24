@@ -17,7 +17,7 @@ public class PathCompressionUF {
 
 	private int root(int i) {
 		while (id[i] != i) {
-			id[id[i]] = id[i]; // 트리를 평평하게 할 수 있다.
+			id[i] = id[id[i]]; // 트리를 평평하게 할 수 있다.
 			i = id[i];
 			}
 		return i;
