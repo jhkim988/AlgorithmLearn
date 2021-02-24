@@ -8,17 +8,17 @@ public class Percolation {
     private boolean[][] grid;
     private int openCount = 0;
     private final WeightedQuickUnionUF uf; // top = n*n, bottom = n*n+1
-    private final WeightedQuickUnionUF uf_temp; // top = n*n
+    private final WeightedQuickUnionUF ufTemp; // top = n*n
     
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
-    	if (n <= 0)
+        if (n <= 0)
     		throw new IllegalArgumentException();
     	
         gridSize = n;
         grid = new boolean[n][n];
         uf = new WeightedQuickUnionUF(n * n + 2);
-        uf_temp = new WeightedQuickUnionUF(n * n + 1); // backwash chaeck
+        ufTemp = new WeightedQuickUnionUF(n * n + 1); // backwash chaeck
         
         // initialize
         for (int i = 0; i < n; ++i)
@@ -30,7 +30,7 @@ public class Percolation {
             for (int i = 0; i < n; ++i) {
                 uf.union(i, n * n);
                 uf.union((n - 1)*n + i, n * n + 1);
-                uf_temp.union(i, n * n);
+                ufTemp.union(i, n * n);
             }
         }
     }
@@ -62,19 +62,19 @@ public class Percolation {
         openCount++;
         if (correctIdx(row - 1, col) && isOpen(row - 1, col)) {
             uf.union(idxChanger(row - 1, col - 1), idxChanger(row - 2, col - 1));
-            uf_temp.union(idxChanger(row - 1, col - 1), idxChanger(row - 2, col - 1));
+            ufTemp.union(idxChanger(row - 1, col - 1), idxChanger(row - 2, col - 1));
         }
         if (correctIdx(row + 1, col) && isOpen(row + 1, col)) {
             uf.union(idxChanger(row - 1, col - 1), idxChanger(row, col - 1));
-            uf_temp.union(idxChanger(row - 1, col - 1), idxChanger(row, col - 1));
+            ufTemp.union(idxChanger(row - 1, col - 1), idxChanger(row, col - 1));
         }
         if (correctIdx(row, col - 1) && isOpen(row, col - 1)) {
             uf.union(idxChanger(row - 1, col - 1), idxChanger(row - 1, col - 2));
-            uf_temp.union(idxChanger(row - 1, col - 1), idxChanger(row - 1, col - 2));
+            ufTemp.union(idxChanger(row - 1, col - 1), idxChanger(row - 1, col - 2));
         }
         if (correctIdx(row, col + 1) && isOpen(row, col + 1)) {
             uf.union(idxChanger(row - 1, col - 1), idxChanger(row - 1, col));
-            uf_temp.union(idxChanger(row - 1, col - 1), idxChanger(row - 1, col));
+            ufTemp.union(idxChanger(row - 1, col - 1), idxChanger(row - 1, col));
         }
     }
 
@@ -88,7 +88,7 @@ public class Percolation {
     public boolean isFull(int row, int col) {
     	illegalArg(row, col);
     	if (gridSize == 1) return isOpen(row, col);
-        return isOpen(row, col) && uf_temp.find(gridSize * gridSize) == uf_temp.find(idxChanger(row - 1, col - 1));
+        return isOpen(row, col) && ufTemp.find(gridSize * gridSize) == ufTemp.find(idxChanger(row - 1, col - 1));
         }
 
     // returns the number of open sites
