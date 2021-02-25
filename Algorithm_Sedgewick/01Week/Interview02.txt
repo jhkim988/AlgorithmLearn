@@ -129,17 +129,19 @@ public static int bitonicSearch(int[] a, int start, int end, int key) {
 	}
 }
 
-// proof
-// 결정트리(decision tree)를 생각해보면, 검색알고리즘은 찾는 경우 n개와 찾지 못하는 경우 1개가 있다.
-// 따라서 총 n + 1개의 leaf node가 있고, 비교(<, >, =)를 기반으로 하기 때문에 3진 트리이다.
-// 따라서 minumum depth는 log_3(n+1)이다.
-// 따라서 (최악의 경우에) 검색 알고리즘의 시간복잡도 하한은 log_3(n+1) = lg(n+2)/lg(3)이다.
-
-Consider decision tree for any algorithm for solving 'search in a bitonic array' problem.
-There are (n + 1) - leaf nodes.(+1 : Not found)
-And It is ternary tree(<, >, =).
-Its minimum depth is log_3(n+1).
-Therefore lower bound of search algorithm is log_3(n+1) in worst case..
+proof
+step0) In sorted array, optimal search algorithm has ~lgn complexity.
+step1) Bitonic array has two sorted-part, therefore optimal search algorithm has ~2lgn
+step0: By binary search algorithm, search for sorted algorithm has upper bound by ~lgn
+Now it is suffice to show that it has lower bound by ~lgn
+Consider decision tree for any comparison-based search algorithm.
+'Comparison based' means that decision tree has three edge at most.(<, =, >, i.e. ternary tree.)
+But only use two inequality(<=, >), it is also possible to make a decision tree.
+(This process allow you to raised lower bound from log_3(n) to log_2(n).)
+And leaf nodes are index of array or -1.(return value)
+Therefore minimum height of this tree is lg(n) + 1 ~ lg(n)
+It means that no algorithm can gurantee that fewer than ~ lg(n) compares in worst case.
+step1: It's not intuitive, but if the combination of the two optimal algorithms becomes the optimal algorithm again, it holds.
 
 Q3
 Egg drop.
@@ -156,4 +158,20 @@ Version 4: 2 eggs and ≤c sqrt(T) tosses for some fixed constant c.
 sol)
 Version 0: Throw 1 egg from the 1st to the T floor in order until cracked.
 Version 1: Use Binary Search. 
-Version 2: 
+
+Version 2: Throw eggs on the 1st, 2nd , 4th, 8th, ... , 2^(k-1)th, 2^k th floor until the eggs are broken.
+It means that 2^(k-1) < T <= 2^k. In this process, 1 eggs broken, lg(T) tosses.
+Binary search from 2^(k-1) floor to 2^k. The length of searching is 2^k - 2^(k-1) = 2^(k-1) < T
+By searching binary, additionally lg(T) eggs broken, lg(T) tosses.
+Therefore we can find the way to use ~lg(T) eggs, ~2lg(T) tosses
+
+Version 3: Throw eggs on the sqrt(n)th, 2sqrt(n)th, ... k sqrt(n)th floor until the eggs are broken.
+the number of toss is n / sqrt(n) = sqrt(n) at most.(T/sqrt(n)) In this process, 1 eggs broken.
+linear searching (k-1)sqrt(n) ~ k sqrt(n). the number of toss is k sqrt(n) - (k-1)sqrt(n) = sqrt(n) at most by linear search.
+Therefore use 2 eggs, 2sqrt(n) tosses.
+
+Version 4: Throw 1st, 3rd, 6th, 10th, ... floor until the eggs are broken.
+we can find the integer k such that k(k+1)/2 < T <= (k+1)(k+2)/2 by using 1 egg.(k toss)
+k^2 < k(k+1) < 2T implies k <= sqrt(2T). Similary k > sqrt(2T) - 1
+Linear search k(k+1)/2 ~ (k+1)(k+2)/2 floor. the number of toss is (k+1)(k+2)/2 - k(k+1)/2 = k+1 by linear search.
+Therefore use 2 eggs, ~ 2sqrt(2T) tosses.
