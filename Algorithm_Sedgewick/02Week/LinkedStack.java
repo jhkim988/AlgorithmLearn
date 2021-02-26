@@ -46,6 +46,13 @@ public class LinkedStack<Item> implements Iterable<Item>{
 	int size() {
 		return size;
 	}
+	void dump () {
+		System.out.println("dump");
+		Node temp = first;
+		while(temp.next != null) {
+			System.out.print(temp.item + " ");
+		}
+	}
 	
 	public static void main(String[] args) {
 		LinkedStack<String> stack = new LinkedStack<String>();
