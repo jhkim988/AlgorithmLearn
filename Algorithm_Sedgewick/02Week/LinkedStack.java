@@ -47,11 +47,12 @@ public class LinkedStack<Item> implements Iterable<Item>{
 		return size;
 	}
 	void dump () {
-		System.out.println("dump");
 		Node temp = first;
-		while(temp.next != null) {
+		while(temp != null) {
 			System.out.print(temp.item + " ");
+			temp = temp.next;
 		}
+		System.out.println();
 	}
 	
 	public static void main(String[] args) {

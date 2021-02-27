@@ -1,0 +1,9 @@
+Q3.
+Java generics. Explain why Java prohibits generic array creation.
+
+sol)
+When creating an array in Java, you use the new operator.
+The new operator allocates memory after checking whether there is enough memory in the heap area.
+However, at the time of compilation, it is not possible to know what the generic type is,
+so memory allocation cannot be performed.
+Therefore, you cannot create a generic array.
