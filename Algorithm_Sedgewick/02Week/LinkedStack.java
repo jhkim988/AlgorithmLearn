@@ -46,6 +46,9 @@ public class LinkedStack<Item> implements Iterable<Item>{
 	int size() {
 		return size;
 	}
+	Item peak() {
+		return first.item;
+	}
 	void dump () {
 		Node temp = first;
 		while(temp != null) {
