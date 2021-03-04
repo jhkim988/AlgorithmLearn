@@ -1,7 +1,6 @@
 import java.util.Arrays;
 
 import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.Stopwatch;
 
@@ -17,7 +16,6 @@ public class Exercise01_01_38 {
 	}
 
 	static int binarySearch(int key, int[] arr) {
-		Arrays.sort(arr);
 		int lo = 0;
 		int hi = arr.length - 1;
 		int mid = 0;
@@ -30,28 +28,31 @@ public class Exercise01_01_38 {
 			} else
 				return mid;
 		}
-		return -mid - 1;
+		return -1;
 	}
 
 	public static void main(String[] args) {
 		In in = new In(args[0]);
 		int[] whiteList = in.readAllInts();
+		
+		In inTest = new In(args[1]);
+		int[] test = inTest.readAllInts();
+		
 		Stopwatch timer1 = new Stopwatch();
-		while (!StdIn.isEmpty()) {
-			int key = StdIn.readInt();
-			if (bruteForce(key, whiteList) != -1) {
-//				StdOut.println(key);
-				;
+		for(int el : test) {
+			if (bruteForce(el, whiteList) != -1) {
+				// do something
+//				StdOut.println(el);
 			}
 		}
 		StdOut.println("Brute-Force Running Time : " + timer1.elapsedTime());
 
 		Stopwatch timer2 = new Stopwatch();
-		while (!StdIn.isEmpty()) {
-			int key = StdIn.readInt();
-			if (binarySearch(key, whiteList) != -1) {
-//				StdOut.println(key);
-				;
+		Arrays.sort(whiteList);
+		for(int el : test) {
+			if (binarySearch(el, whiteList) != -1) {
+				// do something
+//				StdOut.println(el);
 			}
 		}
 		StdOut.println("Binary Search Running Time : " + timer2.elapsedTime());
