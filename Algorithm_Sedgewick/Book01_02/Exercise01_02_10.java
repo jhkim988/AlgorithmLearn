@@ -41,8 +41,8 @@ class VisualCounter {
 	}
 
 	void draw() {
-		StdDraw.setXscale((double) 0, (double) work);
-		StdDraw.setYscale((double) 0, (double) max);
+		StdDraw.setXscale((double) 0, (double) workLimit);
+		StdDraw.setYscale((double) -max/10, (double) max/10);
 		if (work > 0)
 			StdDraw.line(work - 1, prev, work, counter);
 	}
@@ -80,9 +80,9 @@ public class Exercise01_02_10 {
 	}
 
 	public static void main(String[] args) {
-		int N = 100;
-		int max = 50;
-		int T = 1000;
+		int N = 10000;
+		int max = 10000;
+		int T = 10000;
 		randomUpDown(N, max, T);
 	}
 }
