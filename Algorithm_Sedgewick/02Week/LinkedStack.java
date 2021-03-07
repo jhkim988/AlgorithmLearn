@@ -18,7 +18,7 @@ public class LinkedStack<Item> implements Iterable<Item>{
 	private class ListIterator implements Iterator<Item> {
 		private Node crnt = first;
 		public boolean hasNext() {
-			return crnt == null;
+			return crnt != null;
 		}
 		public Item next() {
 			Item item = crnt.item;

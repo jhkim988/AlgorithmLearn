@@ -1,3 +1,4 @@
+import java.util.NoSuchElementException;
 
 public class ResizingArrayQueueOfStrings {
 	private String s[];
@@ -19,15 +20,16 @@ public class ResizingArrayQueueOfStrings {
 		// double
 		if (head < tail) {
 			for (int i = head; i < tail; i++)
-				copy[i] = s[i];
+				copy[i-head] = s[i];
+			tail = tail - head;
 		} else {
 			for (int i = head; i < s.length; i++)
 				copy[i - head] = s[i];
 			for (int i = 0; i < tail; i++)
 				copy[s.length - head + i] = s[i];
+			tail = s.length - head + tail;
 		}
 		head = 0;
-		tail = size();
 		s = copy;
 	}
 
@@ -41,15 +43,18 @@ public class ResizingArrayQueueOfStrings {
 		return head == tail;
 	}
 
-	public String dequeue() {
+	public String dequeue() {			
 		int size = size();
-		if (size != 0 && s.length == size / 4)
-			resize(2 * s.length);
+		if (size == 0) {
+			throw new NoSuchElementException();
+		}
+		if (size != 0 && size <= s.length / 4)
+			resize(s.length / 2);
 		String item = s[head];
 		s[head++] = null;
 		if (head == s.length)
 			head = 0;
-//		dumpTest();
+		dumpTest();
 		return item;
 	}
 
@@ -58,11 +63,11 @@ public class ResizingArrayQueueOfStrings {
 			resize(2 * s.length);
 		s[tail] = item;
 		tail = (tail == s.length - 1) ? 0 : tail + 1;
-//		dumpTest();
+		dumpTest();
 	}
 
 	private void dumpTest() {
-		System.out.print("head :" + head + " \ttail : " + tail + " \t");
+		System.out.print("head :" + head + " \ttail : " + tail + " \tsize" + size() + " \t");
 		for (int i = 0; i < s.length; i++)
 			System.out.print(s[i] + " ");
 		System.out.println();
@@ -103,6 +108,8 @@ public class ResizingArrayQueueOfStrings {
 			que3.enqueue("is");
 			que3.enqueue("JH");
 			que3.enqueue("kim");
+			que3.dequeue();
+			que3.dequeue();
 			que3.dequeue();
 			que3.dequeue();
 			que3.dequeue();
