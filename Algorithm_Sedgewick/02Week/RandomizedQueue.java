@@ -33,6 +33,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	private void resize(int capacity) {
 		// copy to head ~ tail -> 0 ~ idx
 		// initial value - null
+//		StdOut.println("resize");
 		Item[] newQueue = (Item[]) new Object[capacity];
 		int pointer = 0;
 		while (pointer < size) {
@@ -61,13 +62,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		tail = (tail == queue.length - 1) ? 0 : tail + 1;
 		size++;
 	}
-	
+
 	private void swap(Item[] que, int idx1, int idx2) {
 		Item temp = que[idx1];
 		que[idx1] = que[idx2];
 		que[idx2] = temp;
 	}
-	
+
 	// remove and return a random item
 	public Item dequeue() {
 		// random access -> use array...
@@ -88,7 +89,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		queue[(head + rand) % (queue.length)] = null;
 		size--;
 		swap(queue, head, idx);
-		head++;
+		head = (head == queue.length - 1) ? 0 : head + 1;
 //		nullNum++;
 
 //		int prevTail = (tail == 0) ? queue.length - 1 : tail - 1;
@@ -127,7 +128,28 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	}
 
 	private class IteratorRandomizedQueue implements Iterator<Item> {
-		int crnt = head;
+		int crnt;
+		int[] shuffle; // 0 ~ size - 1
+
+		IteratorRandomizedQueue() {
+			crnt = head;
+			shuffle = new int[size];
+
+			// initialized
+			for (int i = 0; i < shuffle.length; i++)
+				shuffle[i] = i;
+			knuthShuffle(shuffle);
+		}
+
+		// shuffle
+		private void knuthShuffle(int[] arr) {
+			for (int i = 0; i < arr.length; i++) {
+				int r = i + StdRandom.uniform(arr.length - i);
+				int temp = arr[i];
+				arr[i] = arr[r];
+				arr[r] = temp;
+			}
+		}
 
 		@Override
 		public boolean hasNext() {
@@ -138,15 +160,25 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
 		@Override
 		public Item next() {
-			Item queItem = queue[crnt++];
-			if (crnt == queue.length)
-				crnt = 0;
-			while (hasNext() && queue[crnt] == null) {
-//				StdOut.println("INFINITE LOOP - iterator next");
-				crnt++;
-				if (crnt == queue.length)
-					crnt = 0;
+			if (size == 0 || !hasNext())
+				throw new NoSuchElementException();
+			Item queItem;
+			if (head < tail) {
+				queItem = queue[shuffle[crnt - head] + head];
+			} else { // tail < head
+				if (crnt >= head) {
+					queItem = queue[(shuffle[crnt - head] + head) % queue.length];
+				} else {
+					queItem = queue[(shuffle[queue.length - head + crnt] + head) % queue.length];
+				}
 			}
+			
+			if (crnt == queue.length - 1) {
+				crnt = 0;
+			} else {
+				crnt++;
+			}
+			
 			return queItem;
 		}
 
@@ -157,7 +189,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
 //	public String toString() {
 //		String sum = "";
-//		for(int i = 0; i < queue.length; i++)
+//		for (int i = 0; i < queue.length; i++)
 //			sum += queue[i] + " ";
 //		return sum;
 //	}
@@ -173,24 +205,40 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 			rq.enqueue(3 + i);
 			rq.enqueue(4 + i);
 			rq.enqueue(5 + i);
-			StdOut.println("Dequeue : " + rq.dequeue());
-			StdOut.println("Dequeue : " + rq.dequeue());
-			StdOut.println("Dequeue : " + rq.dequeue());
-			StdOut.println("Sample : " + rq.sample());
-			StdOut.println("Sample : " + rq.sample());
-			StdOut.println("Sample : " + rq.sample());
+//			StdOut.println("Dequeue : " + rq.dequeue());
+//			StdOut.println("Dequeue : " + rq.dequeue());
+//			StdOut.println("Dequeue : " + rq.dequeue());
+//			StdOut.println("Sample : " + rq.sample());
+//			StdOut.println("Sample : " + rq.sample());
+//			StdOut.println("Sample : " + rq.sample());
 		}
+		rq.enqueue(316);
+		rq.dequeue();
+		StdOut.println(rq.isEmpty());
+		StdOut.println(rq);
+		StdOut.println(rq.head + " " + rq.tail);
+		rq.enqueue(189);
+		rq.dequeue();
+		rq.sample();
+		StdOut.println(rq.isEmpty());
+		StdOut.println(rq.head + " " + rq.tail);
 		StdOut.println("rq is " + (rq.isEmpty() ? "empty" : "not emty"));
-		Iterator<Integer> iter = rq.iterator();
 		
-		while (iter.hasNext()) {
-			Iterator<Integer> nestedIter = rq.iterator();
-			while(nestedIter.hasNext())
-				StdOut.println("nested iterator : " + nestedIter.next());
-			StdOut.println("iterator : " + iter.next());
+		for(int i = 0; i < 10; i++) {
+			rq.enqueue(i);
+			rq.dequeue();
+			StdOut.println(rq);
 		}
 		
-		
+		Iterator<Integer> iter = rq.iterator();
+		while (iter.hasNext()) {
+			StdOut.println(rq);
+			Iterator<Integer> nestedIter = rq.iterator();
+			while (nestedIter.hasNext())
+				StdOut.println(nestedIter.next());
+			StdOut.println(iter.next());
+		}
+
 	}
 
 }
