@@ -72,6 +72,7 @@ public class MergeSort {
 		Comparable[] aux = new Comparable[a.length];
 		sort(a, aux, 0, a.length - 1);
 	}
+
 	public static void main(String[] args) {
 		
 	}
