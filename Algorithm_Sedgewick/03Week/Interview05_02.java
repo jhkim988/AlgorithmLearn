@@ -9,7 +9,12 @@ import edu.princeton.cs.algs4.StdOut;
 // Suppose array a[] has two sorted part. (a[0], ..., a[mid], a[mid + 1], ..., a[N-1])
 // In this case, we can count the number of inversions in O(N) times.
 // Let i be index of front half of array, and j be index of rear half of array.(i.e. i < j)
-// If a[i] > a[j], then a[i+1] > a[j] since a[0] ~ a[mid] are sorted.
+// If a[i] is larget than a[j], then a[i+1] is larget than a[j], since a[0] ~ a[mid] are sorted.
+// (a[i] > a[j] => a[i+1] > a[j])
+// Therefore, when we want to find the number of j such that a[i+1] > a[j] some fixed i,
+// we need not to check j in the first(of rear part) index(a[mid + 1]).
+// From j' where a[i] becomes less(or equal) than a[j'], we just need to check, and sum.
+// By above method, we can count the number of inversions in O(N) times.
 
 public class Interview05_02 {
 	private static String toStringArray(int[] a, int lo, int hi) {
