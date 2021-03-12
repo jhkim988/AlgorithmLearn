@@ -10,7 +10,7 @@ import edu.princeton.cs.algs4.StdOut;
 // sol)
 // copy a[0], ..., a[n-1] to aux.
 // merge aux[] and rear half of a[] (a[n], ..., a[2*n-1]) to a[]
-public class Interview05_01 {
+public class Interview05_01_MergingWithSmallerAuxiliaryArray {
 	static void merge(int[] a) {
 		// a[] = a[0], ..., a[N/2 - 1], a[N/2], ..., a[N-1]
 		// aux[] = a[0], ..., a[N/2], copy front half

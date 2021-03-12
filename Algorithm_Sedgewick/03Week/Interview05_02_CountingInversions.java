@@ -16,7 +16,7 @@ import edu.princeton.cs.algs4.StdOut;
 // From j' where a[i] becomes less(or equal) than a[j'], we just need to check, and sum.
 // By above method, we can count the number of inversions in O(N) times.
 
-public class Interview05_02 {
+public class Interview05_02_CountingInversions {
 	private static String toStringArray(int[] a, int lo, int hi) {
 		String result = "[ ";
 		for (int i = lo; i <= hi; i++) {

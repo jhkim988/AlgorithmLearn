@@ -17,7 +17,7 @@ import edu.princeton.cs.algs4.StdStats;
 // the number of cases that two single-linked list with length L are merged = (2L)!/(L!L!)
 // Therefore, our method to merge uniformly shuffled two single-linked list are valid.(maybe?)
 
-public class Interview05_03 {
+public class Interview05_03_ShufflingLinkedList {
 	private static void mergeList(ArrayList<Integer> deleted, ArrayList<Integer> created) {
 		// use removeFirst and addLast -> memory saved.
 //		StdOut.println("deleted : " + deleted);
