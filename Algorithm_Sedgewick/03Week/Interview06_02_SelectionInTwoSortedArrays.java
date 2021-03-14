@@ -14,7 +14,8 @@ import edu.princeton.cs.algs4.StdRandom;
 // The candidates of rank k elements are sum of pointers = k - 1.
 // The minimum value among candidates is rank k value.
 // (i, j) moves from (k, -1) to (-1, k). It is bitonic.(decreasing -> increasing)
-// we can find minimum value with log n
+// we can find minimum value with log n compares.
+
 public class Interview06_02_SelectionInTwoSortedArrays {
 	public static int rank(int[] a, int[] b, int k) {
 		int range1 = (k < a.length) ? k : (a.length - 1);
