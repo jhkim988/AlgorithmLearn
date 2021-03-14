@@ -1,7 +1,6 @@
-import java.util.Arrays;
-
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdStats;
 
 // Q1 Nuts and bolts.
 // A disorganized carpenter has a mixed pile of n nuts and n bolts.
@@ -11,8 +10,17 @@ import edu.princeton.cs.algs4.StdRandom;
 // (but the carpenter cannot compare two nuts or two bolts directly).
 // Design an algorithm for the problem that uses at most proportional to nlogn compares (probabilistically).
 
+// sol)
+// For some fixed nut, Process 3-way-partition Bolts. (N compares)
+// We can find bolt that fit fixed nut.
+// For bolt we found, Process 3-way-partition Nuts. (N compares)
+// Then, Bolts and Nuts are same partitioning state(same indice).
+// Recursively Repeat smaller and larger part.
+// Then we can find all pair of bolts and nuts with 2NlgN compares.
+
 public class Interview06_01_NutsAndBolts {
 	private static class Bolt {
+		private static int callCompares = 0;
 		private int id;
 
 		Bolt(int id) {
@@ -24,6 +32,7 @@ public class Interview06_01_NutsAndBolts {
 		}
 
 		int compares(Nut nut) {
+			callCompares++;
 			if (id() > nut.id()) {
 				return 1;
 			} else if (id() < nut.id()) {
@@ -39,6 +48,7 @@ public class Interview06_01_NutsAndBolts {
 	}
 
 	private static class Nut {
+		private static int callCompares = 0;
 		private int id;
 
 		int id() {
@@ -50,6 +60,7 @@ public class Interview06_01_NutsAndBolts {
 		}
 
 		int compares(Bolt bolt) {
+			callCompares++;
 			if (id() > bolt.id()) {
 				return 1;
 			} else if (id() < bolt.id()) {
@@ -90,45 +101,93 @@ public class Interview06_01_NutsAndBolts {
 		arr[idx2] = tmp;
 	}
 
-	private static int findPair(Bolt[] bolts, Nut[] nuts, int lo, int hi) {
-		// only use compare() method, NOT id()
-		// nlogn algorithm
+	private static void findPair(Bolt[] bolts, Nut[] nuts, int lo, int hi) {
+		// 3-way partition
+		// nuts[lo] -> bolts partitioning
+		// nuts[lo] fits bolts[lt] (also lt == gt)
+		// bolts[lt] -> nuts partitioning
+		if (hi <= lo)
+			return;
+		int lt = lo, gt = hi;
+		int i = lo;
 
-		// move bolts[]. fixed nuts[].
-		// two points, lo and hi, imitate quick sort(selection) algorithm.
-		// use the fact that all are distinct.
-
-		// partitioning [ < nuts[lo] | = nuts[lo](only one) | > nuts[lo] ]
-		// return i such that nuts[lo].compares(bolts[i]) == 0;
-		int i = lo, j = hi + 1;
-		while (i <= j) {
-			if (bolts[i].compares(nuts[lo]) < 0)
-				i++;
-			else if (bolts[i].compares(nuts[lo]) > 0)
-				exch(bolts, i, j--);
+		// nuts[lo] partitioning
+		while (i <= gt) {
+			int cmp = bolts[i].compares(nuts[lo]);
+			if (cmp < 0)
+				exch(bolts, lt++, i++);
+			else if (cmp > 0)
+				exch(bolts, i, gt--);
 			else
-				exch(bolts, lo, i++);
-		} // bolts[lo] - nuts[lo] fit exactly
-		return j;
+				i++;
+		}
+
+		if (lt != gt) {
+			StdOut.println("lt != gt");
+		}
+
+		int tmp = lt; // bolts[lt] - nuts[lo]
+		lt = lo;
+		gt = hi;
+		i = lo;
+
+		// bolts[lt] partitioning
+		while (i <= gt) {
+			int cmp = nuts[i].compares(bolts[tmp]);
+			if (cmp < 0)
+				exch(nuts, lt++, i++);
+			else if (cmp > 0)
+				exch(nuts, i, gt--);
+			else
+				i++;
+		}
+		findPair(bolts, nuts, lo, lt - 1);
+		findPair(bolts, nuts, gt + 1, hi);
 	}
 
 	public static void findPair(Bolt[] bolts, Nut[] nuts) {
 		int size = bolts.length;
 		assert (size == nuts.length);
-		
-		int nutsIdx = 0;
-		int boundary = findPair(bolts, nuts, nutsIdx, size - 1);
-		if (nuts[nutsIdx + 1].compares(bolts[nutsIdx]) < 0) {
-			
-		}
+		findPair(bolts, nuts, 0, size - 1);
+	}
+
+	public static boolean verifySolution(Bolt[] bolts, Nut[] nuts) {
+		int size = bolts.length;
+		assert (size == nuts.length);
+		for (int i = 0; i < size; i++)
+			if (bolts[i].compares(nuts[i]) != 0)
+				return false;
+		return true;
 	}
 
 	public static void main(String[] args) {
-		int size = 100;
-		Bolt[] boltArr = randomBoltArrayGenerator(size);
-		Nut[] nutArr = randomNutArrayGenerator(size);
+		int size = 1000;
+		int trial = 1000;
+		double[] result = new double[trial];
+		Bolt.callCompares = 0;
+		Nut.callCompares = 0;
+		for (int i = 0; i < trial; i++) {
+			Bolt[] boltArr = randomBoltArrayGenerator(size);
+			Nut[] nutArr = randomNutArrayGenerator(size);
+			findPair(boltArr, nutArr);
+			result[i] = (double) (Bolt.callCompares + Nut.callCompares);
+			Bolt.callCompares = 0;
+			Nut.callCompares = 0;
+		}
 
-		StdOut.println(Arrays.toString(boltArr));
-		StdOut.println(Arrays.toString(nutArr));
+		double mean = StdStats.mean(result);
+		double esti = size * 2 * Math.log(size) / Math.log(2); // 2NlgN
+		StdOut.println("mean : " + mean + " \testi : " + esti);
+		
+		// verify Solution
+		boolean flag = true;
+		for (int i = 0; i < trial; i++) {
+			Bolt[] boltArr = randomBoltArrayGenerator(size);
+			Nut[] nutArr = randomNutArrayGenerator(size);
+			findPair(boltArr, nutArr);
+			if (!verifySolution(boltArr, nutArr))
+				flag = false;
+		}
+		StdOut.println("flag : " + flag);
 	}
 }
