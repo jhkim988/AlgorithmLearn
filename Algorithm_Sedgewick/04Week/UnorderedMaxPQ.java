@@ -1,5 +1,5 @@
 
-public class UnorderedMaxPQ<Key implements Comparable<Key>> {
+public class UnorderedMaxPQ<Key extends Comparable<Key>> {
 	private Key[] pq;
 	private int N;
 	
@@ -27,4 +27,15 @@ public class UnorderedMaxPQ<Key implements Comparable<Key>> {
 	// Unordered - insert O(1), max O(N), delMax O(N)
 	// ordered - insert O(N), max O(1), delMax O(1)
 	// goal - logN
+	
+	
+	private boolean less(Comparable a, Comparable b) {
+		return a.compareTo(b) < 0;
+	}
+	
+	private void exch(Object[] a, int idx1, int idx2) {
+		Object temp = a[idx1];
+		a[idx1] = a[idx2];
+		a[idx2] = temp;
+	}
 }
