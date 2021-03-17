@@ -11,8 +11,9 @@ public class ParticleMyTry {
 	private final double radius; // radius
 	private final double mass; // mass
 	private int count; // number of collisions
-	
-	public ParticleMyTry(double rx, double ry, double vx, double vy, double radius, double mass) {
+    private final Color color; // color
+    
+	public ParticleMyTry(double rx, double ry, double vx, double vy, double radius, double mass, Color color) {
 		// initialize position and velocity, radius, mass
 		this.vx = vx;
 		this.vy = vy;
@@ -20,7 +21,7 @@ public class ParticleMyTry {
 		this.ry = ry;
 		this.radius = radius;
 		this.mass = mass;
-		
+		this.color = color;
 	}
 	
 	public ParticleMyTry() {
@@ -30,6 +31,7 @@ public class ParticleMyTry {
         vy     = StdRandom.uniform(-0.005, 0.005);
         radius = StdRandom.uniform(0.01, 0.04);
         mass   = 0.5;
+        color = new Color(StdRandom.uniform(0,256), StdRandom.uniform(0,256), StdRandom.uniform(0,256));
 	}
 	
 	public void move(double dt) {
@@ -40,7 +42,7 @@ public class ParticleMyTry {
 	}
 	
 	public void draw() {
-		StdDraw.setPenColor(Color.black);
+		StdDraw.setPenColor(color);
 		StdDraw.filledCircle(rx, ry, radius);
 	}
 	

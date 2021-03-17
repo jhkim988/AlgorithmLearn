@@ -18,14 +18,14 @@ public class CollisionSystemMyTry {
 		int N = particles.length;
 		for (int i = 0; i < N; i++) {
 			double dt = a.timeToHit(particles[i]);
-			if (dt < Double.POSITIVE_INFINITY)
+			if (dt < 10000)
 				pq.insert(new EventMyTry(t + dt, a, particles[i]));
 		}
 		double dtX = a.timeToHitVerticalWall();
 		double dtY = a.timeToHitHorizontalWall();
-		if(dtX < Double.POSITIVE_INFINITY)
+		if(dtX < 10000)
 			pq.insert(new EventMyTry(t + dtX, a, null));
-		if(dtY < Double.POSITIVE_INFINITY)
+		if(dtY < 10000)
 			pq.insert(new EventMyTry(t + dtY, null, a));
 	}
 
@@ -47,7 +47,7 @@ public class CollisionSystemMyTry {
 		pq.insert(new EventMyTry(0, null, null));
 
 		while (!pq.isEmpty()) {
-//			StdOut.println("queue size : " + pq.size());
+			StdOut.println("queue size : " + pq.size());
 			EventMyTry event = pq.delMin();
 			if (!event.isValid())
 				continue;
@@ -75,7 +75,7 @@ public class CollisionSystemMyTry {
 
 	public static void main(String[] args) {
 		StdDraw.enableDoubleBuffering(); // 화면 끊기는 것 방지
-		int N = 30;
+		int N = 50;
 		ParticleMyTry[] particles = new ParticleMyTry[N];
 		for (int i = 0; i < N; i++) {
 			particles[i] = new ParticleMyTry();
