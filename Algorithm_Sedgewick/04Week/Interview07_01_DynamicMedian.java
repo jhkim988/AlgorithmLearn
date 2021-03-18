@@ -3,6 +3,19 @@
 // find-the-median in constant time, and remove-the-median in logarithmic time.
 // If the number of keys in the data type is even, find/remove the lower median.
 
+// sol)
+// Use Two Priority Queue. [ max pq | median | min pq ]
+// Case(1) the number of elements is odd, max pq.size =  N + 1, min pq.size = N
+// Case(2) the number of elements is even, max pq.size = N, min pq.size = N
+// Case(1) - a, Insert element less(or equal) than median,
+// Insert to max pq and minpq.insert(maxpq.delMax());
+// Case(1) - b, Insert element larger than median,
+// Insert to min pq.
+// Case(2) - a, Insert element less(or equal) than median,
+// Insert to max pq.
+// Case(2) - b, Insert element larger than median,
+// Insert to min pq, and maxpq.insert(minpq.delMin());
+
 import edu.princeton.cs.algs4.MaxPQ;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.StdOut;

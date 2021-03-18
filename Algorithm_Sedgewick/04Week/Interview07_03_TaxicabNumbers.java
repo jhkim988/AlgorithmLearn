@@ -9,6 +9,24 @@ import edu.princeton.cs.algs4.StdOut;
 // Version 1: Use time proportional to n^2 log n and space proportional to n^2.
 // Version 2: Use time proportional to n^2 log n and space proportional to n.
 
+// sol)
+// Version 1 : Use Upper Triangle Matrix A[][] such that A[i][j] = i^3 + j^3 (1 <= i <= N, i <= j <= N)
+// If we find same key(in distinct index) in A[][], we find taxicab number A[a][b] = A[c][d] (a, b, c, d).
+// Convert 2D array A[][] into 1D array. Then sorting.
+// Sorting takes n(n+1)/2 * log(n(n+1)/2) times, i.e. ~ n^2 log(n)
+// If we find duplicated key a[i] = a[i+1], we find taxicab number.
+// While sorting process, the index changes.
+// Therefore, create class SumOfCubes, storage index before sorting.
+// We can find taxicab number.
+// Version 2 : Use Minimum priority queue.
+// Similary Version1, We find same keys of two sum of cubes.
+// But Need not to storage all(N(N+1)/2) two suum of cubes.
+// 1. Insert Diagonal elements in version1. (~N space)
+// 2. delete Min element, and compare previous min element(i.e. we must strage delelemt element)
+// 3. If previous element == current element, we find taxicab number(prev.A ^3 + prev.B^3 == crnt.A^3 + crnt.B^3)
+// 4. Whether we find taxicab number or not, insert "right" element of crnt element in A[][]
+// i.e. if crnt.A = i and crnt.B = j, insert (i ^ 3 + (j + 1) ^ 3)
+
 import edu.princeton.cs.algs4.MinPQ;
 
 public class Interview07_03_TaxicabNumbers {

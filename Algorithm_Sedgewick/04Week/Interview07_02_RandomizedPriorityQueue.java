@@ -6,6 +6,12 @@ import edu.princeton.cs.algs4.StdRandom;
 // with the latter method also removing that key. The sample() method should take constant time;
 // the delRandom() method should take logarithmic time. Do not worry about resizing the underlying array.
 
+// sol)
+// Choose random index, then access to pq array.(implement priority queue as (resizing) array)
+// Then sample() take constant time.
+// Choose random index, exchange last element, and Free last element(preventing loitering)
+// sink the choosen index.(logarithmic time) and return element.
+
 public class Interview07_02_RandomizedPriorityQueue<Key extends Comparable<Key>> {
 	private Key[] pq;
 	private int N;
