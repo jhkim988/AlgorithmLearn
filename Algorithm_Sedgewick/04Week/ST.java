@@ -6,6 +6,12 @@ public class ST<Key, Value> {
 	// Value - any generic
 	// immutable type
 	// equality - reflexive, symmetric, trnasitive, non-null
+	
+	// Linked List
+	// Maintain linked list, key-value pairs
+	// Search - scan through all keys until find a match O(N)
+	// Insert - scanf through all keys until find a match, if no match add to front.
+	
 	ST() { // create symbolic table
 		
 	}
