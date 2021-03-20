@@ -90,9 +90,65 @@ public class ST<Key extends Comparable<Key>, Value> {
 		}
 		return null;
 	}
+	
 	void delete(Key key) {
-		// lazy
-		put(key, null);
+		// 1. Use Tombstone lazy
+		// put(key, null);
+		
+		// Hibbard deletion - Not Symmetric
+		// Repeated deletion -> break balance of tree.. ~ sqrt(N) and sqrt(N) height
+		// Red Black tree - deletion logN
+		// 1. 0 child 
+		// 2. 1 child
+		// 3. 2 children - Delete node x
+		// Find minimum of right subtree(node t)
+		// delete minimum in t's right subtree
+		root = delete(root, key);
+	}
+	private Node delete(Node x, Key key) {
+		// Hibbard deletion
+		if(x == null) return null;
+		int cmp = key.compareTo(x.key);
+		if (cmp < 0) x.left = delete(x.left, key);
+		else if (cmp > 0) x.right = delete(x.right, key);
+		else {
+			// cover case 0 child, 1 child
+			if(x.right == null) return x.left;
+			if(x.left == null) return x.right;
+			
+			// cover case 2 child
+			Node t = x;
+			x = min(t.right);
+			x.right = deleteMin(t.right);
+			x.left = t.left;
+		}
+		x.count = size(x.left) + size(x.right) + 1;
+		return x;
+	}
+	Node min(Node x) {
+		while(x.left != null) {
+			x = x.left;
+		}
+		return x;
+	}
+	// Deleting the minimum
+	void deleteMin() {
+		root = deleteMin(root);
+	}
+	Node deleteMin(Node x) {
+		if(x.left == null) return x.right;
+		x.left = deleteMin(x.left);
+		x.count = 1 + size(x.left) + size(x.right);
+		return x;
+	}
+	void deleteMax() {
+		root = deleteMax(root);
+	}
+	Node deleteMax(Node x) {
+		if(x.right == null) return x.left;
+		x.right = deleteMin(x.right);
+		x.count = 1 + size(x.left) + size(x.right);
+		return x;
 	}
 	boolean contains(Key key) {
 		return get(key) != null;
