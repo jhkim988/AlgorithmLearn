@@ -5,6 +5,9 @@ import edu.princeton.cs.algs4.StdOut;
 // Find values such that (a == b) is true but x.equals(y) is false.
 // Find values such that (a == b) is false but x.equals(y) is true.
 
+// sol)
+// NaN != NaN, but new Double(NaN) == new Double(NaN)
+// 0.0 == -0.0 but new Double(0.0) != new Double(-0.0)
 public class Interview08_01_JavaAutoboxingAndEquals {
 	public static void main(String[] args) {
 		double a = Double.NaN;
