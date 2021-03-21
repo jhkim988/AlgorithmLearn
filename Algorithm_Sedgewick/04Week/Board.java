@@ -71,8 +71,8 @@ public class Board {
     	if (y == null) return false;
     	if (y.getClass() != this.getClass()) return false;
     	Board tmp = (Board) y;
-    	if(tmp.dimension() != tmp.tiles.length) return false;
-    	if(tmp.dimension() != tmp.tiles[0].length) return false;
+    	if(dimension() != tmp.tiles.length) return false;
+    	if(dimension() != tmp.tiles[0].length) return false;
     	for(int i = 0; i < n*n; i++) {
     		if (tiles[i/n][i%n] != tmp.tiles[i/n][i%n])
     			return false;

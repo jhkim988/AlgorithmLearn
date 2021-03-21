@@ -58,6 +58,14 @@ public class Solver {
     	
     	iter.add(status.board);
     	while(true) {
+        	if (crnt.board.isGoal()) {
+        		solvable = true;
+        		break;
+        		}
+        	if(crntAlter.board.isGoal()) {
+        		solvable = false;
+        		break;
+        	}
         	for(Board bd : crnt.board.neighbors()) {
         		if (!prev.board.equals(bd))
         			pq.insert(new SearchNode(bd, move, type));
@@ -66,9 +74,9 @@ public class Solver {
         		if(!prevAlter.board.equals(bd))
         			pqAlter.insert(new SearchNode(bd, moveAlter, type));
         	}
+        	minMove = move;
         	move = pq.min().move + 1;
         	moveAlter = pqAlter.min().move + 1;
-        	minMove = move;
         	
         	prev = crnt;
         	crnt = pq.delMin();
@@ -77,12 +85,6 @@ public class Solver {
         	crntAlter = pqAlter.delMin();
         	
         	iter.add(crnt.board);
-        	if (crnt.board.isGoal()) {
-        		solvable = true;
-        		}
-        	if(crntAlter.board.isGoal()) {
-        		solvable = false;
-        	}
     	}
     }
 
