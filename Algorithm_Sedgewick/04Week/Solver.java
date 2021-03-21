@@ -36,33 +36,13 @@ public class Solver {
 	private SearchNode status;
 	private boolean solvable;
 	private int minMove;
-	
+	private ArrayList<Board> iter = new ArrayList<Board>();
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
     	if (initial == null)
     		throw new IllegalArgumentException();
     	status = new SearchNode(initial, 0, type);
-    }
-
-    // is the initial board solvable? (see below)
-    public boolean isSolvable() {
-		return solvable;
-    }
-
-    // min number of moves to solve initial board; -1 if unsolvable
-    public int moves() {
-		Iterable<Board> iter = solution();
-		int result = -1;
-		if (iter != null) {
-			for (Board bd : iter)
-				result++;
-		}
-		return result;
-    }
-
-    // sequence of boards in a shortest solution; null if unsolvable
-    public Iterable<Board> solution(){
-    	ArrayList<Board> iter = new ArrayList<Board>();
+    	
     	MinPQ<SearchNode> pq = new MinPQ<SearchNode>();
     	MinPQ<SearchNode> pqAlter = new MinPQ<SearchNode>();
     	SearchNode statusAlter = new SearchNode(status.board.twin(), 0, type);
@@ -86,8 +66,9 @@ public class Solver {
         		if(!prevAlter.board.equals(bd))
         			pqAlter.insert(new SearchNode(bd, moveAlter, type));
         	}
-        	move++;
-        	moveAlter++;
+        	move = pq.min().move + 1;
+        	moveAlter = pqAlter.min().move + 1;
+        	minMove = move;
         	
         	prev = crnt;
         	crnt = pq.delMin();
@@ -98,13 +79,28 @@ public class Solver {
         	iter.add(crnt.board);
         	if (crnt.board.isGoal()) {
         		solvable = true;
-        		return iter;
         		}
         	if(crntAlter.board.isGoal()) {
         		solvable = false;
-        		return null;
         	}
     	}
+    }
+
+    // is the initial board solvable? (see below)
+    public boolean isSolvable() {
+		return solvable;
+    }
+
+    // min number of moves to solve initial board; -1 if unsolvable
+    public int moves() {
+		return minMove;
+    }
+
+    // sequence of boards in a shortest solution; null if unsolvable
+    public Iterable<Board> solution(){
+    	if (!solvable)
+    		return null;
+    	return iter;
     }
 
     // test client (see below) 
