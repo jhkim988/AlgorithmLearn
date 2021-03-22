@@ -27,6 +27,12 @@ public class RedBlackTree<Key extends Comparable<Key>, Value> {
 	
 	// Basic Strategy
 	// Maintain 1-1 correspondence with 2-3 tree
+	
+	// proposition
+	// height of tree is <= 2 lg N in the worst case
+	// 1. Every path from root to null link has same number of black links.
+	// 2. Never two red links in-a-row.
+	
 	private static final boolean RED = true;
 	private static final boolean BLACK = false;
 	
