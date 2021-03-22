@@ -1,19 +1,20 @@
-import java.util.ArrayList;
-
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.Stack;
 
 public class Solver {
 	private static final String type = "manhattan";
 	private class SearchNode implements Comparable<SearchNode> {
+		private SearchNode prev;
 		private Board board;
 		private int move;
 		private int dist;
 		private int priority;
 		
-		SearchNode(Board board, int move, String type){
+		SearchNode(Board board, SearchNode prev, int move, String type){
 			this.board = board;
+			this.prev = prev;
 			this.move = move;
 			if(type.equals("hamming")) {
 				dist = board.hamming();
@@ -36,55 +37,52 @@ public class Solver {
 	private SearchNode status;
 	private boolean solvable;
 	private int minMove;
-	private ArrayList<Board> iter = new ArrayList<Board>();
+	private Stack<Board> iter = new Stack<Board>();
+	
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
     	if (initial == null)
     		throw new IllegalArgumentException();
-    	status = new SearchNode(initial, 0, type);
+    	status = new SearchNode(initial, null, 0, type);
     	
     	MinPQ<SearchNode> pq = new MinPQ<SearchNode>();
     	MinPQ<SearchNode> pqAlter = new MinPQ<SearchNode>();
-    	SearchNode statusAlter = new SearchNode(status.board.twin(), 0, type);
-    	
-    	SearchNode prev = status;
-    	SearchNode crnt = status;
-    	
-    	SearchNode prevAlter = statusAlter;
+    	SearchNode statusAlter = new SearchNode(status.board.twin(), null, 0, type);
     	SearchNode crntAlter = statusAlter;
     	
     	int move = 1;
     	int moveAlter = 1;
     	
-    	iter.add(status.board);
+    	for(Board bd : status.board.neighbors()) {
+			pq.insert(new SearchNode(bd, status, move, type));
+    	}
+    	for(Board bd: crntAlter.board.neighbors()) {
+			pqAlter.insert(new SearchNode(bd, crntAlter, moveAlter, type));
+    	}
     	while(true) {
-        	if (crnt.board.isGoal()) {
+        	if (status.board.isGoal()) {
         		solvable = true;
         		break;
-        		}
+    		}
         	if(crntAlter.board.isGoal()) {
         		solvable = false;
+        		minMove = -1;
         		break;
         	}
-        	for(Board bd : crnt.board.neighbors()) {
-        		if (!prev.board.equals(bd))
-        			pq.insert(new SearchNode(bd, move, type));
+        	for(Board bd : status.board.neighbors()) {
+        		if (status.prev != null && !status.prev.board.equals(bd))
+        			pq.insert(new SearchNode(bd, status, move, type));
         	}
         	for(Board bd: crntAlter.board.neighbors()) {
-        		if(!prevAlter.board.equals(bd))
-        			pqAlter.insert(new SearchNode(bd, moveAlter, type));
+        		if(crntAlter.prev != null && !crntAlter.prev.board.equals(bd))
+        			pqAlter.insert(new SearchNode(bd, crntAlter, moveAlter, type));
         	}
-        	minMove = move;
+        	minMove = pq.min().move;
         	move = pq.min().move + 1;
         	moveAlter = pqAlter.min().move + 1;
         	
-        	prev = crnt;
-        	crnt = pq.delMin();
-        	
-        	prevAlter = crntAlter;
+        	status = pq.delMin();
         	crntAlter = pqAlter.delMin();
-        	
-        	iter.add(crnt.board);
     	}
     }
 
@@ -102,6 +100,10 @@ public class Solver {
     public Iterable<Board> solution(){
     	if (!solvable)
     		return null;
+    	while(status != null) {
+    		iter.push(status.board);
+    		status = status.prev;
+    	}
     	return iter;
     }
 
