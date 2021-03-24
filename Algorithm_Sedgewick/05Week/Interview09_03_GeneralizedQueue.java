@@ -14,7 +14,7 @@ import edu.princeton.cs.algs4.StdOut;
 // sol)
 // Use Red-Black Tree<Integer, TypeOfQueueValue>.
 // 1. Create an empty data structure
-// - Create Red-Black Tree O(1), key is integer, insert order.
+// - Create Red-Black Tree(O(1)), key is integer, insert order.
 // 2. Append an item from the end of the queue.
 // - Append an item into Red-Black Tree, incresing key + 1.
 // 3. Remove an item from the front of the queue.
