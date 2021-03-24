@@ -11,6 +11,8 @@
 // If order mismatch occured, It means that this nodes is red.
 // But If Both left child and right child are null,
 // we don't know whether this node is red or black.
+// And the problem with this method is there is an overhead.
+// When we go down the Red-Black Tree, we must always check order mismatch, twice compare.
 
 // 3. Particular Rule
 // Let Node p(parents) link Node r(left child red node) by red link.
