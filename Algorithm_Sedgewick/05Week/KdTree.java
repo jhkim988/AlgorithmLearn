@@ -248,50 +248,52 @@ public class KdTree {
 
 	public Point2D nearest(Point2D p) {
 		// a nearest neighbor in the set to point p; null if the set is empty
-//		if (p == null)
-//			throw new IllegalArgumentException();
-//		if (isEmpty())
-//			return null;
-//		return nearest(root, p, root).point;
-       if (p == null) {
-    	   throw new IllegalArgumentException();
-        }
-        Point2D champion = null;
-        double championDistance = Double.MAX_VALUE;
-        Queue<Node> queue = new Queue<Node>();
-        queue.enqueue(root);
-        while (!queue.isEmpty()) {
-            Node x = queue.dequeue();
-            if (x == null) {
-                continue;
-            }
-            double distance = p.distanceTo(x.point);
-            if (distance < championDistance) {
-                champion = x.point;
-                championDistance = distance;
-            }
-            queue.enqueue(x.left);
-            queue.enqueue(x.right);
-        }
-        return champion;
+		if (p == null)
+			throw new IllegalArgumentException();
+		if (isEmpty())
+			return null;
+		return nearest(root, p, root).point;
+//        Point2D champion = null;
+//        double championDistance = Double.MAX_VALUE;
+//        Queue<Node> queue = new Queue<Node>();
+//        queue.enqueue(root);
+//        while (!queue.isEmpty()) {
+//            Node x = queue.dequeue();
+//            if (x == null) {
+//                continue;
+//            }
+//            double distance = p.distanceTo(x.point);
+//            
+//            	
+//            if (distance < championDistance) {
+//                champion = x.point;
+//                championDistance = distance;
+//            }
+//            queue.enqueue(x.left);
+//            queue.enqueue(x.right);
+//        }
+//        return champion;
 	}
 
-//	private Node nearest(Node x, Point2D p, Node near) {
-//		if (x == null) return near;
-//		boolean cmp;
-//		if (x.isVertical) cmp = x.point.x() > p.x();
-//		else cmp = x.point.y() > p.y();
-//
-//		if (cmp) near = nearest(x.left, p, near);
-//		else near = nearest(x.right, p, near);
-//		
-//		if (x.isVertical && Math.abs(p.x() - x.point.x()) < p.distanceTo(near.point))
-//			near = cmp ? nearest(x.right, p, near) : nearest(x.left, p, near);
-//		if (!x.isVertical && Math.abs(p.y() - x.point.y()) < p.distanceTo(near.point))
-//			near = cmp ? nearest(x.left, p, near) : nearest(x.right, p, near);
-//		
-//		if (p.distanceTo(x.point) < p.distanceTo(near.point)) return x;
-//		else return near;
+	private Node nearest(Node x, Point2D p, Node near) {
+		double nearDist = p.distanceTo(near.point);
+        if (x != null && x.rect.distanceTo(p) < nearDist) {
+            if (p.distanceTo(x.point) < nearDist) {
+                near = x;
+            }
+            boolean cmp;
+            if (x.isVertical) cmp = x.point.x() > p.x();
+            else cmp = x.point.y() > p.y();
+            
+            if (cmp) {
+            	near = nearest(x.left, p, near);
+            	near = nearest(x.right, p, near);
+            } else {
+            	near = nearest(x.right, p, near);
+              	near = nearest(x.left, p, near);
+            }
+        }
+		return near;
 		
 //		if (x.isVertical) {
 //			// compare x-coordinate
@@ -330,7 +332,7 @@ public class KdTree {
 //				// left node
 //			}
 //		}
-//	}
+	}
 	
 	public static void main(String[] args) {
 		// unit testing of the methods (optional)
@@ -418,18 +420,33 @@ public class KdTree {
 //			StdOut.println(p);
 
 		// Auto Grader - test 5a
-		KdTree kdt5 = new KdTree();
-		Point2D A = new Point2D(0.7, 0.2);
-		Point2D B = new Point2D(0.5, 0.4);
-		Point2D C = new Point2D(0.2, 0.3);
-		Point2D D = new Point2D(0.4, 0.7);
-		Point2D E = new Point2D(0.9, 0.6);
-		Point2D query = new Point2D(0.32, 0.423);
-		kdt5.insert(A);
-		kdt5.insert(B);
-		kdt5.insert(C);
-		kdt5.insert(D);
-		kdt5.insert(E);
-		StdOut.println("nearest - " + kdt5.nearest(query));
+//		KdTree kdt5 = new KdTree();
+//		Point2D A = new Point2D(0.7, 0.2);
+//		Point2D B = new Point2D(0.5, 0.4);
+//		Point2D C = new Point2D(0.2, 0.3);
+//		Point2D D = new Point2D(0.4, 0.7);
+//		Point2D E = new Point2D(0.9, 0.6);
+//		Point2D query = new Point2D(0.32, 0.423);
+//		kdt5.insert(A);
+//		kdt5.insert(B);
+//		kdt5.insert(C);
+//		kdt5.insert(D);
+//		kdt5.insert(E);
+//		StdOut.println("nearest - " + kdt5.nearest(query));
+		
+		// Auto Grader - test 6a
+//		KdTree kdt6 = new KdTree();
+//		Point2D A = new Point2D(0.7, 0.2);
+//		Point2D B = new Point2D(0.5, 0.4);
+//		Point2D C = new Point2D(0.2, 0.3);
+//		Point2D D = new Point2D(0.4, 0.7);
+//		Point2D E = new Point2D(0.9, 0.6);
+//		Point2D query = new Point2D(0.32, 0.423);
+//		kdt6.insert(A);
+//		kdt6.insert(B);
+//		kdt6.insert(C);
+//		kdt6.insert(D);
+//		kdt6.insert(E);
+//		StdOut.println("nearest - " + kdt6.nearest(query));
 	}
 }
