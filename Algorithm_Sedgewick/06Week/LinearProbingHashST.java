@@ -28,7 +28,7 @@ public class LinearProbingHashST<Key, Value> {
 	private Key[] keys = (Key[]) new Object[M];
 	// array doubling/halving(resizing) code omitted
 	
-	private int hash(Key key) {return 0;}
+	private int hash(Key key) {return (key.hashCode() & 0x7fffffff) % M;}
 	
 	public void put(Key key, Value val) {
 		int i;
