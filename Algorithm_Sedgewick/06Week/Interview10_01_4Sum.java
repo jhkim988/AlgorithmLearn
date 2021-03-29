@@ -6,7 +6,7 @@
 // Design an algorithm for the 4-SUM problem that takes time proportional to n^2
 // (under suitable technical assumptions).
 
-// sol) Hashing by key a[i] + a[j] and value Node containing i, j field.
+// sol) Hashing by key a[i] + a[j] and value Node containing i, j fields.
 // If its index of hash table already occupied, Record it and Link next node.
 // Make hash table: O(N^2).
 

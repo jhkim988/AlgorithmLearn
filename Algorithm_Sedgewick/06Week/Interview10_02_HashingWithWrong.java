@@ -6,7 +6,7 @@
 // but implement public boolean equals(OlympicAthlete that) instead of public boolean equals(Object that).
 
 // sol)
-// Suppose Athlete class has name(key), id(value), events, records.
+// Suppose Athlete class has name(key), id(value)
 // 1. Override hashCode(), Not equals()
 // - Return value of equals() method of Object class is distinct each instance.
 // - If two objects have same name, then those have same hashCode.
@@ -15,10 +15,10 @@
 // - and those don't replace, but hashing resolve collision.(duplicate)
 // 2. Override equals(), Not hashCode()
 // - Return value of hashCode() method of Object class is distinct each instance.
-// - Althogh two objects have same name, those hashcode are not same.
+// - Although two objects have same name, those hashcode are not same.
 // - Therefore Store in distinct position of hash table, not replace latter from former.
 // 3. Override hashCode(), boolean equals(OlympicAthlete that)
-// - Two null objects are not same by equals() method, and hashmap allow null key and null value.
+// - Two null objects are not same by equals() method, even if hashmap allow null key and null value.
 
 public class Interview10_02_HashingWithWrong {
 	public static void main(String[] args) {
