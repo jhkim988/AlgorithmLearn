@@ -1,5 +1,5 @@
 
-public class SeperateChainingHashST<Key, Value> {
+public class SeparateChainingHashST<Key, Value> {
 	// Collision: Two distinct keys hashing to same index
 	// Birthday problem - can't avoid collisions unless you have a ridiculous (quadratic) amount of memeory.
 	// Coupon collector + load balancing - collisions will be evenly distritubed.
