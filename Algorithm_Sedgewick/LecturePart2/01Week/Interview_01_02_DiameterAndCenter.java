@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Iterator;
 
 import edu.princeton.cs.algs4.Graph;
@@ -24,6 +25,11 @@ import edu.princeton.cs.algs4.StdOut;
 // 2. Find middle vertiex of diameter.
 
 public class Interview_01_02_DiameterAndCenter {
+	private static int farthest (Graph g, int v) {
+		if (g.V() == 0) return -1;
+		int[] edgeTo = new int[g.V()];
+		return farthest(g, v, edgeTo);
+	}
 	private static int farthest(Graph g, int v, int[] edgeTo) {
 		if (g.V() == 0)	return -1;
 		int dists[] = new int[g.V()];
@@ -42,7 +48,7 @@ public class Interview_01_02_DiameterAndCenter {
 					q.enqueue(w);
 					marked[w] = true;
 					dists[w] = dist;
-					edgeTo[x] = w;
+					if (edgeTo != null) edgeTo[w] = x;
 				}
 			}
 			dist++;
@@ -65,9 +71,10 @@ public class Interview_01_02_DiameterAndCenter {
 		int x = farthest(g, w, edgeTo);
 		
 		Stack<Integer> path = new Stack<Integer>();		
-		for(int tmp = w; w != x; w = edgeTo[w]) {
-			path.push(tmp);		
+		for(int tmp = x; tmp != w; tmp = edgeTo[tmp]) {
+			path.push(tmp);
 		}
+		path.push(w);
 		return path;
 	}
 
@@ -80,19 +87,21 @@ public class Interview_01_02_DiameterAndCenter {
 		for(int tmp : path) {
 			len++;
 		}
-		for(int i = 0; i < (len/2 - 1); i++)
+		for(int i = 0; i < (len/2); i++)
 			iter.next();
 		
 		return iter.next();
 	}
 
 	public static void main(String[] args) {
-		int V = 10;
+		int V = 12;
 		Graph g = new Graph(V);
 		g.addEdge(0, 1);
 		g.addEdge(1, 2);
 		g.addEdge(2, 3);
 		g.addEdge(3, 4);
+		g.addEdge(4, 10);
+		g.addEdge(10, 11);
 		g.addEdge(1, 5);
 		g.addEdge(1, 6);
 		g.addEdge(2, 7);
@@ -104,5 +113,6 @@ public class Interview_01_02_DiameterAndCenter {
 		Iterable<Integer> path = diameter(g);
 		for(int v : path)
 			StdOut.print(v + " ");
+		StdOut.println("\ncenter: " + center(g));
 	}
 }
