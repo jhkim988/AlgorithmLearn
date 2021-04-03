@@ -1,3 +1,4 @@
+import edu.princeton.cs.algs4.Stack;
 
 public class StrongComponents {
 	// Strong connected: Vertices v and w are strong connected
@@ -25,6 +26,28 @@ public class StrongComponents {
 	private boolean[] marked;
 	private int[] id;
 	private int count;
+	
+	private class DepthFirstOrder {
+		private boolean[] marked;
+		private Stack<Integer> stk;
+		
+		DepthFirstOrder(Digraph G) {
+			marked = new boolean[G.V()];
+			stk = new Stack<Integer>();
+			
+			for (int v = 0; v < G.V() && !marked[v]; v++)
+				dfs(G, v);
+		}
+		private void dfs(Digraph G, int v) {
+			marked[v] = true;
+			for(int w : G.adj(v))
+				if (!marked[w]) dfs(G, w);
+			stk.push(v);
+		}
+		Iterable<Integer> reversePost() {
+			return stk;
+		}
+	}
 	
 	StrongComponents(Digraph G) {
 		marked = new boolean[G.V()];
