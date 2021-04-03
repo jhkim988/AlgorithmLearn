@@ -52,13 +52,22 @@ public class Digraph {
 		return sum;		
 	}
 	Digraph reverse() {
+		Digraph tmp = new Digraph(V);
+		for(int v = 0; v < V; v++)
+			for(int w : adj[v])
+				tmp.addEdge(w, v);
+		return tmp;
 		
 	}
-	String toString() {
-		
+	public String toString() {
+		String result = "";
+		for(int v = 0; v < V; v++)
+			for(int w : adj(v))
+				result += v + "->" + w;
+		return result;
 	}
 	public static void main(String[] args) {
-		In in = new Digraph(args[0]);
+		In in = new In(args[0]);
 		Digraph G = new Digraph(in);
 		
 		for (int v = 0; v < G.V(); v++)
