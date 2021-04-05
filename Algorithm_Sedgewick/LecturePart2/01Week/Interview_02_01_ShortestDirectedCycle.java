@@ -11,6 +11,12 @@ import edu.princeton.cs.algs4.StdOut;
 // where V is the number of vertices and E is the number of edges.
 
 // sol)
+// Let R be reverse graph of given graph G.
+// For each vertex v of G, Consider adjacent vertex w of v.(v->w in G)
+// If we can find path from v to w in reverse graph R,
+// There exist a cycle containg vertex v and w.
+// While Recording and Renewing the minimum length of cycle,
+// Process Breadth-First-Search.
 
 public class Interview_02_01_ShortestDirectedCycle {
 	private Stack<Integer> cycle;
