@@ -14,7 +14,7 @@ import edu.princeton.cs.algs4.StdOut;
 // Let R be reverse graph of given graph G.
 // For each vertex v of G, Consider adjacent vertex w of v.(v->w in G)
 // If we can find path from v to w in reverse graph R,
-// There exist a cycle containg vertex v and w.
+// There exist a cycle containing vertex v and w.
 // While Recording and Renewing the minimum length of cycle,
 // Process Breadth-First-Search.
 
