@@ -106,7 +106,7 @@ public class WordNet {
 		for(int i = 0; i < sizeA - 1; i++)
 			result += stkA.pop()+"-";
 		
-		lastA = 
+		// string concat
 		
 		
 	}
