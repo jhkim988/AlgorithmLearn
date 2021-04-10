@@ -9,6 +9,7 @@ public class Outcast {
 	public String outcast(String[] nouns) {
 		// given an array of WordNet nouns, return an outcast
 		
+		
 	}
 
 	public static void main(String[] args) {
