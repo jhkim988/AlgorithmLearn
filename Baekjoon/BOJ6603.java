@@ -4,6 +4,7 @@ public class BOJ6603 {
   public static void main(String[] args) {
     Scanner scn = new Scanner(System.in);
     while (lineExe(scn.nextLine().split(" ")));
+    scn.close();
   }
 
   static boolean lineExe(String[] input) {

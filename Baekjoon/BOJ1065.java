@@ -4,6 +4,7 @@ public class BOJ1065 {
     public static void main(String[] args) {
         Scanner scn = new Scanner(System.in);
         int num = scn.nextInt();
+        scn.close();
         int sol = solution(num);
         System.out.print(sol);
     }

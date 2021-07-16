@@ -4,7 +4,8 @@ public class BOJ1157 {
     public static void main(String[] args) {
         Scanner scn = new Scanner(System.in);
         char[] input = scn.next().toUpperCase().toCharArray();
-
+        scn.close();
+        
         int[] counter = new int['z' - 'a' + 1];
         int idx = 0;
 

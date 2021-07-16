@@ -5,6 +5,7 @@ class BOJ2588 {
         Scanner stdIn = new Scanner(System.in);
         int a = stdIn.nextInt();
         int b = stdIn.nextInt();
+        stdIn.close();
         
         System.out.println(a * (b%10));
         System.out.println(a * ((b/10)%10));

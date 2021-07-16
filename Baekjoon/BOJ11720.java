@@ -5,7 +5,8 @@ public class BOJ11720 {
         Scanner scn = new Scanner(System.in);
         int num = scn.nextInt();
         String str = scn.next();
-
+        scn.close();
+        
         int sum = 0;
         for (int i = 0; i < num; i++) {
             sum += Integer.parseInt(str.charAt(i) + "");

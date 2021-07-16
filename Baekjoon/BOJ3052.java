@@ -8,7 +8,7 @@ public class BOJ3052 {
         for (int i = 0; i < 10; i++) {
             flags[scn.nextInt() % 42] = true;
         }
-
+        scn.close();
         int count = 0;
         for(boolean flag : flags) {
             if (flag) {

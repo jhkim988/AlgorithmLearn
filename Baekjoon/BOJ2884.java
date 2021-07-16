@@ -5,7 +5,7 @@ class BOJ2884 {
         Scanner stdIn = new Scanner(System.in);
         int h = stdIn.nextInt();
         int m = stdIn.nextInt();
-        
+        stdIn.close();
         int wakeUpH = h;
         int wakeUpM = m - 45;
         if (wakeUpM < 0){

@@ -7,6 +7,8 @@ public class BOJ2577 {
         A = scn.nextLong();
         B = scn.nextLong();
         C = scn.nextLong();
+        scn.close();
+        
         long product = A * B * C;
         
         short[] arr = new short[10];

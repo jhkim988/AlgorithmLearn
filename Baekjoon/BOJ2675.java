@@ -21,5 +21,6 @@ public class BOJ2675 {
             System.out.println(result);
             result = "";
         }
+        scn.close();
     }
 }

@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class BOJ2562 {
     public static void main(String[] args) {
         Scanner scn = new Scanner(System.in);
+        scn.close();
         
         int idx = 0;
         int max = 0;
