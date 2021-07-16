@@ -7,96 +7,50 @@ public class BOJ10757 {
         String B = scn.next();
         scn.close();
 
-        int bufferSize = 5;
-        int[] sumbuffer = new int[bufferSize];
-        boolean overDigit = false;
+        // 1. Set small length string to B.
+        if (A.length() < B.length()) {
+            String tmp;
+            tmp = A;
+            A = B;
+            B = tmp;
+        }
+        System.out.println("A: " + A);
+        System.out.println("B: " + B);
+
+        // 2. sum
         String result = "";
-
-        while (A.length() > 0 && B.length() > 0) {
-            String subA = substrGen(A, bufferSize);
-            String subB = substrGen(B, bufferSize);
-
-            // System.out.println("A: " + A);
-            // System.out.println("B: " + B);
-            // System.out.println("subA: " + subA);
-            // System.out.println("subB: " + subB);
-
-            boolean tmpOverDigit = overDigit;
-            for (int i = bufferSize - 1; i >= 0; i--) {
-                if (tmpOverDigit) {
-                    sumbuffer[i] = prepSubstr(subA, i) + prepSubstr(subB, i) + 1;
-                } else {
-                    sumbuffer[i] = prepSubstr(subA, i) + prepSubstr(subB, i);
-                }
-
-                if (sumbuffer[i] > 9) {
-                    tmpOverDigit = true;
-                } else {
-                    tmpOverDigit = false;
-                }
+        boolean overDigit = false;
+        for (int i = 0; i < B.length(); i++) {
+            int tmp = Integer.parseInt(A.charAt(A.length() - i - 1) + "") + Integer.parseInt(B.charAt(B.length() - i - 1) + "");
+            if (overDigit) {
+                tmp++;
             }
-            overDigit = tmpOverDigit;
-            for (int i = bufferSize - 1; i >= 0; i--) {
-                result = sumbuffer[i]%10 + result;
+            result = tmp % 10 + result;
+            
+            if (tmp / 10 > 0) {
+                overDigit = true;
+            } else {
+                overDigit = false;
             }
-            // System.out.println("result: " + result);
-            if (A.length() < bufferSize && B.length() < bufferSize) {
-                if (overDigit) {
-                    result = 1 + result;
-                    overDigit = false;
-                }
-                break;
-            }
+        }
 
-            if (A.length() < bufferSize) {
-                B = B.substring(0, B.length() - bufferSize);
-                result = B + result;
-                if (overDigit) {
-                    result = 1 + result;
-                    overDigit = false;
-                }
-                // System.out.println("result: " + result);
-                break;
+        for (int i = B.length(); i < A.length(); i++) {
+            int tmp = Integer.parseInt(A.charAt(i) + "");
+            if (overDigit) {
+                tmp++;
             }
-            if (B.length() < bufferSize) {
-                A = A.substring(0, A.length() - bufferSize);
-                result = A + result;
-                if (overDigit) {
-                    result = 1 + result;
-                    overDigit = false;
-                }
-                // System.out.println("result: " + result);
-                break;
+            result = tmp % 10 + result;
+            if (tmp / 10 > 0) {
+                overDigit = true;
+            } else {
+                overDigit = false;
             }
-
-            A = A.substring(0, A.length() - bufferSize);
-            B = B.substring(0, B.length() - bufferSize);
         }
 
         if (overDigit) {
             result = 1 + result;
-            overDigit = false;
         }
-        
-        int idx = 0;
-        for (idx = 0; idx < result.length() && result.charAt(idx) == '0'; idx++);
-        System.out.print(result.substring(idx));
-    }
 
-    static int prepSubstr(String str, int i) {
-        return Integer.parseInt(str.charAt(i) + "");
-    }
-    static String substrGen(String str, int bufferSize) {
-        String substr = "";
-        if (str.length() < bufferSize) {
-            String tmp = "";
-            for (int i = bufferSize; i > str.length(); i--) {
-                tmp += '0';
-            }
-            substr = tmp + str;
-        } else {
-            substr = str.substring(str.length() - bufferSize);
-        }
-        return substr;
+        System.out.print(result);
     }
 }
