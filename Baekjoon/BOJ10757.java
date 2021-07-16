@@ -21,7 +21,11 @@ public class BOJ10757 {
         String result = "";
         boolean overDigit = false;
         for (int i = 0; i < B.length(); i++) {
-            int tmp = Integer.parseInt(A.charAt(A.length() - i - 1) + "") + Integer.parseInt(B.charAt(B.length() - i - 1) + "");
+            int aSum = Integer.parseInt(A.charAt(A.length() - i - 1) + "");
+            int bSum = Integer.parseInt(B.charAt(B.length() - i - 1) + "");
+            System.out.println("aSum: " + aSum);
+            System.out.println("bSUm: " + bSum);
+            int tmp = aSum + bSum ;
             if (overDigit) {
                 tmp++;
             }
@@ -35,7 +39,9 @@ public class BOJ10757 {
         }
 
         for (int i = B.length(); i < A.length(); i++) {
-            int tmp = Integer.parseInt(A.charAt(i) + "");
+            int aSum = Integer.parseInt(A.charAt(i) + "");
+            int tmp = aSum;
+            System.out.println("aSum: " + aSum);
             if (overDigit) {
                 tmp++;
             }
