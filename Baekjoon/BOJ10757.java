@@ -14,8 +14,8 @@ public class BOJ10757 {
             A = B;
             B = tmp;
         }
-        System.out.println("A: " + A);
-        System.out.println("B: " + B);
+        // System.out.println("A: " + A);
+        // System.out.println("B: " + B);
 
         // 2. sum
         String result = "";
@@ -23,8 +23,8 @@ public class BOJ10757 {
         for (int i = 0; i < B.length(); i++) {
             int aSum = Integer.parseInt(A.charAt(A.length() - i - 1) + "");
             int bSum = Integer.parseInt(B.charAt(B.length() - i - 1) + "");
-            System.out.println("aSum: " + aSum);
-            System.out.println("bSUm: " + bSum);
+            // System.out.println("aSum: " + aSum);
+            // System.out.println("bSum: " + bSum);
             int tmp = aSum + bSum ;
             if (overDigit) {
                 tmp++;
@@ -39,9 +39,9 @@ public class BOJ10757 {
         }
 
         for (int i = B.length(); i < A.length(); i++) {
-            int aSum = Integer.parseInt(A.charAt(i) + "");
+            int aSum = Integer.parseInt(A.charAt(A.length() - i - 1) + "");
             int tmp = aSum;
-            System.out.println("aSum: " + aSum);
+            // System.out.println("aSum: " + aSum);
             if (overDigit) {
                 tmp++;
             }
