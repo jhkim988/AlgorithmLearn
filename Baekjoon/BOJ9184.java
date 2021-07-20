@@ -1,8 +1,8 @@
 import java.io.*;
 
 public class BOJ9184 {
-  static int[][][] data = new int[22][22][22];
-  static boolean[][][] check = new boolean[22][22][22];
+  static int[][][] data = new int[21][21][21];
+  static boolean[][][] check = new boolean[21][21][21];
   public static void main(String[] args) {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
