@@ -7,12 +7,14 @@ public class BOJ14889 {
       int numMember = Integer.parseInt(br.readLine());
       int[][] data = new int[numMember][numMember];
       
+      String[] tmp;
       for (int i = 0 ; i < numMember; i++) {
-        String[] tmp = br.readLine().split(" ");
+        tmp = br.readLine().split(" ");
         for (int j = 0; j < numMember; j++) {
           data[i][j] = Integer.parseInt(tmp[j]);
         }
       }
+      tmp = null;
 
       System.out.print(solve(data));
     } catch (IOException e) {
@@ -21,35 +23,51 @@ public class BOJ14889 {
   }
   static int solve(int[][] data) {
     int numMember = data.length;
-    int[] team1 = new int[numMember / 2];
-    int[] team2 = new int[numMember / 2];
+    int[] mem = new int[numMember];
     int[] min = new int[1];
     min[0] = Integer.MAX_VALUE;
-    solve(data, 0, min, team1, team2);
+    solve(data, 0, 0, min, mem);
     
     return min[0];
   }
-  static void solve(int[][] data, int cdpt, int[] min, int[] team1, int[] team2) {
+  static void solve(int[][] data, int cdpt, int start, int[] min, int[] mem) {
     if (cdpt < data.length / 2) {
-      for (int i = 1; i <= data.length; i++) {
-        
+      for (int i = 0; i < data.length; i++) {
+        // team 1
+        if (mem[i] != 0 || start > i) {
+          continue;
+        }
+        mem[i] = 1;
+        solve(data, cdpt + 1, i, min, mem);
+        mem[i] = 0;
       }
     } else {
-      int team1Score = calcScore(team1, data);
-      int team2Score = calcScore(team2, data);
-      int diff = team1Score > team2Score ? team1Score - team2Score : team2Score - team2Score;
+      // System.out.println("---------");
+      // for (int i = 0; i < mem.length; i++) {
+      //   System.out.print(mem[i] + " ");
+      // }
+      // System.out.println();
+
+      int[] score = calcScore(mem, data);
+      int diff = score[0] > score[1] ? score[0] - score[1] : score[1] - score[0];
       if (diff < min[0]) {
         min[0] = diff;
       }
     }
   }
-  static int calcScore(int[] team, int[][] data) {
-    int sum = 0;
-    for (int i = 0; i < team.length; i++) {
-      for (int j = 0; j < team.length; j++) {
-        sum += data[team[i] - 1][team[j] - 1];
+  static int[] calcScore(int[] mem, int[][] data) {
+    int[] score = new int[2];
+    for (int i = 0; i < mem.length; i++) {
+      for (int j = 0; j < mem.length; j++) {
+        if (mem[i] == mem[j]) {
+          if (mem[i] == 1) {
+            score[0] += data[i][j];
+          } else {
+            score[1] += data[i][j];
+          }          
+        }
       }
     }
-    return sum;
+    return score;
   }
 }
