@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Arrays;
 
 public class BOJ11053 {
   public static void main(String[] args) {
@@ -15,14 +16,22 @@ public class BOJ11053 {
 
       int[] numIncrSubs = new int[numData]; // numIncrSubs[subseq len - 1] = end of subseq
       numIncrSubs[0] = data[0];
-      int ptr;
+      int ptr = 0;
+      int key;
       for (int i = 1; i < numData; i++) { // data
-        ptr = 0;
-        while (ptr < i && numIncrSubs[ptr] != 0 && numIncrSubs[ptr] < data[i]) {
-          ptr++;
-        }
-        if (numIncrSubs[ptr] == 0 || numIncrSubs[ptr] > data[i]) {
-          numIncrSubs[ptr] = data[i];
+        // ptr = 0;
+        // while (ptr < i && numIncrSubs[ptr] != 0 && numIncrSubs[ptr] < data[i]) {
+        //   ptr++;
+        // }
+
+        // use Arrays.binarySearch
+        key = Arrays.binarySearch(numIncrSubs, 0, ptr + 1, data[i]);
+        key = key < 0 ? -(key + 1) : key;
+        if (numIncrSubs[key] == 0 || numIncrSubs[key] > data[i]) {
+          if (numIncrSubs[key] == 0) {
+            ptr++;
+          }
+          numIncrSubs[key] = data[i];
         }
       }
 
