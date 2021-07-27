@@ -6,37 +6,31 @@ public class BOJ17298 {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-    Deque<Integer> deq = new LinkedList<>();
     Stack<Integer> stk = new Stack<>();
 
     int num = Integer.parseInt(br.readLine());
     StringTokenizer st = new StringTokenizer(br.readLine());
-
+    int[] data = new int[num];
+    int[] NGE = new int[num]; // NGE(i) = NGE[i + 1]
     for (int i = 0; i < num; i++) {
-      deq.addFirst(Integer.parseInt(st.nextToken()));
+      data[i] = Integer.parseInt(st.nextToken());
+      NGE[i] = - 1;
     }
 
-    int target;
-    boolean flag;
-    while (!deq.isEmpty()) {
-      flag = false;
-      target = deq.pollLast();
-      while (!deq.isEmpty()) {
-        int tmp = deq.pollLast();
-        if (target < tmp) {
-          bw.write(tmp + "\n");
-          flag = true;
-          deq.addLast(tmp);
-          while (!stk.empty()) {
-            deq.addLast(stk.pop());
-          }
+    stk.push(0);
+    for (int i = 1; i < num; i++) {
+      while (!stk.empty()) {
+        if (data[stk.peek()] < data[i]) {
+          NGE[stk.pop()] = data[i];
         } else {
-          stk.add(tmp);
+          break;
         }
       }
-      if (!flag) {
-        bw.write(-1 + "\n");
-      }
+      stk.push(i);
+    }
+
+    for (int i = 0; i < num; i++) {
+      bw.write(NGE[i] + " ");
     }
     bw.flush();
   }
