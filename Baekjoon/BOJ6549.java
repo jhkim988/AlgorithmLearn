@@ -1,5 +1,5 @@
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class BOJ6549 {
   public static void mySolution() throws IOException {
@@ -102,7 +102,7 @@ static long init(long[] a, long[] tree, int node, int start, int end) {
       tree[node] = start;
     } else {
       init(a, tree, node * 2, start, (start + end) / 2);
-      init(a, tree, node * 2 + 1, (start + end) / 2, end);
+      init(a, tree, node * 2 + 1, (start + end) / 2 + 1, end);
       if (a[tree[node * 2]] < a[tree[node * 2 + 1]]) {
         tree[node] = tree[node * 2];
       } else {
@@ -120,7 +120,7 @@ static long init(long[] a, long[] tree, int node, int start, int end) {
       return tree[node];
     }
     int m1 = query(a, tree, 2 * node, start, (start + end) / 2, i, j);
-    int m2 = query(a, tree, 2 * node + 1, (start + end) / 2, end, i, j);
+    int m2 = query(a, tree, 2 * node + 1, (start + end) / 2 + 1, end, i, j);
     if (m1 == -1) {
       return m2;
     } else if (m2 == -1) {
@@ -152,7 +152,7 @@ static long init(long[] a, long[] tree, int node, int start, int end) {
     }
     return area;
   }
-  static void segmentTree() throws IOException {
+  static void segmentTreeSolution() throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     
@@ -179,10 +179,72 @@ static long init(long[] a, long[] tree, int node, int start, int end) {
     bw.flush();
   }
 // ------------------------------------------------------------------------------------------------------------------------------------------------------  
-  static void stack() throws IOException {
+  static long maxArea(long[] data) {
+    int num = data.length;
+    if (num == 1) {
+      return data[0];
+    }
+    Stack<Integer> stk = new Stack<>(); // put index
+    int right = -1;
+    int left = -1;
+    long height = 0;
+    long area = -1;
+    for (int i = 0; i < num; i++) {
+      while (!stk.empty() && data[stk.peek()] > data[i]) {
+        right = i - 1;
+        height = data[stk.peek()];
+        stk.pop();
+        left = 0;
+        if (!stk.empty()) {
+          left = stk.peek() + 1;
+        }
+        long tmp = ((long) (right - left + 1)) * height;
+        if (area < tmp) {
+          area = tmp;
+        }
+      }
+      stk.push(i);
+    }
+    while (!stk.empty()) {
+      right = num - 1;
+      height = data[stk.peek()];
+      stk.pop();
+      left = 0;
+      if (!stk.empty()) {
+        left = stk.peek() + 1;
+      }
+      long tmp = ((long) (right - left + 1)) * height;
+      if (area < tmp) {
+        area = tmp;
+      }
+    }
+    return area;
+  }
+  static void stackSolution() throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    
+    StringTokenizer st;
+    int num;
+    long[] data;
 
+    while (true) {
+      st = new StringTokenizer(br.readLine());
+      num = Integer.parseInt(st.nextToken());
+      if (num == 0) {
+        break;
+      }
+      data = new long[num];
+      for (int i = 0; i < num; i++) {
+        data[i] = Long.parseLong(st.nextToken());
+      }
+      bw.write(maxArea(data) + "\n");
+    }
+    bw.flush();
   }
   public static void main(String[] args) throws IOException {
-    segmentTree();
+    // mySolution();
+    // segmentTreeSolution();
+    stackSolution();
   }  
 }
