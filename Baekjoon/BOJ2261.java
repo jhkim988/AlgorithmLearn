@@ -100,6 +100,38 @@ public class BOJ2261 {
     }
     return min;
   }
+  static int sweep(Point2D[] data) {
+    Arrays.sort(data, xSort);
+    int min = data[0].distSqaure(data[1]);
+    if (data.length < 3) {
+      return min;
+    }
+    TreeSet<Point2D> ts = new TreeSet<>(ySort);
+    ts.add(data[0]);
+    ts.add(data[1]);
+    int lowIdx = 0; 
+    for (int i = 2; i < data.length; i++) {
+      Point2D crnt = data[i];
+      while (lowIdx < i) {
+        Point2D target = data[lowIdx];
+        int xDist = crnt.x - target.x;
+        if (xDist * xDist > min) {
+          ts.remove(target);
+          lowIdx++;
+        } else {
+          break;
+        }
+      }
+
+      int sqrtMinDist = (int) Math.sqrt(min) + 1;
+      TreeSet<Point2D> ysub = (TreeSet<Point2D>) ts.subSet(new Point2D(-10000, crnt.y - sqrtMinDist), new Point2D(10000, crnt.y + sqrtMinDist));
+      for (Point2D point : ysub) {
+        min = Math.min(min, point.distSqaure(crnt));
+      }
+      ts.add(crnt);
+    }
+    return min;
+  }
   public static void main(String[] ags) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -111,7 +143,8 @@ public class BOJ2261 {
       st = new StringTokenizer(br.readLine());
       data[i] = new Point2D(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
     }
-    bw.write(minDist(data) + "\n");
+    // bw.write(minDist(data) + "\n");
+    bw.write(sweep(data) + "\n");
     bw.flush();
   }
 }
