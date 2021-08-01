@@ -46,11 +46,6 @@ public class BOJ11066 {
         dp[j][j + i] = Math.min(dp[j][j + i], dp[j + 1][j + i] + partialSum);
       }
     } 
-
-    for (int i = 0; i < len; i++) {
-
-    }
-
     return dp[0][len - 1];
   }
   public static void main(String[] args) throws IOException {
