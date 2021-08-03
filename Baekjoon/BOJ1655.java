@@ -6,16 +6,15 @@ public class BOJ1655 {
   private static class DynamicMedian {
     int size;
     int med;
-    PriorityQueue<Integer> maxPQ = new PriorityQueue<>(new Comparator() {
+    PriorityQueue<Integer> maxPQ = new PriorityQueue<>(new Comparator<Integer>() {
       @Override
-      public int compare(Object o1, Object o2) {
-        return Integer.compare((Integer) o2, (Integer) o1);
-      }
-      
+      public int compare(Integer o1, Integer o2) {
+        return Integer.compare(o2, o1);
+      }      
     });
-    PriorityQueue<Integer> minPQ = new PriorityQueue<Integer>(new Comparator() {
-      public int compare(Object o1, Object o2) {
-        return Integer.compare((Integer) o1, (Integer) o2);
+    PriorityQueue<Integer> minPQ = new PriorityQueue<Integer>(new Comparator<Integer>() {
+      public int compare(Integer o1, Integer o2) {
+        return Integer.compare(o1, o2);
       }
     });
     
