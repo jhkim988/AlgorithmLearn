@@ -37,7 +37,16 @@ public class BOJ2178 {
       return result;
     }
   }
-
+  private static class Point {
+    int x;
+    int y;
+    int count;
+    Point(int x, int y, int count) {
+      this.x = x;
+      this.y = y;
+      this.count = count;
+    }
+  }
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -46,17 +55,20 @@ public class BOJ2178 {
     row = Integer.parseInt(tmp[0]);
     col = Integer.parseInt(tmp[1]);
     int[][] maze = new int[row][col];
-    boolean[][] marked = new boolean[row][col];
+    // boolean[][] marked = new boolean[row][col];
+
+    String inputTmp;
     for (int i = 0; i < row; i++) {
-      tmp = br.readLine().split("");
+      inputTmp = br.readLine();
       for (int j = 0; j < col; j++) {
-        maze[i][j] = Integer.parseInt(tmp[j]);
+        maze[i][j] = inputTmp.charAt(j) - '0';
       }
     }
-    bw.write(bfs(maze, 0, 0, marked) + "\n");
+    bw.write(bfs(maze) + "\n");
     bw.flush();
   }
-  static int bfs(int[][] maze, int xIdx, int yIdx, boolean[][] marked) {
+  
+  static int mybfs(int[][] maze, int xIdx, int yIdx, boolean[][] marked) {
     int count = 1;
     Queue<Tuple> que = new LinkedList<Tuple>(); // [xIdx, yIdx]
     HashMap<Tuple, Tuple> edgeTo = new HashMap<>();
@@ -88,5 +100,30 @@ public class BOJ2178 {
       count++;
     }
     return count + 1; // Error
+  }
+  static int bfs(int[][] maze) {
+    Queue<Point> que = new LinkedList<>();
+    Point start = new Point(0, 0, 1);
+    que.add(start);
+
+    while (!que.isEmpty()) {
+      Point crnt = que.poll();
+
+      if (crnt.x == row - 1 && crnt.y == col - 1) {
+        return crnt.count;
+      }
+
+      for (int i = 0; i < 4; i++) {
+        int nextX = crnt.x + xDi[i];
+        int nextY = crnt.y + yDi[i];
+        if (0 <= nextX && nextX < row && 0 <= nextY && nextY < col) {
+          if (maze[nextX][nextY] == 1) {
+            maze[nextX][nextY] = 0;
+            que.add(new Point(nextX, nextY, crnt.count + 1));
+          }
+        }
+      }
+    }
+    return -1;
   }
 }
