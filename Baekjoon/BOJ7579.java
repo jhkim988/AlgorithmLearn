@@ -30,19 +30,13 @@ public class BOJ7579 {
     st = null;
 
     int[] dp = new int[rangeCost + 1];
-    for (int i = 1; i <= rangeCost; i++) {
-      for (int j = 0; j < numApp; j++) {
-        if (i >= cost[j]) {
-          dp[i] = Math.max(dp[i], dp[i - cost[j]] + mem[j]);
-        }        
+    for (int j = 0; j < numApp; j++) {
+      for (int i = rangeCost; i >= cost[j]; i--) {
+        dp[i] = Math.max(dp[i], dp[i - cost[j]] + mem[j]);           
       }
     }
-    int minCost = Integer.MAX_VALUE;
-    for (int i = 0; i <= rangeCost; i++) {
-      if (dp[i] >= needMem && i < minCost) {
-        minCost = i;
-      }
-    }
+    int minCost = 0;
+    for (minCost = 0; dp[minCost] < needMem; minCost++);
     bw.write(minCost + "\n");
     bw.flush();
   }
