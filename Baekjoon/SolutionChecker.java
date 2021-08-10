@@ -12,9 +12,9 @@ public class SolutionChecker {
     for (int i = 0; i < 240; i++) {
       tmp[i] = st.nextToken();
     }
-    for (File f : files) {
+    for (int i = 0; i < 240; i++) {
       boolean flag = false;
-      for (int i = 0; i < 240; i++) {
+      for (File f : files) {
         if (f.toString().contains(tmp[i])) {
           flag = true;
         }
