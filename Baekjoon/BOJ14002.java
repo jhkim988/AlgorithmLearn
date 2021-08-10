@@ -37,6 +37,7 @@ public class BOJ14002 {
           dp[i][idx] = data[i];
         }
       }
-    } 
+    }
+    bw.write(dp[]) 
   }
 }
