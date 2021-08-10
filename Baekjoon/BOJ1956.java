@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class BOJ1965 {
+public class BOJ1956 {
   static final int INF = 4_000_001;
   private static class Pair {
     int end;
