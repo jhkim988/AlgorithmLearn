@@ -38,6 +38,5 @@ public class BOJ14002 {
         }
       }
     }
-    bw.write(dp[]) 
   }
 }
