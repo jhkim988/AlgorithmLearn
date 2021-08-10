@@ -20,7 +20,7 @@ public class SolutionChecker {
         }
       }
       if (!flag) {
-        System.out.println(f);
+        System.out.println(tmp[i]);
       }      
     }
   }
