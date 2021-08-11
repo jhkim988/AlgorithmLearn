@@ -4,7 +4,7 @@ import java.util.*;
 public class BOJ1753 {
   static int numV;
   static int numE;
-  static List<Edge>[] graph;
+  static ArrayList<List<Edge>> graph;
   static int[] dist;
   static int INF = 100_000_000;
 
@@ -29,9 +29,9 @@ public class BOJ1753 {
     numE = Integer.parseInt(st.nextToken());
     int start = Integer.parseInt(br.readLine());
 
-    graph = new ArrayList[numV + 1];
-    for (int i = 1; i <= numV; i++) {
-      graph[i] = new ArrayList<Edge>();
+    graph = new ArrayList<>();
+    for (int i = 0; i <= numV; i++) {
+      graph.add(new ArrayList<Edge>());
     }
     for (int i = 0; i < numE; i++) {
       st = new StringTokenizer(br.readLine());
@@ -40,7 +40,7 @@ public class BOJ1753 {
       int v = Integer.parseInt(st.nextToken());
       int w = Integer.parseInt(st.nextToken());
     
-      graph[u].add(new Edge(w, v));
+      graph.get(u).add(new Edge(w, v));
     }
     dist = new int[numV + 1];
     Arrays.fill(dist, INF);
@@ -70,7 +70,7 @@ public class BOJ1753 {
         continue;
       }
       marked[crnt.vertex] = true;
-      for (Edge next : graph[crnt.vertex]) {
+      for (Edge next : graph.get(crnt.vertex)) {
         if (dist[next.vertex] > dist[crnt.vertex] + next.weight) {          
           dist[next.vertex] = dist[crnt.vertex] + next.weight; 
           minpq.add(new Edge(dist[next.vertex], next.vertex));
