@@ -15,5 +15,6 @@ class BOJ9498 {
             System.out.print("D");
         else
             System.out.print("F");
+        stdIn.close();
     }
 }

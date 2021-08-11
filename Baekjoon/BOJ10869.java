@@ -5,10 +5,11 @@ class BOJ10869 {
         int A = stdIn.nextInt();
         int B = stdIn.nextInt();
 
-         System.out.println(A + B);
-         System.out.println(A - B);
-         System.out.println(A * B);
-         System.out.println(A / B);
-         System.out.println(A % B);
+        System.out.println(A + B);
+        System.out.println(A - B);
+        System.out.println(A * B);
+        System.out.println(A / B);
+        System.out.println(A % B);
+        stdIn.close();
     }
 }

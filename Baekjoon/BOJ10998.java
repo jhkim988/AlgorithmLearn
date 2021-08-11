@@ -6,5 +6,6 @@ class BOJ10998 {
         int a = stdIn.nextInt();
         int b = stdIn.nextInt();
         System.out.print(a * b);
+        stdIn.close();
     }
 }
