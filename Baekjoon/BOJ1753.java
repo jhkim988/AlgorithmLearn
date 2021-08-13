@@ -58,18 +58,11 @@ public class BOJ1753 {
   }
   static void dijkstra(int start) {
     PriorityQueue<Edge> minpq = new PriorityQueue<>();
-    boolean[] marked = new boolean[numV + 1];
-
     Edge startNode = new Edge(0, start); 
     minpq.add(startNode);
     dist[start] = 0;
-
     while (!minpq.isEmpty()) {
       Edge crnt = minpq.poll();
-      if (marked[crnt.vertex]) {
-        continue;
-      }
-      marked[crnt.vertex] = true;
       for (Edge next : graph.get(crnt.vertex)) {
         if (dist[next.vertex] > dist[crnt.vertex] + next.weight) {          
           dist[next.vertex] = dist[crnt.vertex] + next.weight; 
