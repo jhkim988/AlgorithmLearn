@@ -6,7 +6,7 @@ public class BOJ2533 {
   static int root = 1;
   static ArrayList<Queue<Integer>> graph;
   static boolean[] marked;
-  static ArrayList<Integer> minEarlyAdopterArr;
+  static int[][] minEAArr;
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -24,52 +24,35 @@ public class BOJ2533 {
     }
     
     marked = new boolean[N + 1];
-    minEarlyAdopterArr = new ArrayList<>(); // minEarlyAdopterArr(i): minimum Early Adopter of subtree(root = i)
-    for (int i = 0; i <= N; i++) {
-      minEarlyAdopterArr.add(N + 1);
-    }
-    minEarlyAdopter(root, -1);
-    bw.write(Math.abs(minEarlyAdopterArr.get(root)) + "\n");
+    minEAArr = new int[N + 1][2]; // minEAArr[i][0]: root contain, minEAArr[i][1]: not contain 
+
+    minEA(root, -1);
+    bw.write(Math.min(minEAArr[root][0], minEAArr[root][1]) + "\n");
     bw.flush();
 
-    for (int i = 1; i <= N; i++) {
-      System.out.print(minEarlyAdopterArr.get(i) + " ");
-    }
+    // System.out.println("###");
+    // for (int i = 1; i <= N; i++) {
+    //   System.out.println(minEAArr[i][0] + " " + minEAArr[i][1]);
+    // }
   }
-  static int minEarlyAdopter(int crnt, int prev) {
-    // contain root: positive, not contain root: negative
+  static int minEA(int crnt, int prev) {
     if (marked[crnt]) {
-      return minEarlyAdopterArr.get(crnt);
+      return Math.min(minEAArr[crnt][0], minEAArr[crnt][1]);
     }
     if (graph.get(crnt).size() == 1 && crnt != root) {
-      minEarlyAdopterArr.set(crnt, 1);
+      // leaf node
+      minEAArr[crnt][0] = 1;
+      minEAArr[crnt][1] = 0;
       return 1;
     }
-    
     marked[crnt] = true;
-    for (int next : graph.get(crnt)) {
-      if (crnt == prev) continue;
-      minEarlyAdopter(next, crnt);
-    }
-
-    int minWithoutRoot = 0;
-    boolean flag = false; // root contain?
+    minEAArr[crnt][0] = 1;
     for (int next : graph.get(crnt)) {
       if (next == prev) continue;
-      int summand = minEarlyAdopterArr.get(next);
-      if (summand < 0) {
-        flag = true;
-        minWithoutRoot -= summand;
-      } else {
-        minWithoutRoot += summand;
-      }
+      minEA(next, crnt);
+      minEAArr[crnt][0] += Math.min(minEAArr[next][0], minEAArr[next][1]);
+      minEAArr[crnt][1] += minEAArr[next][0];
     }
-    if (flag) {
-      minWithoutRoot++;
-    }
-    // System.out.println("crnt: " + crnt + ", " + minWithRoot + ", " + minWithoutRoot);
-    int result = flag ? minWithoutRoot : -minWithoutRoot;
-    minEarlyAdopterArr.set(crnt, result);
-    return result;
+    return Math.min(minEAArr[crnt][0], minEAArr[crnt][1]);
   }
 }
