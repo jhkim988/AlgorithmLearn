@@ -57,7 +57,12 @@ public class BOJ11758 {
       int second = Integer.parseInt(st.nextToken());
       data[i] = new Point(first, second);
     }
-    bw.write(- data[0].polarOrder().compare(data[1], data[2]) + "\n");
+    // bw.write(- data[0].polarOrder().compare(data[1], data[2]) + "\n");
+    bw.write(determine(data) + "\n");
     bw.flush();
+  }
+  static int determine(Point[] data) {
+    int det = (data[1].x - data[0].x)*(data[2].y - data[0].y) - (data[1].y - data[0].y) * (data[2].x - data[0].x);
+    return det > 0 ? 1 : (det < 0 ? -1 : 0);
   }
 }
