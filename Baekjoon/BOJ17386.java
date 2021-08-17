@@ -9,9 +9,7 @@ public class BOJ17386 {
       this.x = x;
       this.y = y;
     }
-    Point diff(Point other) {
-      return new Point(this.x - other.x, this.y - other.y);
-    }
+
     @Override
     public int compareTo(Point other) { // y-axis
       if (this.y < other.y) {
@@ -68,8 +66,11 @@ public class BOJ17386 {
     Arrays.sort(line);
     Point[] points = {line[0].p1, line[1].p1, line[0].p2, line[1].p2};
     boolean flag = true;
-    for (int i = 0; i < 4; i++) {
-      flag = flag && (determine(points, i) > 0);
+    int prev = determine(points, 0);
+    for (int i = 1; i < 4; i++) {
+      int crnt = determine(points, i);
+      flag = flag && (crnt == prev);
+      prev = crnt;
     }
     if (flag) {
       bw.write("1\n");
