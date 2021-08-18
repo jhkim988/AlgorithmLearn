@@ -9,7 +9,9 @@ public class BOJ17386 {
       this.x = x;
       this.y = y;
     }
-
+    Point diff(Point other) {
+      return new Point(this.x - other.x, this.y - other.y);
+    }
     @Override
     public int compareTo(Point other) { // y-axis
       if (this.y < other.y) {
@@ -66,9 +68,11 @@ public class BOJ17386 {
     Arrays.sort(line);
     Point[] points = {line[0].p1, line[1].p1, line[0].p2, line[1].p2};
     boolean flag = true;
-    int prev = determine(points, 0);
+    // int prev = determine(points, 0);
+    int prev = ccw(points, 0);
     for (int i = 1; i < 4; i++) {
-      int crnt = determine(points, i);
+      // int crnt = determine(points, i);
+      int crnt = ccw(points, i);
       flag = flag && (crnt == prev);
       prev = crnt;
     }
@@ -83,5 +87,12 @@ public class BOJ17386 {
     double det = ((double) (data[(1 + start) % 4].x - data[start % 4].x)) * ((double) (data[(2 + start) % 4].y - data[start % 4].y))
     - ((double) (data[(1 + start) % 4].y - data[start % 4].y)) * ((double) (data[(2 + start) % 4].x - data[start % 4].x));
     return det > 0L ? 1 : (det < 0L ? -1 : 0);
+  }
+  static int ccw(Point[] points, int start) {
+    int numPoints = points.length;
+    Point vec1 = points[(1 + start) % numPoints].diff(points[start % numPoints]);
+    Point vec2 = points[(2 + start) % numPoints].diff(points[(1 + start) % numPoints]);
+    double det = ((double) vec1.x) * ((double) vec2.y) - ((double) vec1.y) * ((double) vec2.x);
+    return det > 0 ? 1 : (det < 0 ? -1 : 0);
   }
 }
