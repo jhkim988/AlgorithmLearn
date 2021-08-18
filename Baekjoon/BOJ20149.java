@@ -56,21 +56,7 @@ public class BOJ20149 {
     }
     @Override
     public String toString() {
-      String result = "";
-      int resultX = (int) this.x;
-      int resultY = (int) this.y;
-      if (resultX == x) {
-        result += resultX;
-      } else {
-        result += x;
-      }
-      result += " ";
-      if (resultY == y) {
-        result += resultY;
-      } else {
-        result += y;
-      }
-      return result;
+      return x + " " + y;
     }
     static int ccw(Point[] points, int start) {
       int len = points.length;
