@@ -12,6 +12,9 @@ public class BOJ7869 {
     static double dist(Point p1, Point p2) {
       return Math.sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y));
     }
+    static double cosSecond(double a, double b, double c) {
+      return (a*a + b*b - c*c) / (2 * a * b);
+    }
   }
   private static class Circle {
     Point center;
@@ -48,24 +51,25 @@ public class BOJ7869 {
     double standard2 = Math.abs(circle[0].radius - circle[1].radius);
     double result = 0.0;
     if (dist <= standard2) {
-      result = circle[0].radius < circle[1].radius ? circle[0].area() : circle[1].area();
+      result = circle[0].area();
     } else if (dist < circle[1].radius) {
-      double cosTheta2 = (circle[0].radius * circle[0].radius - circle[1].radius * circle[1].radius - dist * dist) / (2 * circle[1].radius * dist);
-      double cosTheta1 = (circle[1].radius * cosTheta2 - dist) / circle[0].radius;
-      double theta1 = Math.acos(cosTheta1);
-      result = circle[0].area() - circle[0].sectorArea(theta1) + circle[1].triangleArea(theta1);
-      System.out.println(cosTheta2+ " " + cosTheta1 + " " + theta1 + " " + result);
+      double cosTheta1Half = Point.cosSecond((double) circle[1].radius, dist, (double) circle[0].radius);
+      double cosTheta0Half = (circle[1].radius * cosTheta1Half - dist) / circle[0].radius;
+      double theta0 = 2 * Math.acos(cosTheta0Half);
+      double theta1 = 2 * Math.acos(cosTheta1Half);
+      result = circle[0].sectorArea(2 * Math.PI - theta0) + circle[0].triangleArea(theta0) + circle[1].sectorArea(theta1) - circle[1].triangleArea(theta1);
     } else if (dist < standard1) {
-      double theta1 = 2 * Math.acos(circle[0].radius / dist);
-      double theta2 = 2 * Math.acos(circle[1].radius / dist);
-      double area1 = circle[0].sectorArea(theta1) - circle[0].triangleArea(theta1);
-      double area2 = circle[1].sectorArea(theta2) - circle[1].triangleArea(theta2);
-      result = area1 + area2;
-      System.out.println(dist + " " + circle[1].radius);
-      System.out.println(theta1 + " " + theta2 + " " + area1 + " " + area2);
+      double cosTheta0Half = Point.cosSecond(dist, circle[0].radius, circle[1].radius);
+      double cosTheta1Half = Point.cosSecond(dist, circle[1].radius, circle[0].radius);
+      double theta0 = 2 * Math.acos(cosTheta0Half);
+      double theta1 = 2 * Math.acos(cosTheta1Half);
+      double area0 = circle[0].sectorArea(theta0) - circle[0].triangleArea(theta0);
+      double area1 = circle[1].sectorArea(theta1) - circle[1].triangleArea(theta1);
+      result = area0 + area1;
     } else {
       result = 0.0;
     }
-    System.out.printf("%.3f\n", result);
+    result = Math.round(result * 1000.0) / 1000.0;
+    System.out.printf("%.3f", result);
   }
 }
