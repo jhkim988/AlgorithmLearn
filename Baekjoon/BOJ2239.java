@@ -2,7 +2,6 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ2239 {
-  static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
   static boolean find = false;
   private static class Pair {
     int i;
@@ -27,33 +26,31 @@ public class BOJ2239 {
     backtracking(board, empty, 0);
   }
   static void print(char[][] board) throws IOException {    
-    
-
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    for (int i = 0; i < 9; i++) {
+      bw.write(String.copyValueOf(board[i]) + "\n");
+    }
+    bw.flush();
   }
   static void backtracking(char[][] board, ArrayList<Pair> empty, int depth) throws IOException {
     if (find) {
       return;
     }
     if (depth == empty.size()) {
-      for (int i = 0; i < 9; i++) {
-        bw.write(String.copyValueOf(board[i]) + "\n");
-      }
-      bw.flush();
+      print(board);
       find = true;
       return;
     }     
-    for (int i = depth; i < empty.size(); i++) {      
-      Pair crnt = empty.get(i);
-      for (char next : candidate(crnt, board)) {
-        board[crnt.i][crnt.j] = next;
-        backtracking(board, empty, depth + 1);
-        board[crnt.i][crnt.j] = '0';
-      }
+    Pair crnt = empty.get(depth);
+    for (char next : candidate(crnt, board)) {
+      board[crnt.i][crnt.j] = next;
+      backtracking(board, empty, depth + 1);
+      board[crnt.i][crnt.j] = '0';
     }
   }
   static ArrayList<Character> candidate(Pair crnt, char[][] board) {
     boolean[] check = new boolean[10];
-    for (int i = 1; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
       check[i] = true;
     }
     for (int i = 0; i < 9; i++) {
