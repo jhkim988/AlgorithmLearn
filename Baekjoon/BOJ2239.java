@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ2239 {
+  static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
   static boolean find = false;
   private static class Pair {
     int i;
@@ -26,19 +27,18 @@ public class BOJ2239 {
     backtracking(board, empty, 0);
   }
   static void print(char[][] board) throws IOException {    
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    for (int i = 0; i < 9; i++) {
-      bw.write(String.copyValueOf(board[i]) + "\n");
-    }
-    bw.flush();
+    
+
   }
   static void backtracking(char[][] board, ArrayList<Pair> empty, int depth) throws IOException {
     if (find) {
       return;
     }
     if (depth == empty.size()) {
-      System.out.println(depth + ", " + empty.size());
-      print(board);
+      for (int i = 0; i < 9; i++) {
+        bw.write(String.copyValueOf(board[i]) + "\n");
+      }
+      bw.flush();
       find = true;
       return;
     }     
