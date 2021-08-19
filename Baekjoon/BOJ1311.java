@@ -2,9 +2,6 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ1311 {
-  static int N;
-  static int[][] D;
-
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -19,12 +16,4 @@ public class BOJ1311 {
 
 
   }
-  // static int minCost(int depth, int sum, int bit) {
-  //   if (depth == N) {
-  //     return sum;
-  //   }
-  //   for (int i = 0; i < N; i++) {
-
-  //   }
-  // }
 }
