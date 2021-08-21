@@ -20,11 +20,13 @@ public class BOJ1007 {
     double dist(Point other) {
       return Math.sqrt((this.x - other.x) * (this.x - other.x) + (this.y - other.y) * (this.y - other.y));
     }
-    Point add(Point other) {
-      return new Point(this.x + other.x, this.y + other.y);
+    void add(Point other) {
+      this.x = this.x + other.x;
+      this.y = this.y + other.y;
     }
-    Point diff(Point other) {
-      return new Point(this.x - other.x, this.y - other.y);
+    void diff(Point other) {
+      this.x = this.x - other.x;
+      this.y = this.y - other.y;
     }
     // Point scalarProduct(int c) {
     //   return new Point(this.x * c, this.y * c);
@@ -49,7 +51,7 @@ public class BOJ1007 {
   }
   static void minVecLenSum(Point[] data, int numPoint) {
     boolean[] marked = new boolean[numPoint];
-    recur(0, 0, data, numPoint,marked);
+    recur(1, 0, data, numPoint,marked); // first bit fix, half time
   } 
   static void recur(int cursor, int numPick, Point[] data, int numPoint, boolean[] marked) {
     if (numPick == numPoint / 2) {
@@ -64,12 +66,13 @@ public class BOJ1007 {
       Point start = new Point(0, 0);
       for (int i = 0; i < numPoint; i++) {
         if (marked[i]) {
-          end = end.add(data[i]);
+          end.add(data[i]);
         } else {
-          start = start.add(data[i]);
+          start.add(data[i]);
         }
       }
-      double result = end.diff(start).norm();
+      end.diff(start);
+      double result = end.norm();
       if (result < minLen) {
         minLen = result;
       }
