@@ -27,7 +27,7 @@ public class BOJ2623 {
 
     // topological sort
     // Stack<Integer> sort = useDFS(graph);
-    Queue<Integer> sort = useInorder(graph);
+    Queue<Integer> sort = useIndegree(graph);
     if (sort.isEmpty()) {
       bw.write("0\n");
       bw.flush();
@@ -70,7 +70,7 @@ public class BOJ2623 {
     stk.push(vertex);
     return flag;
   }
-  static Queue<Integer> useInorder(ArrayList<Queue<Integer>> graph) {
+  static Queue<Integer> useIndegree(ArrayList<Queue<Integer>> graph) {
     int V = graph.size() - 1;
     int[] inorder = new int[V + 1];
     for (int i = 1; i <= V; i++) {
