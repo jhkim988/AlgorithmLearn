@@ -49,7 +49,7 @@ public class BOJ9328 {
       int[] colDi = {0, -1, 0, 1};
       boolean[][] marked = new boolean[h][w];
       Queue<Pair> que = new LinkedList<>();
-      HashMap<Character, Pair> lockedDoor = new HashMap<>();
+      HashMap<Character, Queue<Pair>> lockedDoor = new HashMap<>();
       int count = 0;
       for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
@@ -76,6 +76,13 @@ public class BOJ9328 {
               if (hasKey[crntChar - 'A']) {
                 map[crnt.row][crnt.col] = '.';
               } else {
+                if (!lockedDoor.containsKey((char) (crntChar + 32))) {
+                  Queue<Pair> door = new LinkedList<>();
+                  door.add(crnt);
+                  lockedDoor.put((char) (crntChar + 32), door);
+                } else {
+                  lockedDoor.get((char) (crntChar + 32)).add(crnt);
+                }
                 continue;
               }
             }
@@ -97,7 +104,13 @@ public class BOJ9328 {
                   map[nextRow][nextCol] = '.';
                 } else {
                   // System.out.println("Find LOCK DOOR: " + nextRow + ", " + nextCol);
-                  lockedDoor.put((char) (nextChar + 32), next);
+                  if (!lockedDoor.containsKey((char) (nextChar + 32))) {
+                    Queue<Pair> door = new LinkedList<>();
+                    door.add(next);
+                    lockedDoor.put((char) (nextChar + 32), door);
+                  } else {
+                    lockedDoor.get((char) (nextChar + 32)).add(next);
+                  }
                 }
               }
               if (map[nextRow][nextCol] == '.') {
@@ -111,7 +124,9 @@ public class BOJ9328 {
                 hasKey[nextChar - 'a'] = true;
                 if (lockedDoor.containsKey(nextChar)) {
                   // System.out.println("OPEN DOOR:" + nextRow + ", " + nextCol);
-                  que.add(lockedDoor.get(nextChar));
+                  for (Pair door : lockedDoor.get(nextChar)) {
+                    que.add(door);
+                  }
                 }
               }
               if (nextChar == '$') {
