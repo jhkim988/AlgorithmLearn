@@ -16,13 +16,6 @@ public class BOJ1786 {
   static StringBuilder kmpMatch(String text, String pattern) {
     StringBuilder sb = new StringBuilder();
     int[] skip = skip(pattern);
-    int second = 1;
-    for (int i = 1; i < skip.length; i++) {
-      if (skip[i] != 0) {
-        second = i - 1;
-        break;
-      }
-    }
     int textlen = text.length();
     int patternlen = pattern.length();
     int pt = 0;
@@ -42,7 +35,7 @@ public class BOJ1786 {
         sb.append(pt - pp + 1).append(" ");
         count++;
       }
-      pt = pt - pp + second;
+      pt = pt - pp + 1;
     }
     return sb;
   }
