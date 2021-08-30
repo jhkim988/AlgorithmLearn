@@ -19,38 +19,42 @@ public class BOJ1786 {
     int textlen = text.length();
     int patternlen = pattern.length();
     int pt = 0;
+    int pp = 0;
     while (pt < textlen) {
-      int pp = 0;
-      while (pt < textlen && pp < patternlen) {
-        if (text.charAt(pt) == pattern.charAt(pp)) {
-          pt++;
-          pp++;
-        } else if (pp == 0) {
-          pt++;
-        } else {
-          pp = skip[pp];
-        }
-      }
+      if (text.charAt(pt) == pattern.charAt(pp)) {
+        pt++;
+        pp++;
+      } 
       if (pp == patternlen) {
         sb.append(pt - pp + 1).append(" ");
         count++;
-      }
-      pt = pt - pp + 1;
+        pp = skip[pp - 1];
+      } else if (pt < textlen && pattern.charAt(pp) != text.charAt(pt)) {
+        if (pp != 0) {
+          pp = skip[pp - 1];
+        } else {
+          pt++;
+        }
+      }      
     }
     return sb;
   }
   static int[] skip(String pattern) {
     int len = pattern.length();
-    int[] memo = new int[len + 1];
+    int[] memo = new int[len];
+    memo[0] = 0;
     int pt = 1;
     int pp = 0;
     while (pt < len) {
       if (pattern.charAt(pt) == pattern.charAt(pp)) {
-        memo[++pt] = ++pp;
+        pp++;
+        memo[pt] = pp;
+        pt++;
       } else if (pp == 0) {
-        memo[++pt] = pp;
+        memo[pt] = pp;
+        pt++;
       } else {
-        pp = memo[pp];
+        pp = memo[pp - 1];
       }
     }
     return memo;
