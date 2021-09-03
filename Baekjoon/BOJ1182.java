@@ -17,28 +17,16 @@ public class BOJ1182 {
     for (int i = 0; i < N; i++) {
       data[i] = Integer.parseInt(st.nextToken());
     }
-    boolean[] marked = new boolean[N];
-    backtraking(0, 0L, false, marked);
+    backtraking(0, 0L, false);
     bw.write(count + "\n");
     bw.flush();
   }
-  static void backtraking(int index, long sum, boolean picked, boolean[] marked) {
-    for (int i = 0; i < N; i++) {
-      if (marked[i]) {
-        System.out.print(1);
-      } else {
-        System.out.print(0);
-      }
-    }
-    System.out.println();
-    if (picked && sum == S) {
+  static void backtraking(int index, long sum, boolean picked) {
+    if (picked && index == N && sum == S) {
       count++;
     }
     if (index >= N) return;
-    if (marked[index]) return;
-    marked[index] = true;
-    backtraking(index + 1, sum + data[index], true, marked);
-    marked[index] = false;
-    backtraking(index + 1, sum, picked, marked);
+    backtraking(index + 1, sum + data[index], true);
+    backtraking(index + 1, sum, picked);
   }
 }
