@@ -4,7 +4,6 @@ import java.math.BigInteger;
 public class BOJ5615 {
   static int[] smallPrimes = {2, 3, 5, 7, 11};
   static long[] lim = {2_047L, 1_373_653L, 25_326_001L, 3_215_031_751L, Long.MAX_VALUE};
-
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
