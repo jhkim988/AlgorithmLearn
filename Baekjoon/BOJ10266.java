@@ -21,15 +21,24 @@ public class BOJ10266 {
     Arrays.sort(A);
     Arrays.sort(B);
 
-    if (useKMP(A, B)) {
+    int[] gapA = new int[2 * N - 1];
+    int[] gapB = new int[2 * N - 1];
+    for (int i = 0; i < N - 1; i++) {
+      gapA[N + i] = gapA[i] = A[i + 1] - A[i];
+      gapB[N + i] = B[i + 1] - B[i];
+    }
+    gapA[N - 1] = 360_000 - A[N - 1] + A[0];
+    gapB[N - 1] = 360_000 - B[N - 1] + B[0];
+
+    if (useKMP(A, B, gapA, gapB)) {
       bw.write("possible\n");
     } else {
       bw.write("impossible\n");
     }
     bw.flush();
   } 
-  static boolean useKMP(int[] A, int[] B) {
-    int[] pi = failure(B);
+  static boolean useKMP(int[] A, int[] B, int[] gapA, int[] gapB) {
+    int[] pi = failure(B, gapB);
     int pA = 0; // pointer of A, text
     int pB = 0; // pointer of B, pattern
     int lenA = A.length;
@@ -57,13 +66,12 @@ public class BOJ10266 {
     }
     return false;
   }
-  static int[] failure(int[] pat) {
-    int len = pat.length - 1;
-    int[] pi = new int[len];
+  static int[] failure(int[] pat, int[] txt) {
+    int[] pi = new int[pat.length];
     int pt = 1;
     int pp = 0;
-    while (pt < len) {
-      if (pat[pt] == pat[pp]) {
+    while (pt < pat.length) {
+      if (txt[pt] == pat[pp]) {
         pp++;
         pi[pt] = pp;
         pt++;
