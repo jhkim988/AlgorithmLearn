@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class BOJ15664 {
+public class BOJ15665 {
   static BufferedReader br;
   static BufferedWriter bw;
   static int N;
@@ -23,10 +23,10 @@ public class BOJ15664 {
     print = new int[M];
     hs = new HashSet<>();
     Arrays.sort(data);
-    recur(0, 0);
+    recur(0);
     bw.flush();
   }
-  static void recur(int prev, int depth) throws IOException {
+  static void recur(int depth) throws IOException {
     if (depth == M) {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < M; i++) {
@@ -40,9 +40,9 @@ public class BOJ15664 {
       return;
     }
 
-    for (int i = prev; i < N; i++) {
+    for (int i = 0; i < N; i++) {
       print[depth] = data[i];
-      recur(i + 1, depth + 1);
+      recur(depth + 1);
     }
   }
 }
