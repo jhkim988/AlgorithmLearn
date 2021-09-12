@@ -30,6 +30,12 @@ public class BOJ1261 {
       }
     }
 
+    bw.write(Dijkstra(row, col, map) + "\n");
+    // bw.write(ZeroOneBFS(row, col, map) + "\n");
+    bw.flush();
+
+  }
+  static int Dijkstra(int row, int col, int[][] map) {
     int[] xDi = {0, 1, 0, -1};
     int[] yDi = {1, 0, -1, 0};
 
@@ -39,14 +45,13 @@ public class BOJ1261 {
       Arrays.fill(cost[i], Integer.MAX_VALUE);
     }
     Node start = new Node(0, 0, 0);
+    cost[0][0] = 0;
     que.add(start);
     while (!que.isEmpty()) {
       Node crnt = que.poll();
 
       if (crnt.row == row - 1 && crnt.col == col - 1) {
-        bw.write(crnt.numBreak + "\n");
-        bw.flush();
-        break;
+        return crnt.numBreak;
       }
 
       for (int i = 0; i < 4; i++) {
@@ -59,5 +64,43 @@ public class BOJ1261 {
         cost[nextRow][nextCol] = nextCost;
       }
     }
+    return -1;
+  }
+  static int ZeroOneBFS(int row, int col, int[][] map) {
+    int[] xDi = {0, 1, 0, -1};
+    int[] yDi = {1, 0, -1, 0};
+
+    Node start = new Node(0, 0, 0);
+    Deque<Node> deq = new LinkedList<>();
+    int[][] cost = new int[row][col];
+    for (int i = 0; i < row; i++) {
+      Arrays.fill(cost[i], Integer.MAX_VALUE);
+    }
+    cost[0][0] = 0;
+    deq.add(start);
+
+    while (!deq.isEmpty()) {
+      Node crnt = deq.removeFirst();
+
+      if (crnt.row == row - 1 && crnt.col == col - 1) {
+        return crnt.numBreak;
+      }
+
+      for (int i = 0; i < 4; i++) {
+        int nextRow = crnt.row + xDi[i];
+        int nextCol = crnt.col + yDi[i];
+        if (nextRow < 0 || nextRow >= row || nextCol < 0 || nextCol >= col) continue;
+        if (map[nextRow][nextCol] == 0) {
+          if (cost[nextRow][nextCol] <= cost[crnt.row][crnt.col]) continue;
+          deq.addFirst(new Node(nextRow, nextCol, cost[crnt.row][crnt.col]));
+          cost[nextRow][nextCol] = cost[crnt.row][crnt.col];
+        } else {
+          if (cost[nextRow][nextCol] <= cost[crnt.row][crnt.col] + 1) continue;
+          deq.addLast(new Node(nextRow, nextCol, cost[crnt.row][crnt.col] + 1));
+          cost[nextRow][nextCol] = cost[crnt.row][crnt.col] + 1;
+        }
+      }
+    }
+    return -1;
   }
 }
