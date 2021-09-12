@@ -36,11 +36,13 @@ public class ZeroOneBFS {
     int target = 20;
     Node startNode = new Node(start, 0);
     Deque<Node> deq = new LinkedList<>();
-    boolean[] marked = new boolean[V + 1];
+    int[] cost = new int[V + 1];
+    Arrays.fill(cost, Integer.MAX_VALUE);
+    cost[start] = 0;
+    
     deq.addFirst(startNode);
     while (!deq.isEmpty()) {
       Node crnt = deq.removeFirst();
-      marked[crnt.end] = true;
 
       if (crnt.end == target) {
         // Find. cost: crnt.weight;
@@ -49,11 +51,14 @@ public class ZeroOneBFS {
 
       for (Node adj : graph.get(crnt.end)) {
         // Zero cost: addFirst / One cost: addLast
-        if (marked[adj.end]) continue;
         if (adj.weight == 0) {
+          if (cost[adj.end] <= cost[crnt.end]) continue;
           deq.addFirst(new Node(adj.end, crnt.weight));
+          cost[adj.end] = crnt.weight;
         } else {
+          if (cost[adj.end] <= cost[crnt.end] + 1) continue;
           deq.addLast(new Node(adj.end, crnt.weight + 1));
+          cost[adj.end] = crnt.weight + 1;
         }
       }
     }

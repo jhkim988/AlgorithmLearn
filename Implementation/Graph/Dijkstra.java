@@ -41,7 +41,8 @@ public class Dijkstra {
     int target = 20;
     Node startNode = new Node(start, 0);
     int[] cost = new int[V + 1];
-
+    cost[start] = 0;
+    
     // cost array initialize:
     for (int i = 1; i <= V; i++) {
       cost[i] = Integer.MAX_VALUE;
