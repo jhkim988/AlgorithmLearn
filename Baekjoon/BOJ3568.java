@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.*;
 
 public class BOJ3568 {
   public static void main(String[] args) throws IOException {
@@ -31,6 +30,7 @@ public class BOJ3568 {
       }
       sb.append(' ');
       sb.append(varName);
+      sb.append(';');
       bw.write(sb.toString() + "\n");
     }
     bw.flush();
