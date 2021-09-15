@@ -13,9 +13,31 @@ public class LIS {
     }
     System.out.println(Arrays.toString(seq));
 
+
+
+  }
+  static int useDoubleLoop(int[] seq) {
+    int len = seq.length;
+    int[] table = new int[len]; // table[i]: length of LIS seq[0 ... i]
+    int max = 0;
+    for (int i = 0; i < len; i++) {
+      table[i] = 1; // itself
+      for (int j = 0; j < i; j++) {
+        if (seq[j] < seq[i]) { // increasing?
+          table[i] += 1;
+        }
+      }
+      if (max < table[i]) {
+        max = table[i];
+      }
+    } 
+    return max;
+  }
+  static int useBinSearch(int[] seq) {
     // Get Length of LIS
     // length of LIS: ptr - 1;
-    int[] table = new int[len];
+    int len = seq.length;
+    int[] table = new int[len + 1];
     int ptr = 1;
     for (int  i = 0; i < len; i++) {
       if (table[ptr - 1] < seq[i]) {
@@ -28,6 +50,6 @@ public class LIS {
         table[find] = seq[i];
       }
     } 
-    System.out.println(ptr - 1);
+    return ptr - 1;
   }
 }
