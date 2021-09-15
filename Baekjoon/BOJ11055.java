@@ -7,47 +7,25 @@ public class BOJ11055 {
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     
     int len = Integer.parseInt(br.readLine());
-    int[] seq = new int[len];
+    int[] seq = new int[len + 1];
     StringTokenizer st = new StringTokenizer(br.readLine());
-    for (int i = 0; i < len; i++) {
+    for (int i = 1; i <= len; i++) {
       seq[i] = Integer.parseInt(st.nextToken());
     }
 
-    int[][] table = new int[len + 1][len + 1];
-    int ptrRow = 0;
-    int ptrCol = 1;
-
-    for (int i = 0; i < len; i++) {
-      if (table[ptrRow][ptrCol - 1] < seq[i]) {
-        ptrCol++;
-        // for (int j = 0; j <= ptrRow; j++) {
-        //   table[j][ptrCol] = seq[i]; 
-        // }
-      } else {
-        int find = Arrays.binarySearch(table[ptrRow], 0, ptrCol, seq[i]);
-        if (find < 0) {
-          find = -(find + 1);
-        }
-        ptrRow++;
-        for (int j = 0; j < ptrCol; j++) {
-          table[ptrRow][j] = table[ptrRow - 1][j];
-        }
-        table[ptrRow][find] = seq[i];
-      }
-    }
-
-    for (int i = 0; i <= len; i++) {
-      System.out.println(Arrays.toString(table[i]));
-    }
-
+    int[] table = new int[len + 1];
     int max = 0;
-    for (int i = 0; i <= len; i++) {
-      int sum = 0;
-      for (int j = 0; j <= len; j++) {
-        sum += table[i][j];
+
+    for (int i = 1; i <= len; i++) {
+      table[i] = seq[i];
+      for (int j = 1; j < i; j++) {
+        if (seq[j] < seq[i] && table[i] < table[j] + seq[i]) {
+          table[i] = table[j] + seq[i];
+        }
       }
-      if (max < sum) {
-        max = sum;
+
+      if (max < table[i]) {
+        max = table[i];
       }
     }
 
