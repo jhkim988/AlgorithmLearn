@@ -1,8 +1,8 @@
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 
 public class BOJ11053 {
-  public static void main(String[] args) {
+  public static void oldSolution(String[] args) {
     try {
       BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
       BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -49,5 +49,58 @@ public class BOJ11053 {
     } catch (IOException e) {
       // do nothing
     }
+  }
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+    int len = Integer.parseInt(br.readLine());
+    int[] seq = new int[len];
+
+    StringTokenizer st = new StringTokenizer(br.readLine());
+
+    for (int i = 0; i < len; i++) {
+      seq[i] = Integer.parseInt(st.nextToken());
+    } 
+
+    // bw.write(useDoubleLoop(seq) + "\n");
+    bw.write(useBinSearch(seq) + "\n");
+    bw.flush();
+  }
+  static int useDoubleLoop(int[] seq) {
+    int len = seq.length;
+    int[] table = new int[len]; // table[i]: length of LIS seq[0 ... i]
+    int max = 0;
+    for (int i = 0; i < len; i++) {
+      table[i] = 1; // itself
+      for (int j = 0; j < i; j++) {
+        if (seq[j] < seq[i] && table[i] < table[j] + 1) { // increasing?
+          table[i] = table[j] + 1;
+        }
+      }
+      if (max < table[i]) {
+        max = table[i];
+      }
+    } 
+    return max;
+  }
+  static int useBinSearch(int[] seq) {
+    // Get Length of LIS
+    // length of LIS: ptr - 1;
+    int len = seq.length;
+    int[] table = new int[len + 1];
+    int ptr = 1;
+    for (int  i = 0; i < len; i++) {
+      if (table[ptr - 1] < seq[i]) {
+        table[ptr++] = seq[i];
+      } else {
+        int find = Arrays.binarySearch(table, 0, ptr, seq[i]);
+        if (find < 0) {
+          find = -(find + 1);
+        }
+        table[find] = seq[i];
+      }
+    } 
+    return ptr - 1;
   }
 }
