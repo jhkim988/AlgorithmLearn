@@ -69,7 +69,10 @@ public class BOJ13398 {
       dpFirst[i] = Math.max(dpFirst[i + 1] + seq[i], seq[i]);
     }
 
-    int max = dpFirst[0];
+    int max = Integer.MIN_VALUE;
+    for (int i = 0; i < len; i++) {
+      max = Math.max(max, dpLast[i]);
+    }
     for (int i = 1; i < len - 1; i++) {
       max = Math.max(max, dpLast[i - 1] + dpFirst[i + 1]);
     }
