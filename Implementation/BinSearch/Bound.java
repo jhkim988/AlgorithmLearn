@@ -2,7 +2,7 @@ package BinSearch;
 
 import java.util.*;
 
-public class UpperBound {
+public class Bound {
   public static void main(String[] args) {
     final int len = 10;
     final int lim = 8;
