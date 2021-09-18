@@ -3,76 +3,78 @@ import java.util.*;
 
 public class BOJ1525 {
   private static class Simulation {
-    int[][] board;
-    Pair empty;
+    int stat;
+    int emptyRow;
+    int emptyCol;
     int count;
-    Simulation(int[][] board, Pair empty, int count) {
-      this.board = new int[3][3];
-      for (int i = 0; i < 3; i++) {
-        this.board[i] = board[i].clone();
-      }
-      this.empty = empty;
+    Simulation(int stat, int emptyRow, int emptyCol, int count) {
+      this.stat = stat;
+      this.emptyRow = emptyRow;
+      this.emptyCol = emptyCol;
       this.count = count; 
     }
     boolean isComplete() {
-      for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-          if (i == 2 && j == 2 && board[2][2] != 0) {
-            return false;
-          }
-          if (!(i == 2 && j == 2) && board[i][j] != i * 3 + j + 1) {
-            return false;
-          }
-        }
-      } 
+      int copy = stat;
+      if (copy % 10 != 0) return false;
+      copy /= 10;
+      int comp = 8;
+      while (copy != 0) {
+        if (copy % 10 != comp) {
+          return false;
+        } 
+        copy /= 10;
+        comp--;
+      }
       return true;
     }
     Simulation move(int nextRow, int nextCol) {
-      int[][] newBoard = new int[3][3];
-      for (int i = 0; i < 3; i++) {
-        newBoard[i] = board[i].clone();
-      }
-      // swap:
-      int tmp = newBoard[empty.row][empty.col];
-      newBoard[empty.row][empty.col] = newBoard[nextRow][nextCol];
-      newBoard[nextRow][nextCol] = tmp;
-      return new Simulation(newBoard, new Pair(nextRow, nextCol), count + 1);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (this.getClass() != o.getClass()) return false;
-      Simulation other = (Simulation) o;
+      int nextEmpty = nextRow * 3 + nextCol;
+      int nextEmptyDigit = 1;
       
-      for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-          if (this.board[i][j] != other.board[i][j]) return false;
-        }
+      for (int i = 0; i < 8 - nextEmpty; i++) {
+        nextEmptyDigit *= 10;
       }
-      return true;
+
+      int crntEmpty = 3 * emptyRow + emptyCol;
+      int emptyDigit = 1;
+      for (int i = 0; i < 8 - crntEmpty; i++) {
+        emptyDigit *= 10;
+      }
+
+      int swapNum = (stat / nextEmptyDigit) % 10;
+      int nextStat = stat + swapNum * (emptyDigit - nextEmptyDigit);
+      return new Simulation(nextStat, nextRow, nextCol, count + 1);
     }
-    @Override
-    public int hashCode() {
-      final int prime = 31;
-      int result = 1;
 
+    static int dblArrToInt(int[][] board) {
+      int stat = 0;
       for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-          result = prime * result + (int) (board[i][j] ^ (board[i][j] >>> 32));
+          stat = stat * 10 + board[i][j];
         }
       }
-
-      return result;
+      return stat;
     }
 
     @Override
     public String toString() {
       StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < 3; i++) {
-        sb.append(Arrays.toString(board[i])).append('\n');
+      Stack<Integer> stk = new Stack<>();
+      int copy = stat;
+      while (copy != 0) {
+        stk.push(copy % 10);
+        copy /= 10;
       }
-      sb.append('\n');  
+
+      int num = 1;
+      while (!stk.isEmpty()) {
+        sb.append(stk.pop());
+        if (num % 3 == 0) {
+          sb.append('\n');
+        }
+        num++;
+      }
+
       return sb.toString();
     }
   }
@@ -108,10 +110,10 @@ public class BOJ1525 {
     int[] rowDi = {0, 1, 0, -1};
     int[] colDi = {1, 0, -1, 0};
     Queue<Simulation> que = new LinkedList<>();
-    HashSet<Simulation> hs = new HashSet<>();
-    Simulation start = new Simulation(board, empty, 0);
+    HashSet<Integer> hs = new HashSet<>();
+    Simulation start = new Simulation(Simulation.dblArrToInt(board), empty.row, empty.col, 0);
     que.add(start);
-    hs.add(start);
+    hs.add(start.stat);
     while (!que.isEmpty()) {
       Simulation crnt = que.poll();
       if (crnt.isComplete()) {
@@ -119,12 +121,12 @@ public class BOJ1525 {
       }
 
       for (int i = 0; i < 4; i++) {
-        int nextRow = crnt.empty.row + rowDi[i];
-        int nextCol = crnt.empty.col + colDi[i];
+        int nextRow = crnt.emptyRow + rowDi[i];
+        int nextCol = crnt.emptyCol + colDi[i];
         if (nextRow < 0 || nextRow >= 3 || nextCol < 0 || nextCol >= 3) continue;
         Simulation next = crnt.move(nextRow, nextCol);
-        if (hs.contains(next)) continue;
-        hs.add(next);
+        if (hs.contains(next.stat)) continue;
+        hs.add(next.stat);
         que.add(next);
       }
     }
