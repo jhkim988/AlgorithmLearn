@@ -19,77 +19,129 @@ public class BOJ1406 {
     char[] init = br.readLine().toCharArray();
     int numCommand = Integer.parseInt(br.readLine());
 
-    bw.write(useLinkedList(init, numCommand));
-    // bw.write(useTwoStack(init, numCommand));
+    // bw.write(useLinkedList(init, numCommand));
+    bw.write(useTwoStack(init, numCommand));
     bw.flush();
   }
   static String useLinkedList(char[] init, int numCommand) throws IOException {
     llist head = new llist(init[0]);
     llist ptr = head;
     for (int i = 1; i < init.length; i++) {
-      ptr.next = new llist(init[1]);
+      ptr.next = new llist(init[i]);
       ptr.next.prev = ptr;
       ptr = ptr.next;      
     }
-
-    llist cursor = new llist('0');
-    ptr.next = cursor;
-    cursor.prev = ptr;
+    
+    llist tail = new llist('0');
+    tail.prev = ptr;
+    ptr.next = tail;
+    ptr = tail;
 
     while (numCommand-- > 0) {
       StringTokenizer st = new StringTokenizer(br.readLine());
       char oper = st.nextToken().charAt(0);
       switch (oper) {
-        case 'L': { // swap: cursor and cursor.prev
-          if (cursor.prev == null) {
-            // do nothing
-          } else if (cursor.prev.prev == null) {
-            llist copyCursor = new llist('0');
-            copyCursor.prev = head;
-            copyCursor.next = cursor.next;
-            cursor.next = head;
-            head.next = copyCursor.next;
-            head.next.prev = head;
-            head.prev = cursor;
-            head = cursor;
-            copyCursor = null;
-          } else {
-            
+        case 'L': {
+          if (ptr.prev != null) {
+            ptr = ptr.prev;
           }
           break;
         }
         case 'D': {
-          llist.swap(cursor, cursor.next);
+          if (ptr.next != null) {
+            ptr = ptr.next;
+          }
           break;
         }
         case 'B': {
-          if (cursor.prev == null) {
+          if (ptr.prev == null) {
             // do nothing
-          } else if (cursor.prev.prev == null) {
-            head = cursor;
-            cursor.prev = null;
+          } else if (ptr.prev.prev == null) {
+            head = ptr;
+            ptr.prev = null;
           } else {
-            cursor.prev.prev.next = cursor;
-            cursor.prev = cursor.prev.prev;
+            ptr.prev.prev.next = ptr;
+            ptr.prev = ptr.prev.prev;
           }
           break;
         }
         case 'P': {
           char ch = st.nextToken().charAt(0);
           llist insert = new llist(ch);
-          if (cursor.prev == null) {
+          if (ptr.prev == null) {
             head = insert;
-            head.next = cursor;
-            cursor.prev = head;
+            head.next = ptr;
+            ptr.prev = head;
           } else {
-            insert.prev = cursor.prev;
+            insert.prev = ptr.prev;
             insert.prev.next = insert;
-            insert.next = cursor;
-            cursor.prev = insert;
+            insert.next = ptr;
+            ptr.prev = insert;
           }
           break;
         }
       }
     }
+
+    StringBuilder sb = new StringBuilder();
+
+    llist iter = head;
+    while (iter != tail) {
+      sb.append(iter.ch);
+      iter = iter.next;
+    }
+    sb.append('\n');
+    return sb.toString();
+  }
+  static String useTwoStack(char[] init, int numCommand) throws IOException {
+    Stack<Character> left = new Stack<>();
+    Stack<Character> right = new Stack<>();
+
+    for (int i = 0; i < init.length; i++) {
+      left.push(init[i]);
+    }
+
+    while (numCommand-- > 0) {
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      char oper = st.nextToken().charAt(0);
+      switch (oper) {
+        case 'L': {
+          if (!left.isEmpty()) {
+            right.push(left.pop());
+          }
+          break;
+        }
+        case 'D': {
+          if (!right.isEmpty()) {
+            left.push(right.pop());
+          }
+          break;
+        }
+        case 'B': {
+          if (!left.isEmpty()) {
+            left.pop();
+          }
+          break;
+        }
+        case 'P': {
+          char ch = st.nextToken().charAt(0);
+          left.push(ch);
+          break;
+        }
+      }
+    }
+    Stack<Character> tmp = new Stack<>();
+    while (!left.isEmpty()) {
+      tmp.push(left.pop());
+    }
+    StringBuilder sb = new StringBuilder();
+    while (!tmp.isEmpty()) {
+      sb.append(tmp.pop());
+    }
+    while (!right.isEmpty()) {
+      sb.append(right.pop());
+    }
+    sb.append('\n');
+    return sb.toString();
   }
 }
