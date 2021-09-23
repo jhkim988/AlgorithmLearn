@@ -7,25 +7,23 @@ public class BOJ10799 {
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     String input = br.readLine();
     int len = input.length();
-
     int sum = 0;
-    int numCut = 0;
-    int numStick = 0;
-
     Stack<Character> stk = new Stack<>();
+    char prev = ' ';
     for (int i = 0; i < len; i++) {
       char ch = input.charAt(i);
       if (ch == '(') {
-        numStick++;
+        stk.push(ch);
       } else if (ch == ')') {
-        if (stk.peek() == '(') {
-          numStick--;
-          sum += numStick;
+        stk.pop();
+        if (prev == ')') { // stick
+          sum++;
+        } else { // laswer
+          sum += stk.size();
         }
       }
+      prev = ch;
     }
-
-
     bw.write(sum + "\n");
     bw.flush();
   }
