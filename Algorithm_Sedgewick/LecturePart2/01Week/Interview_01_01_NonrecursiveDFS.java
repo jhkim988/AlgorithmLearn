@@ -24,11 +24,11 @@ public class Interview_01_01_NonrecursiveDFS {
 			
 			while (!stk.isEmpty()) {
 				int v = stk.pop();
+				marked[v] = true;
 				StdOut.print(v + " "); // do something, for each vertex.
 				for (int w : g.adj(v)) {
 					if (!marked[w]) {
 						stk.push(w);
-						marked[w] = true;
 					}
 				}
 			}
