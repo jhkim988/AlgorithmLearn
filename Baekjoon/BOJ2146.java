@@ -125,7 +125,6 @@ public class BOJ2146 {
     return land;
   }
   static int minBridge(ArrayList<Land> land) {
-    Collections.shuffle(land);
     int numLand = land.size();
     int min = 200;
     for (int i = 0; i < numLand; i++) {
