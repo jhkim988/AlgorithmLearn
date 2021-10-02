@@ -25,19 +25,21 @@ public class BOJ16940 {
       graph.get(start).add(end);
       graph.get(end).add(start);
     } 
-    Queue<Integer> input = new LinkedList<>();
+    int[] input = new int[V];
     StringTokenizer st = new StringTokenizer(br.readLine());
     for (int i = 0; i < V; i++) {
-      input.add(Integer.parseInt(st.nextToken()));
+      input[i] = Integer.parseInt(st.nextToken());
     }
 
     bw.write(answer(graph, input) ? "1\n" : "0\n");
     bw.flush();
   }
-  static boolean answer(ArrayList<Queue<Integer>> graph, Queue<Integer> input) {
+  static boolean answer(ArrayList<Queue<Integer>> graph, int[] input) {
     int V = graph.size() - 1;
     int start = 1;
     int[] level = new int[V + 1]; // level[i] = j; level of node i = j
+    int[] parent = new int[V + 1];
+    boolean[] hasChild = new boolean[V + 1];
     // BFS:
     boolean[] marked = new boolean[V + 1];
     Queue<Pair> que = new LinkedList<>();
@@ -50,18 +52,34 @@ public class BOJ16940 {
         if (marked[w]) continue;
         que.add(new Pair(w, crnt.dist + 1));
         marked[w] = true;
+        parent[w] = crnt.node;
+        hasChild[crnt.node] = true;
       }
     }
-    int prev = 0;
-    for (int v : input) {
-      if (level[v] == prev) {
-        
-      } else if (level[v] == prev + 1) {
-        prev++;
+    if (input[0] != 1) return false;
+    int parentPtr = 0;
+    int inputPtr = 1;
+    int levelPtr = 1;
+    while (inputPtr < V) {
+      // System.out.println("parent: " + input[parentPtr]);
+      // System.out.println("input: " + input[inputPtr]);
+      // System.out.println("level: " + levelPtr);
 
-      } else {
-        return false;
-      }
+      int pInput = parent[input[inputPtr]];
+      if (pInput == input[parentPtr]) {
+        if (level[input[inputPtr]] == levelPtr) {
+          inputPtr++;
+          if (inputPtr >= V) break;
+          if (level[input[inputPtr]] == levelPtr + 1) levelPtr++;
+          if (parent[input[inputPtr]] != pInput)  parentPtr++;
+          while (!hasChild[input[parentPtr]]) {
+            parentPtr++;
+            if (parentPtr >= V) return false;
+          }
+          continue;
+        }
+      } 
+      return false;
     }
     return true;
   }
