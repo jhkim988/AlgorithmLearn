@@ -16,6 +16,10 @@ public class BOJ14225 {
     bw.flush();
   }
   static int answer(int[] data) {
-    
+    Arrays.sort(data);
+    int sum = 0;
+    for (int el : data) {
+      sum += el; // sum <= 20_000_000;
+    }
   }
 }
