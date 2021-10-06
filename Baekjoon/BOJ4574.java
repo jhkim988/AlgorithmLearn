@@ -2,12 +2,15 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ4574 {
+  static int[] rowDi = {0, 1};
+  static int[] colDi = {1, 0};
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     int numGame = 1;
     int numDomino = 0; 
     while ((numDomino = Integer.parseInt(br.readLine())) != 0) {
+      int numEmpty = 81 - numDomino * 2 - 9;
       boolean[][] useDomino = new boolean[10][10];
       int[][] board = new int[9][9];
 
@@ -19,12 +22,9 @@ public class BOJ4574 {
         int num2 = Integer.parseInt(st.nextToken());
         String pos2 = st.nextToken();
         board[pos2.charAt(0) - 'A'][pos2.charAt(1) - '1'] = num2;
-        if (num2 < num1) {
-          int tmp = num1;
-          num1 = num2;
-          num2 = tmp;
-        }
-        useDomino[num1][num2] = true;
+        int small = Math.min(num1, num2);
+        int larger = Math.max(num1, num2);
+        useDomino[small][larger] = true;
       }
 
       StringTokenizer st = new StringTokenizer(br.readLine());
@@ -33,7 +33,7 @@ public class BOJ4574 {
         board[pos.charAt(0) - 'A'][pos.charAt(1) - '1'] = i;
       }
 
-      int[][] sol = solver(board, useDomino);
+      int[][] sol = solver(board, useDomino, numEmpty);
       StringBuilder sb = new StringBuilder();
       sb.append("Puzzle ").append(numGame++).append('\n');
       for (int i = 0; i < 9; i++) {
@@ -46,76 +46,56 @@ public class BOJ4574 {
     }
     bw.flush();
   }
-  static int[][] solver(int[][] board, boolean[][] useDomino) {
+  static int[][] solver(int[][] board, boolean[][] useDomino, int numEmpty) {
     int[][] copy = new int[9][9];
     for (int i = 0; i < 9; i++) {
       copy[i] = board[i].clone();
     }
-    boolean[] flag = {false};
-    recur(copy, useDomino, flag);
+    recur(0, 0, copy, useDomino, numEmpty);
     return copy;
   }
-  static void recur(int[][] board, boolean[][] useDomino, boolean[] flag) {
-    if (flag[0]) return;
-    for (int i = 0; i < 9; i++) {
-      for (int j = 0; j < 9; j++) {
-        if (board[i][j] != 0) continue;
-          boolean[] occupiedOrigin = occupied(i, j, board);
-        // up-down
-        if (i + 1 < 9 && board[i + 1][j] == 0) {
-          boolean[] occupiedDown = occupied(i + 1, j, board);
-          for (int k = 1; k < 10; k++) {
-            if (occupiedOrigin[k]) continue;
-            for (int l = 1; l < 10; l++) {
-              if (occupiedDown[l]) continue;
-              int idx0, idx1;
-              if (k < l) {
-                idx0 = k;
-                idx1 = l;
-              } else {
-                idx0 = l;
-                idx1 = k;
-              }
-              if (useDomino[idx0][idx1]) continue;
-              board[i][j] = k;
-              board[i + 1][j] = l;
-              useDomino[idx0][idx1] = true;
-              recur(board, useDomino, flag);
-              board[i][j] = 0;
-              board[i + 1][j] = 0;
-              useDomino[idx0][idx1] = false;
-            }
-          }
+  static boolean recur(int i, int j, int[][] board, boolean[][] useDomino, int numEmpty) {
+    if (numEmpty <= 0) {
+      return true;
+    }
+    if (j >= 9) {
+      return recur(i + 1, 0, board, useDomino, numEmpty);
+    }
+
+    if (board[i][j] != 0) {
+      if (j + 1 < 9) {
+        return recur(i, j + 1, board, useDomino, numEmpty);
+      } else if (i + 1 < 9) {
+        return recur(i + 1, 0, board, useDomino, numEmpty);
+      }
+      // No case.
+      return false;
+    }
+    boolean[] impossibleOrigin = occupied(i, j, board);
+    for (int k = 0; k < 2; k++) {
+      int nextRow = i + rowDi[k];
+      int nextCol = j + colDi[k];
+      if (nextRow >= 9 || nextCol >= 9) continue;
+      if (board[nextRow][nextCol] != 0) continue;
+      for (int candidate = 1; candidate < 10; candidate++) {
+        if (impossibleOrigin[candidate]) continue;
+        board[i][j] = candidate;
+        boolean[] impossibleNext = occupied(nextRow, nextCol, board);
+        for (int nextCandidate = 1; nextCandidate < 10; nextCandidate++) {
+          if (impossibleNext[nextCandidate]) continue;
+          int small = Math.min(candidate, nextCandidate);
+          int larger = Math.max(candidate, nextCandidate);
+          if (useDomino[small][larger]) continue;
+          board[nextRow][nextCol] = nextCandidate;
+          useDomino[small][larger] = true;
+          if (recur(i, j + 1, board, useDomino, numEmpty - 2)) return true;
+          board[nextRow][nextCol] = 0;
+          useDomino[small][larger] = false;
         }
-        // left-right
-        if (j + 1 < 9 && board[i][j + 1] == 0) {
-          boolean[] occupiedRight = occupied(i, j + 1, board);
-          for (int k = 1; k < 10; k++) {
-            if (occupiedOrigin[k]) continue;
-            for (int l = 1; l < 10; l++) {
-              if (occupiedRight[l]) continue;
-              int idx0, idx1;
-              if (k < l) {
-                idx0 = k;
-                idx1 = l;
-              } else {
-                idx0 = l;
-                idx1 = k;
-              }
-              if (useDomino[idx0][idx1]) continue;
-              board[i][j] = k;
-              board[i][j + 1] = l;
-              useDomino[idx0][idx1] = true;
-              recur(board, useDomino, flag);
-              board[i][j] = 0;
-              board[i][j + 1] = 0;
-              useDomino[idx0][idx1] = false;
-            }
-          }
-        }
+        board[i][j] = 0;
       }
     }
-    flag[0] = true;
+    return false;
   }
   static boolean[] occupied(int i, int j, int[][] board) {
     boolean[] occupied = new boolean[10];
@@ -132,7 +112,6 @@ public class BOJ4574 {
         }
       }
     }
-
     return occupied;
   }
 }
