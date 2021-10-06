@@ -39,7 +39,7 @@ public class BOJ14225 {
       if (marked[i]) continue;
       marked[i] = true;
       check[sum + data[i]] = true;
-      recur(depth + 1, sum + data[i], data, marked, check);
+      timeLimitExceed(depth + 1, sum + data[i], data, marked, check);
       marked[i] = false;
     }
   }
