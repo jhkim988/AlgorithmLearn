@@ -1,4 +1,4 @@
-package Math;
+package etc;
 
 public class Prime {
   static boolean linearSearch(int num) {
