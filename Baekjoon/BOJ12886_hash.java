@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class BOJ12886_test {
+public class BOJ12886_hash {
   private static class Pair {
     int min;
     int mid;
