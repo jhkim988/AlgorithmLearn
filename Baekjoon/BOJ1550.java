@@ -6,8 +6,8 @@ public class BOJ1550 {
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     char[] input = br.readLine().toCharArray();
     int len = input.length;
-    long exp = 1;
-    long result = 0;
+    int exp = 1;
+    int result = 0;
     for (int i = len - 1; i >= 0; i--) {
       result += exp * toHex(input[i]);
       exp *= 16;
