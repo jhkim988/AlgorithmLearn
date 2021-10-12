@@ -112,7 +112,6 @@ public class BOJ6087 {
         ptr++;
       }
       print[crnt.row][crnt.col] = (char) Math.min(print[crnt.row][crnt.col], (crnt.numReflect + '0'));
-
       if (crnt.row == target[1].row && crnt.col == target[1].col) {
 
         return crnt.numReflect;
