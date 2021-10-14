@@ -91,13 +91,17 @@ public class BOJ6087 {
     return min;
   }
   static int ZeroOneBFS() {
-    int[][] marked = new int[row][col];
+    int[][][] marked = new int[row][col][4];
     Deque<Pair> deq = new LinkedList<>();
     deq.addLast(target[0]);
     for (int i = 0; i < row; i++) {
-      Arrays.fill(marked[i], Integer.MAX_VALUE);
+      for (int j = 0; j < col; j++) {
+        Arrays.fill(marked[i][j], Integer.MAX_VALUE);
+      }
     }
-    marked[target[0].row][target[0].col] = 0;
+    for (int i = 0; i < 4; i++) {
+      marked[target[0].row][target[0].col][i] = 0;
+    }
     while (!deq.isEmpty()) {
       Pair crnt = deq.removeFirst();
       if (crnt.row == target[1].row && crnt.col == target[1].col) {
@@ -108,13 +112,13 @@ public class BOJ6087 {
         int nextCol = crnt.col + colDi[i];
         if (nextRow < 0 || nextRow >= row || nextCol < 0 || nextCol >= col) continue;
         if (map[nextRow][nextCol] == '*') continue;
-        if (marked[nextRow][nextCol] < crnt.numReflect) continue;
+        if (marked[nextRow][nextCol][i] < crnt.numReflect) continue;
         if (crnt.direction == -1 || crnt.direction == i) {
           deq.addFirst(new Pair(nextRow, nextCol, crnt.numReflect, i));
         } else {
           deq.addLast(new Pair(nextRow, nextCol, crnt.numReflect + 1, i));
         }
-        marked[nextRow][nextCol] = crnt.numReflect;
+        marked[nextRow][nextCol][i] = crnt.numReflect;
       }
     }
     // No Case
