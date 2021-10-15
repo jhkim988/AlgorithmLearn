@@ -11,7 +11,11 @@ public class BOJ2109 {
     }
     @Override
     public int compareTo(Pair other) {
-      return this.due == other.due ? other.val - this.val : this.due - other.due;
+      return this.val == other.val ? this.due - other.due : other.val - this.val;
+    }
+    @Override
+    public String toString() {
+      return val + ", " + due;
     }
   }
   public static void main(String[] args) throws IOException {
@@ -27,21 +31,32 @@ public class BOJ2109 {
       data[i] = new Pair(p, d);
       maxDate = Math.max(maxDate, d);
     }
-    Arrays.sort(data);
-    for (int i = 0; i < num; i++) {
-      System.out.println(data[i].val + ", " + data[i].due);
-    }
-    int ptr = num - 1;
-    int sum = 0;
-    PriorityQueue<Pair> pq = new PriorityQueue<>();
-    while (ptr >= 0) {
-      while (ptr >= 0 && data[ptr].due == maxDate) {
-        System.out.println("input: " + data[ptr].val + ", " + data[ptr].due);
-        pq.add(data[ptr--]);
+    Arrays.sort(data, new Comparator<>() {
+      @Override
+      public int compare(Pair p1, Pair p2) {
+        return p1.due == p2.due ? p2.val - p1.val : p2.due - p1.due;
       }
-      if (ptr < 0) break;
-      sum += pq.poll().val;
-      maxDate = data[ptr].due;
+    });
+    int ptr = 0;
+    int sum = 0;
+
+    // System.out.println("maxDate: " + maxDate);
+    // for (int i = 0; i < num; i++) {
+    //   System.out.println("sort: " + data[i]);
+    // }
+
+    PriorityQueue<Pair> pq = new PriorityQueue<>();
+    while (maxDate > 0) {
+      while (ptr < num && data[ptr].due >= maxDate) {
+        // System.out.println("enqueue: " + data[ptr]);
+        pq.add(data[ptr++]);
+      }
+      if (!pq.isEmpty()) {
+        int val = pq.poll().val;
+        sum += val;
+        // System.out.println("add : " + val + ", sum: " + sum);
+      }
+      maxDate--;
     }
     bw.write(sum + "\n");
     bw.flush();
