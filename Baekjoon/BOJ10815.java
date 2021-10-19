@@ -21,27 +21,22 @@ public class BOJ10815 {
       checkList[i] = Integer.parseInt(st.nextToken());
     }
 
-    StringBuilder sb = new StringBuilder();
-    boolean[] result = useBinSearch(cardList, checkList);
-    for (int i = 0; i < M; i++) {
-      if (result[i]) {
-        sb.append(1).append(' ');
-      } else {
-        sb.append(0).append(' ');
-      }
-    }
-    sb.append('\n');
+    StringBuilder sb = useBinSearch(cardList, checkList);
     bw.write(sb.toString());
     bw.flush();
   }
-  static boolean[] useBinSearch(int[] cardList, int[] checkList) {
-    boolean[] result = new boolean[checkList.length];
+  static StringBuilder useBinSearch(int[] cardList, int[] checkList) {
+    StringBuilder sb = new StringBuilder();
     Arrays.sort(cardList);
     for (int i = 0; i < checkList.length; i++) {
       int idx = Arrays.binarySearch(cardList, checkList[i]);
-      if (idx < 0) continue;
-      result[i] = true;
+      if (idx < 0) {
+        sb.append(0).append(' ');
+      } else {
+        sb.append(1).append(' ');
+      }
     }
-    return result;
+    sb.append('\n');
+    return sb;
   }
 }
