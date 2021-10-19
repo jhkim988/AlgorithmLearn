@@ -21,22 +21,47 @@ public class BOJ10815 {
       checkList[i] = Integer.parseInt(st.nextToken());
     }
 
-    StringBuilder sb = useBinSearch(cardList, checkList);
-    bw.write(sb.toString());
-    bw.flush();
-  }
-  static StringBuilder useBinSearch(int[] cardList, int[] checkList) {
     StringBuilder sb = new StringBuilder();
-    Arrays.sort(cardList);
-    for (int i = 0; i < checkList.length; i++) {
-      int idx = Arrays.binarySearch(cardList, checkList[i]);
-      if (idx < 0) {
-        sb.append(0).append(' ');
-      } else {
+    boolean[] result = useBinSearch(cardList, checkList);
+    for (int i = 0; i < M; i++) {
+      if (result[i]) {
         sb.append(1).append(' ');
+      } else {
+        sb.append(0).append(' ');
       }
     }
     sb.append('\n');
-    return sb;
+    bw.write(sb.toString());
+    bw.flush();
+  }
+  static boolean[] useBinSearch(int[] cardList, int[] checkList) {
+    boolean[] result = new boolean[checkList.length];
+    Arrays.sort(cardList);
+    for (int i = 0; i < checkList.length; i++) {
+      int idx = Arrays.binarySearch(cardList, checkList[i]);
+      if (idx < 0) continue;
+      result[idx] = true;
+    }
+    return result;
+  }
+  static boolean[] useTwoPointer(int[] cardList, int[] checkList) {
+    boolean[] result = new boolean[checkList.length];
+    Arrays.sort(cardList);
+    Arrays.sort(checkList);
+    int ptr0 = 0;
+    int ptr1 = 0;
+
+    while (ptr0 < cardList.length && ptr1 < checkList.length) {
+      if (cardList[ptr0] < checkList[ptr1]) {
+        ptr0++;
+      } else if (checkList[ptr1] < checkList[ptr0]) {
+        ptr1++;
+      } else {
+        result[ptr0] = true;
+        ptr0++;
+        ptr1++;
+      }
+    }
+    return result;
   }
 }
