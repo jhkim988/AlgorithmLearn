@@ -21,18 +21,36 @@ public class BOJ1517 {
   }
   static void recur(int lo, int hi) { // [lo, hi)
     if (hi - lo <= 1) return;
+    int[] tmp = new int[hi - lo];
     System.out.println("lo: " + lo + ", hi: " + hi);
-    int mid = hi - (lo + hi) / 2;
+    int mid = hi - (hi - lo) / 2;
     recur(lo, mid);
     recur(mid, hi);
     int loPtr = mid - 1;
     int hiPtr = hi - 1;
-    while (loPtr >= 0 || hiPtr >= mid) {
-      while (hiPtr >= mid && data[loPtr] <= data[hiPtr]) {
+    int tmpPtr = tmp.length - 1;
+    while (loPtr >= 0 && hiPtr >= mid) {
+      System.out.println("loPtr: " + loPtr + ", hiPtr: " + hiPtr);
+      while (loPtr >= 0 && hiPtr >= mid && data[loPtr] <= data[hiPtr]) {
+        tmp[tmpPtr--] = data[hiPtr];
         hiPtr--;
       }
-      swap(data, loPtr, hiPtr);
       numCall += hiPtr - loPtr;
+      while (loPtr >= 0 && hiPtr >= mid && data[hiPtr] <= data[loPtr]) {
+        tmp[tmpPtr--] = data[loPtr];
+        loPtr--;
+      }
+      numCall += hiPtr - loPtr;
+    }
+    System.out.println("Out: loPtr: " + loPtr + ", hiPtr: " + hiPtr + ", tmpPtr: " + tmpPtr);
+    while (loPtr >= 0) {
+      tmp[tmpPtr--] = data[loPtr--];
+    }
+    while (hiPtr >= mid) {
+      tmp[tmpPtr--] = data[hiPtr--];
+    }
+    for (int i = lo; i < hi; i++) {
+      data[i] = tmp[i];
     }
   }
   static int bubble() {
