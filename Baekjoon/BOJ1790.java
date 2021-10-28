@@ -15,11 +15,12 @@ public class BOJ1790 {
     int accum = 0;
     while (lo <= N) {
       int cmp = (k - accum - 1) / digit + lo;
-      System.out.println("lo: " + lo + ", hi: " + hi + ", digit: " + digit + ", accum: " + accum + ", k - accum: " + (k - accum));
-      System.out.println("cmp: " + cmp);
+      // System.out.println("lo: " + lo + ", hi: " + hi + ", digit: " + digit + ", accum: " + accum + ", k - accum: " + (k - accum));
+      // System.out.println("cmp: " + cmp);
       if (cmp <= N && lo <= cmp && cmp < hi) {
-        int charAt = (k - accum) % digit;
-        bw.write((cmp + "").charAt(digit - charAt - 1) + "\n");
+        int charAt = (k - accum - 1) % digit;
+        // System.out.println("charAt: " + charAt);
+        bw.write((cmp + "").charAt((charAt))+ "\n");
         bw.flush();
         return;
       }
