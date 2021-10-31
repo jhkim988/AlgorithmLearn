@@ -27,14 +27,14 @@ public class Bound {
       if (seq[mid] <= key) {
         ptr1 = mid + 1;
       } else {
-        ptr2 = mid - 1;
+        ptr2 = mid;
       }
     }
 
-    return ptr1;
+    return ptr2;
   }
   static int lowerBound(int[] seq, int key) {
-    // find max { x : seq[x] < key }
+    // find max { x : seq[x] < key } + 1
     int ptr1 = 0;
     int ptr2 = seq.length - 1;
     
@@ -43,7 +43,7 @@ public class Bound {
       if (seq[mid] < key) {
         ptr1 = mid + 1;
       } else {
-        ptr2 = mid - 1;
+        ptr2 = mid;
       }
     }
     return ptr2;
