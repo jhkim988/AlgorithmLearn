@@ -27,12 +27,20 @@ public class BOJ7453 {
     long count = 0L;
 
     // use binary search:
-    for (int num : left) { // n^2
-      int lo = lowerbound(right, -num);
-      int hi = upperbound(right, -num);
-      if (right[lo] != -num ) continue;
-      if (right[hi] == -num) hi++; // case: size 1
-      count += hi - lo;
+    int ptr = 0;
+    while (ptr < left.length) {
+      int crnt = left[ptr];
+      int hiLeft = upperbound(left, crnt);
+      long numSameInLeft = hiLeft - ptr;
+
+      int lo = lowerbound(right, -crnt);
+      if (right[lo] != -crnt) {
+        ptr++;
+        continue;
+      } // NOT FOUND
+      int hi = upperbound(right, -crnt);
+      count += (hi - lo) * numSameInLeft;
+      ptr = hiLeft;
     }
 
     bw.write(count + "\n");
@@ -58,7 +66,7 @@ public class BOJ7453 {
         hi = mid;
       }
     }
-    return hi;
+    return arr[hi] == key ? hi + 1 : hi;
   }
 
   static int lowerbound(int[] arr, int key) {
@@ -73,5 +81,13 @@ public class BOJ7453 {
       }
     }
     return hi;
+  }
+
+  static void print(int[] arr) {
+    System.out.print("[ ");
+    for (int num : arr) {
+      System.out.print(num + " ");
+    }
+    System.out.println("]");
   }
 }
