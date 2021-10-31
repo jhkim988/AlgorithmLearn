@@ -6,7 +6,7 @@ public class BOJ7453 {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     int len = Integer.parseInt(br.readLine());
-    long[][] data = new long[4][len];
+    int[][] data = new int[4][len];
 
     for (int i = 0; i < len; i++) {
       StringTokenizer st = new StringTokenizer(br.readLine());      
@@ -15,8 +15,8 @@ public class BOJ7453 {
       }
     }
 
-    long[] left = new long[len * len];
-    long[] right = new long[len * len];
+    int[] left = new int[len * len];
+    int[] right = new int[len * len];
 
     init(left, data[0], data[1]);
     init(right, data[2], data[3]);
@@ -27,7 +27,7 @@ public class BOJ7453 {
     long count = 0L;
 
     // use binary search:
-    for (long num : left) { // n^2
+    for (int num : left) { // n^2
       int lo = lowerbound(right, -num);
       int hi = upperbound(right, -num);
       if (right[lo] != -num ) continue;
@@ -39,7 +39,7 @@ public class BOJ7453 {
     bw.flush();
   }
   
-  static void init(long[] storage, long[] arr0, long[] arr1) {
+  static void init(int[] storage, int[] arr0, int[] arr1) {
     for (int i = 0; i < arr0.length; i++) {
       for (int j = 0; j < arr1.length; j++) {
         storage[i * arr0.length + j] = arr0[i] + arr1[j];
@@ -47,7 +47,7 @@ public class BOJ7453 {
     }
   }
 
-  static int upperbound(long[] arr, long key) {
+  static int upperbound(int[] arr, int key) {
     int lo = 0;
     int hi = arr.length - 1;
     while (lo < hi) {
@@ -61,7 +61,7 @@ public class BOJ7453 {
     return hi;
   }
 
-  static int lowerbound(long[] arr, long key) {
+  static int lowerbound(int[] arr, int key) {
     int lo = 0;
     int hi = arr.length - 1;
     while (lo < hi) {
