@@ -28,14 +28,21 @@ public class BOJ1561 {
     bw.write((idx + 1) + "\n");
     bw.flush();
 
-    System.out.println("totalRunningTime: " + totalRunningTime);
-    System.out.println("idx: " + idx);
+    // System.out.println("totalRunningTime: " + totalRunningTime);
+    // System.out.println("idx: " + idx);
   }
   static int findIdx(int[] runningTime, long totalRunningTime) {
+    int idx = 0;
+    int count = 0;
     for (int i = 0; i < M; i++) {
-      if (totalRunningTime % (runningTime[i] + 1) == 0) return i;
+      count += (totalRunningTime - 1) / runningTime[i] + 1;
     }
-    return -10;
+    while (true) {
+      if (totalRunningTime % runningTime[idx] == 0) count++;
+      if (count >= N) break;
+      idx++;
+    }
+    return idx;
   }
   static long getTotalRun(int[] runningTime) {
     long lo = 0L;
@@ -49,12 +56,12 @@ public class BOJ1561 {
         lo = mid + 1;
       }
     }
-    return hi;
+    return lo;
   }
   static boolean isPossible(int[] runningTime, long key) {
     long count = 0L;
     for (int i = 0; i < M; i++) {
-      count += key / runningTime[i];
+      count += key / runningTime[i] + 1;
     }
     return count >= N;
   }
