@@ -6,17 +6,17 @@ public class BOJ1981 {
   static int[][] data;
   static int[] rowDi = {-1, 0, 1, 0};
   static int[] colDi = {0, -1, 0, 1};
-  static int answer = 200;
+  static int MIN = 200;
+  static int MAX = 0;
   private static class Pair {  
     int row;
     int col;
-    int max;
-    int min;
-    Pair (int row, int col, int max, int min) {
+    Pair (int row, int col) {
       this.row = row;
       this.col = col;
-      this.max = max;
-      this.min = min;
+    }
+    public String toString() {
+      return "(" + row + ", " + col + ")";
     }
   }
 
@@ -29,35 +29,56 @@ public class BOJ1981 {
       StringTokenizer st = new StringTokenizer(br.readLine());
       for (int j = 0; j < N; j++) {
         data[i][j] = Integer.parseInt(st.nextToken());
+        if (data[i][j] < MIN) MIN = data[i][j];
+        if (MAX < data[i][j]) MAX = data[i][j];
       }
     }
-
-    dps();
+    int answer = parametricSearch();
     bw.write(answer + "\n");
     bw.flush();
   }
-  static void dps() {
-    boolean[][] marked = new boolean[N][N];
-    marked[0][0] = true;
-    Pair start = new Pair(0, 0, data[0][0], data[0][0]);
-    recur(start, marked);
-  }
-  static void recur(Pair crnt, boolean[][] marked) {
-    if (crnt.row == N - 1 && crnt.col == N - 1) {
-      int val = crnt.max - crnt.min;
-      if (val < answer) answer = val;
-      return; 
-    } 
-    for (int i = 0; i < 4; i++) {
-      int nextRow = crnt.row + rowDi[i];
-      int nextCol = crnt.col + colDi[i];
-      if (nextRow < 0 || nextRow >= N || nextCol < 0 || nextCol >= N) continue;
-      if (marked[nextRow][nextCol]) continue;
-      int max = crnt.max < data[nextRow][nextCol] ? data[nextRow][nextCol] : crnt.max;
-      int min = data[nextRow][nextCol] < crnt.min ? data[nextRow][nextCol] : crnt.min;
-      marked[nextRow][nextCol] = true;
-      recur(new Pair(nextRow, nextCol, max, min), marked);
-      marked[nextRow][nextCol] = false;
+  static int parametricSearch() {
+    int lo = 0;
+    int hi = MAX - MIN;
+    while (lo < hi) {
+      int mid = (lo + hi) / 2;
+      // System.out.println("lo: " + lo + ", hi: " + hi + ", mid: " + mid);
+      if (bfs(mid)) {
+        hi = mid;
+      } else {
+        lo = mid + 1;
+      }
     }
+    return hi;
+  }
+  static boolean bfs(int key) {
+    Queue<Pair> que = new LinkedList<>();
+    Pair start = new Pair(0, 0);
+    for (int val = MIN; val <= MAX; val++) {
+      boolean[][] marked = new boolean[N][N];
+      for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+          if (val > data[i][j] || data[i][j] > val + key) marked[i][j] = true;
+        }
+      }
+      que.add(start);
+      // marked[0][0] = true;
+      while (!que.isEmpty()) {
+        Pair crnt = que.poll();
+        // System.out.println("crnt: " + crnt);
+        if (marked[crnt.row][crnt.col]) continue;
+        marked[crnt.row][crnt.col] = true;
+        if (crnt.row == N - 1 && crnt.col == N - 1) {
+          return true;
+        }
+        for (int i = 0; i < 4; i++) {
+          int nextRow = crnt.row + rowDi[i];
+          int nextCol = crnt.col + colDi[i];
+          if (nextRow < 0 || nextRow >= N || nextCol < 0 || nextCol >= N) continue;
+          que.add(new Pair(nextRow, nextCol));
+        }
+      }
+    }
+    return false;
   }
 }
