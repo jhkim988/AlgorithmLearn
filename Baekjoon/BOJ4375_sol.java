@@ -10,7 +10,6 @@ public class BOJ4375_sol {
 			bw.write(p4375.process(Integer.parseInt(input)) + "\n");
 			bw.flush();
 		}
-
 	}
 
 	public static class Mathematics_4375 {
