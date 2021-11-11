@@ -35,16 +35,6 @@ public class BOJ18290 {
   static int recur(int depth, int[] bit, int ptr, int val) {
     // System.out.println("call: " + depth + ", (" + (ptr/M) + ", " + (ptr%M) + "), val: " + val);
     if (depth >= K) {
-      // for (int i = 0; i < N; i++) {
-      //   for (int j = 0; j < M; j++) {
-      //     if ((bit[i] & (1 << j)) != 0) {
-      //       System.out.print("1 ");
-      //     } else {
-      //       System.out.print("0 ");
-      //     }
-      //   }
-      //   System.out.println();
-      // }
       ans = Math.max(ans, val);
       return val;
     }
