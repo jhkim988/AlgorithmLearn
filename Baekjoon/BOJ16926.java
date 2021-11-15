@@ -2,14 +2,6 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ16926 {
-  private static class Pair {
-    int row;
-    int col;
-    Pair(int row, int col) {
-      this.row = row;
-      this.col = col;
-    }
-  }
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -28,11 +20,42 @@ public class BOJ16926 {
     StringBuilder sb = new StringBuilder();
     int[][] answer = new int[N][M];
     int numOrbit = Math.min(N, M) / 2;
-    Queue<Pair> que = new LinkedList<>();
+    Queue<Integer> que = new LinkedList<>();
     for (int orbit = 0; orbit < numOrbit; orbit++) {
-      int rowPtr = orbit;
-      int colPtr = orbit;
-      
+      // System.out.println("new orbit");
+      for (int idx = orbit; idx < M - orbit; idx++) {
+        // System.out.println("(" + orbit + ", " + idx + ")");
+        que.add(origin[orbit][idx]);
+      }
+      for (int idx = orbit + 1; idx < N - orbit; idx++) {
+        // System.out.println("(" + idx + ", " + (M - orbit - 1) + ")");
+        que.add(origin[idx][M - orbit - 1]);
+      }
+      for (int idx = M - orbit - 2; idx >= orbit; idx--) {
+        // System.out.println("(" + (M - orbit - 1) + ", " + idx + ")");
+        que.add(origin[N - orbit - 1][idx]);
+      }
+      for (int idx = N - orbit - 2; idx > orbit; idx--) {
+        // System.out.println("(" + idx + ", " + orbit + ")");
+        que.add(origin[idx][orbit]);
+      }
+
+      for (int rot = 0; rot < R; rot++) {
+        que.add(que.poll());
+      }
+
+      for (int idx = orbit; idx < M - orbit; idx++) {
+        answer[orbit][idx] = que.poll();
+      }
+      for (int idx = orbit + 1; idx < N - orbit; idx++) {
+        answer[idx][M - orbit - 1] = que.poll();
+      }
+      for (int idx = M - orbit - 2; idx >= orbit; idx--) {
+        answer[N - orbit - 1][idx] = que.poll();
+      }
+      for (int idx = N - orbit - 2; idx > orbit; idx--) {
+        answer[idx][orbit] = que.poll();
+      }
     }
 
     for (int i = 0; i < N; i++) {
@@ -42,5 +65,8 @@ public class BOJ16926 {
       }
       sb.append('\n');
     }
+
+    bw.write(sb.toString());
+    bw.flush();
   }
 }
