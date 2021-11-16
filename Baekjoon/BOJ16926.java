@@ -22,25 +22,30 @@ public class BOJ16926 {
     int numOrbit = Math.min(N, M) / 2;
     Queue<Integer> que = new LinkedList<>();
     for (int orbit = 0; orbit < numOrbit; orbit++) {
+      int count = 0;
       // System.out.println("new orbit");
       for (int idx = orbit; idx < M - orbit; idx++) {
         // System.out.println("(" + orbit + ", " + idx + ")");
+        count++;
         que.add(origin[orbit][idx]);
       }
       for (int idx = orbit + 1; idx < N - orbit; idx++) {
         // System.out.println("(" + idx + ", " + (M - orbit - 1) + ")");
+        count++;
         que.add(origin[idx][M - orbit - 1]);
       }
       for (int idx = M - orbit - 2; idx >= orbit; idx--) {
         // System.out.println("(" + (M - orbit - 1) + ", " + idx + ")");
+        count++;
         que.add(origin[N - orbit - 1][idx]);
       }
       for (int idx = N - orbit - 2; idx > orbit; idx--) {
         // System.out.println("(" + idx + ", " + orbit + ")");
+        count++;
         que.add(origin[idx][orbit]);
       }
 
-      for (int rot = 0; rot < R; rot++) {
+      for (int rot = 0; rot < R%count; rot++) {
         que.add(que.poll());
       }
 
