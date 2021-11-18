@@ -4,6 +4,7 @@ import java.util.*;
 public class BOJ16922 {
   static int N;
   static HashSet<Integer> hs;
+  static int[] number = {1, 5, 10, 50};
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -15,30 +16,14 @@ public class BOJ16922 {
     bw.flush();
   } 
   static void recur(int depth, int numWrite, int val) {
-    switch (depth) {
-      case 0:
-        for (int i = 0; i <= N; i++) {
-          recur(depth + 1, i, i);
-        }
-        break;
-      case 1:
-        for (int i = 0; i + numWrite <= N; i++) {
-          recur(depth + 1, i + numWrite, val + i * 5);
-        }
-        break;
-      case 2:
-        for (int i = 0; i + numWrite <= N; i++) {
-          recur(depth + 1, i + numWrite, val + i * 10);
-        }
-        break;
-      case 3:
-        for (int i = 0; i + numWrite <= N; i++) {
-          recur(depth + 1, i + numWrite, val + i * 50);
-        }
-        break;
-    }
     if (numWrite == N) {
       hs.add(val);
+    }
+    if (depth >= 4) {
+      return;
+    }
+    for (int i = 0; i + numWrite <= N; i++) {
+      recur(depth + 1, i + numWrite, val + i * number[depth]);
     }
   } 
 }
