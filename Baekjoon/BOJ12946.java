@@ -23,8 +23,7 @@ public class BOJ12946 {
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < N; j++) {
         if (board[i][j] == 'X' && color[i][j] == -1) { // find new componenet
-          // System.out.println("first call");
-          max = Math.max(max, recur(i, j, color, board, 1));
+          max = Math.max(max, recur(i, j, color, board, 1, 1));
         }
       }
     }
@@ -34,7 +33,36 @@ public class BOJ12946 {
 
     // print(color);
   }
-  static int recur(int row, int col, int[][] color, char[][] board, int clr) {
+  static int recur(int row, int col, int[][] color, char[][] board, int clr, int max) {
+    color[row][col] = clr;
+    boolean isInvalid = false;
+    for (int i = 0; i < 6; i++) {
+      int nextRow = row + rowDi[i];
+      int nextCol = col + colDi[i];
+      if (nextRow < 0 || nextRow >= N || nextCol < 0 || nextCol >= N) continue;
+      if (color[nextRow][nextCol] == clr) isInvalid = true;
+    }
 
+    if (isInvalid) {
+      return 3;
+    }
+
+    for (int i = 0; i < 6; i++) {
+      int nextRow = row + rowDi[i];
+      int nextCol = col + colDi[i];
+      if (nextRow < 0 || nextRow >= N || nextCol < 0 || nextCol >= N) continue;
+      if (board[nextRow][nextCol] != 'X') continue;
+      if (color[nextRow][nextCol] != -1) continue;
+      max = Math.max(clr, recur(nextRow, nextCol, color, board, 3 - clr, max));
+    }
+    return Math.max(clr, max);
+  }
+  static void print(int[][] color) {
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < N; j++) {
+        System.out.print(color[i][j] + " ");
+      }
+      System.out.println();
+    }
   }
 }
