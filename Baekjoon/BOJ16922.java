@@ -35,6 +35,7 @@ public class BOJ16922 {
         for (int i = 0; i + numWrite <= N; i++) {
           recur(depth + 1, i + numWrite, val + i * 50);
         }
+        break;
     }
     if (numWrite == N) {
       hs.add(val);
