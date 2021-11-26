@@ -42,8 +42,7 @@ public class BOJ16943 {
         recur(depth + 1, max + val, marked);
         marked[i] = false;
       } 
-    }
-    
+    }    
   }
   static int pow(int base, int exp) {
     if (exp == 0) return 1;
