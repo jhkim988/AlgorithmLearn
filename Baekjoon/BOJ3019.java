@@ -14,13 +14,10 @@ public class BOJ3019 {
       this.height = height;
     }
     boolean possible(int idx, int[] stat) {
-      System.out.println("idx: " + idx + ", rot: " + rot);
       if (idx + height.length - 1 >= C) return false;
-      System.out.println("idx: " + idx + ", rot: " + rot);
-
       boolean flag = true;
       for (int i = 0; i < height.length - 1; i++) {
-        flag = flag && (stat[i] - height[i] == stat[i + 1] - height[i + 1]);
+        flag = flag && ((stat[idx + i] - height[i]) == (stat[idx + i + 1] - height[i + 1]));
       }
       return flag;
     }
@@ -43,9 +40,8 @@ public class BOJ3019 {
     ArrayList<Block> find = blocks.get(P - 1);
     for (Block bl : find) {
       for (int idx = 0; idx < C; idx++) {
-        // System.out.println("idx: " + idx + ", type: " + bl.type + ", rot: " + bl.rot);
-
         if (bl.possible(idx, stat)) {
+          // System.out.println("idx: " + idx + ", type: " + bl.type + ", rot: " + bl.rot);
           count++;
         }
       }
