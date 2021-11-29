@@ -8,7 +8,7 @@ public class Prime {
     }
     return true;
   }
-  static boolean sqrtSerach(int num) {
+  static boolean sqrtSearch(int num) {
     // O(sqrt(N))
     for (int i = 2; i * i <= num; i++) {
       if (num % 2 == 0) return false;
