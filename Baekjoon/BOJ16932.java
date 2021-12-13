@@ -13,10 +13,6 @@ public class BOJ16932 {
         sz[i] = 1;
       }
     }
-    private UnionFind(int n, boolean inner) {
-      id = new int[n];
-      sz = new int[n];
-    }
     int root(int i) {
       while (i != id[i]) {
         i = id[i] = id[id[i]];
@@ -35,7 +31,6 @@ public class BOJ16932 {
         sz[prt] += sz[qrt];
       }
     }
-
     boolean isConnected(int p, int q) {
       return root(p) == root(q);
     }
@@ -43,6 +38,7 @@ public class BOJ16932 {
   public static void main(String[] args) throws IOException {
     int[] rowDi = {-1, 0, 1, 0};
     int[] colDi = {0, -1, 0, 1};
+
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     StringTokenizer st = new StringTokenizer(br.readLine());
