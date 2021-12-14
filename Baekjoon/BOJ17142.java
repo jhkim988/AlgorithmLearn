@@ -52,12 +52,12 @@ public class BOJ17142 {
   static int bfs(int numEmpty, ArrayList<Pair> putVirus, boolean[] choose, int[][] stat) {
     if (numEmpty == 0) return 0;
     int size = stat.length;
-    int[][] visit = new int[size][size];
+    boolean[][] visit = new boolean[size][size];
     Queue<Pair> que = new LinkedList<>();
     for (int i = 0; i < choose.length; i++) {
       if (!choose[i]) continue;
       Pair v = putVirus.get(i);
-      visit[v.row][v.col] = 1;
+      visit[v.row][v.col] = true;
       que.add(v);
     }
     while (!que.isEmpty()) {
@@ -66,9 +66,9 @@ public class BOJ17142 {
         int adjRow = crnt.row + rowDi[i];
         int adjCol = crnt.col + colDi[i];
         if (adjRow < 0 || adjRow >= size || adjCol < 0 || adjCol >= size) continue;
-        if (visit[adjRow][adjCol] != 0) continue;
+        if (visit[adjRow][adjCol]) continue;
         if (stat[adjRow][adjCol] == 1) continue;
-        visit[adjRow][adjCol] = crnt.move + 2;
+        visit[adjRow][adjCol] = true;
         if (stat[adjRow][adjCol] != 2) numEmpty--;
         if (numEmpty == 0) return crnt.move + 1;
         que.add(new Pair(adjRow, adjCol, crnt.move + 1));
