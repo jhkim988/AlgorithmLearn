@@ -2,36 +2,31 @@ import java.io.*;
 
 public class BOJ10531 {
   public static void main(String[] args) throws IOException {
-    // BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    // BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    // int N = Integer.parseInt(br.readLine());
-    // int[] shoot = new int[N];
-    // int max = 0;
-    // for (int i = 0; i < N; i++) {
-    //   int input = Integer.parseInt(br.readLine()); 
-    //   shoot[i] = input;
-    //   if (max < input) max = input;
-    // }
-    // int M = Integer.parseInt(br.readLine());
-    // int[] dist = new int[M];
-    // for (int i = 0; i < M; i++) dist[i] = Integer.parseInt(br.readLine());
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    int N = Integer.parseInt(br.readLine());
+    int[] shoot = new int[N];
+    int max = 0;
+    for (int i = 0; i < N; i++) {
+      int input = Integer.parseInt(br.readLine()); 
+      shoot[i] = input;
+      if (max < input) max = input;
+    }
+    int M = Integer.parseInt(br.readLine());
+    int[] dist = new int[M];
+    for (int i = 0; i < M; i++) dist[i] = Integer.parseInt(br.readLine());
 
-    // int[] poly = new int[max + 1];
-    // for (int i = 0; i < N; i++) poly[shoot[i]] = 1;
+    int[] poly = new int[max + 1];
+    for (int i = 0; i < N; i++) poly[shoot[i]] = 1;
 
-    // double[][] product = polynomialProduct(poly, poly);
-    // int sum = 0;
-    // for (int i = 0; i < M; i++) {
-    //   if (product[dist[i]][0] > 1e-9 || product[dist[i]][1] > 1e-9) sum++;
-    // }
-    // bw.write(sum + "\n");
-    // bw.flush();
-  
-    int[] poly1 = {1, 2, 1};
-    int exp = 1;
-    while (exp > poly1.length) exp *= 2;
-    int[] result = polynomialProduct(poly1, poly1);
-    System.out.println(printPoly(result));
+    int[] product = polynomialProduct(poly, poly);
+    int sum = 0;
+    for (int i = 0; i < M; i++) {
+      if (dist[i] < product.length && product[dist[i]] != 0 || dist[i] < poly.length && poly[dist[i]] != 0) sum++;
+    }
+    bw.write(sum + "\n");
+    bw.flush();
+    // System.out.println(printPoly(product));
   }
   static String printPoly(double[][] poly) {
     StringBuilder sb = new StringBuilder();
@@ -58,14 +53,14 @@ public class BOJ10531 {
     for (int i = 0; i < a.length; i++) la[i][0] = a[i];
     for (int i = 0; i < b.length; i++) lb[i][0] = b[i];
     
-    double[][] fa = dft(la, exp);
-    double[][] fb = dft(lb, exp);
+    fft(la, exp);
+    fft(lb, exp);
     double[][] result = new double[exp][2];
     for (int i = 0; i < exp; i++) {
-      result[i][0] = fa[i][0] * fb[i][0] - fa[i][1] * fb[i][1];
-      result[i][1] = fa[i][0] * fb[i][1] + fa[i][1] * fb[i][0];
+      result[i][0] = la[i][0] * lb[i][0] - la[i][1] * lb[i][1];
+      result[i][1] = la[i][0] * lb[i][1] + la[i][1] * lb[i][0];
     }
-    result = dft(result, exp);
+    fft(result, exp);
     for (int i = 0; i < exp/2; i++) {
       result[i][0] /= exp;
       result[i][1] /= exp;
@@ -83,12 +78,9 @@ public class BOJ10531 {
   }
   static double[][] fft(double[][] poly, int n) {
     if (n == 1) return poly;
-    double reUnit = Math.cos(-2 * Math.PI / n);
-    double imUnit = Math.sin(-2 * Math.PI / n);
-
     double[][] even = new double[n][2];
     double[][] odd = new double[n][2];
-    for (int i = 0; i < Math.min(poly.length, n); i++) {
+    for (int i = 0; i < n; i++) {
       if (i % 2 == 0) {
         even[i / 2][0] = poly[i][0];
         even[i / 2][1] = poly[i][1];
@@ -97,20 +89,18 @@ public class BOJ10531 {
         odd[i / 2][1] = poly[i][1];
       }
     }
-    double[][] feven = fft(even, n/2);
-    double[][] fodd = fft(odd, n/2);
-    double[][] result = new double[n][2];
+    fft(even, n/2);
+    fft(odd, n/2);
 
     for (int i = 0; i < n/2; i++) {
-      result[i][0] = feven[i][0] + reUnit * fodd[i][0] - imUnit * fodd[i][1];
-      result[i][1] = feven[i][1] + reUnit * fodd[i][1] + imUnit * fodd[i][0];
-      result[i + n/2][0] = feven[i][0] - (reUnit * fodd[i][0] - imUnit * fodd[i][1]);
-      result[i + n/2][1] = feven[i][1] - (reUnit * fodd[i][1] + imUnit * fodd[i][0]);
-      
-      reUnit = Math.cos(-2 * Math.PI * (i + 1) / n);
-      imUnit = Math.sin(-2 * Math.PI * (i + 1) / n);
+      double reUnit = Math.cos(-2 * Math.PI * i / n);
+      double imUnit = Math.sin(-2 * Math.PI * i / n);
+      poly[i][0] = even[i][0] + reUnit * odd[i][0] - imUnit * odd[i][1];
+      poly[i][1] = even[i][1] + reUnit * odd[i][1] + imUnit * odd[i][0];
+      poly[i + n/2][0] = even[i][0] - (reUnit * odd[i][0] - imUnit * odd[i][1]);
+      poly[i + n/2][1] = even[i][1] - (reUnit * odd[i][1] + imUnit * odd[i][0]);
     }
-    return result;
+    return poly;
   }
   static double[][] dft(double[][] poly, int n) {
     double[][][] mat = new double[n][n][2];
