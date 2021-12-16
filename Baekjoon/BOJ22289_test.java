@@ -1,34 +1,46 @@
 import java.io.*;
-import java.util.*;
 
-public class BOJ22289 {
-  static int bundle = 3;
-  static int digit = 1;
-  static int sumLen;
+public class BOJ22289_test {
+  static int digit = 1_000;
   public static void main(String[] args) throws IOException {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    StringTokenizer st = new StringTokenizer(br.readLine());
-    char[] first = st.nextToken().toCharArray();
-    char[] second = st.nextToken().toCharArray();
+    while (true) {
+      long r1 = (long) (Math.random() * 1_000_000);
+      long r2 = (long) (Math.random() * 1_000_000);
+      String s1 = r1 + "";
+      String s2 = r2 + "";
+      long sol = mySol(s1, s2);
+      long ans = r1 * r2;
+      
+      if (sol != ans) {
+        System.out.println("HERE");
+        System.out.println("r1: " + r1 + ", s1: " + s1);
+        System.out.println("r2: " + r2 + ", s2: " + s2);
+        System.out.println("sol: " + sol);
+        System.out.println("ans: " + ans);
+        return;
+      }
+    }
+    
+  }
+  static long mySol(String r1, String r2) {
+    char[] first = r1.toCharArray();
+    char[] second = r2.toCharArray();
     if (first[0] == '0' || second[0] == '0') {
-      bw.write("0\n");
-      bw.flush();
-      return;
+      return 0;
     }
     int len = 1;
-    sumLen = first.length + second.length;
+    int sumLen = first.length + second.length;
+    int bundle = 3;
     while (len <= (sumLen/bundle)) len <<= 1;
-    len <<= 1;
-    for (int i = 0; i < bundle; i++) digit *= 10;
+    // for (int i = 0; i < bundle; i++) digit *= 10;
     double[][] p = new double[len][2];
     double[][] q = new double[len][2];
     for (int i = 0; i <= first.length/bundle; i++) {
       int val = 0;
       int base = 1;
       for (int j = 0; j < bundle; j++) {
-        if (first.length - bundle * i - j - 1 < 0) break;
-        val += base * (first[first.length - bundle * i - j - 1] - '0');
+        if (first.length - bundle*i - j - 1 < 0) break;
+        val += base * (first[first.length - bundle*i - j - 1] - '0');
         base *= 10;
       }
       p[i][0] = val;
@@ -37,28 +49,22 @@ public class BOJ22289 {
       int val = 0;
       int base = 1;
       for (int j = 0; j < bundle; j++) {
-        if (second.length - bundle * i - j - 1 < 0) break;
-        val += base * (second[second.length - bundle * i - j - 1] - '0');
+        if (second.length - bundle*i - j - 1 < 0) break;
+        val += base * (second[second.length - bundle*i - j - 1] - '0');
         base *= 10;
       }
       q[i][0] = val;
     }
     productPolynomial(p, q);
-    bw.write(answer(p));
-    bw.flush();
+    return Long.parseLong(print(p));
   }
-  static void print(double[][] p) {
-    for (int i = 0; i < p.length; i++) {
-      System.out.print(p[i][0] + " ");
-    }
-    System.out.println();
-  }
-  static String answer(double[][] p) {
+  static String print(double[][] p) {
     int len = p.length;
     long[] result = new long[len];
-    for (int i = 0; i < len-1; i++) {
-      p[i + 1][0] += p[i][0] / digit;
-      result[i] = ((long) Math.round(p[i][0])) % digit;
+    for (int i = 0; i < len; i++) {
+      long val = (long) Math.round(p[i][0]);
+      if (i < len - 1) p[i + 1][0] += val / digit;
+      result[i] = val % digit;
     }
     int nonzero = len;
     while (result[--nonzero] == 0);
@@ -72,7 +78,7 @@ public class BOJ22289 {
       }
       sb.append(result[i]);
     }
-    sb.append('\n');
+    // sb.append('\n');
     return sb.toString();
   }
   static void productPolynomial(double[][] p, double[][] q) {
