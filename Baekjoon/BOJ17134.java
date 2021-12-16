@@ -42,17 +42,17 @@ public class BOJ17134 {
     return result;
   }
   static void polyProduct(double[][] p, double[][] q) {
-    ffp(p, false);
-    ffp(q, false);
+    fft(p, false);
+    fft(q, false);
     for (int i = 0; i < p.length; i++) {
       double re = reProduct(p[i], q[i]);
       double im = imProduct(p[i], q[i]);
       p[i][0] = re;
       p[i][1] = im;
     }
-    ffp(p, true);
+    fft(p, true);
   }
-  static void ffp(double[][] p, boolean isInverse) {
+  static void fft(double[][] p, boolean isInverse) {
     int n = 1 << 21;
     for (int i = 1, j = 0; i < n; i++) {
       int b = n/2;
