@@ -20,7 +20,7 @@ public class BOJ22289 {
     int firstlen = first.length / bundle + (first.length % bundle == 0 ? 0 : 1);
     int secondlen = second.length / bundle + (second.length % bundle == 0 ? 0 : 1);
     int len = 1;
-    sumLen = firstlen + secondlen + 2; // 곱한 다항식의 차수
+    sumLen = firstlen + secondlen + 2;
     while (len < sumLen) len <<= 1; // FFT 적용 크기
     for (int i = 0; i < bundle; i++) digit *= 10;
     // first/second -> 다항식(계수배열 p, q)
