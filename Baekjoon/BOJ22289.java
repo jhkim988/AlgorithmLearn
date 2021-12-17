@@ -2,8 +2,8 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ22289 {
-  static int bundle = 3;
-  static int digit = 1;
+  static int bundle = 5; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.
+  static long digit = 1; // 10^bundle
   static int sumLen;
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,16 +16,19 @@ public class BOJ22289 {
       bw.flush();
       return;
     }
+    // 다항식의 차수
+    int firstlen = first.length / bundle + (first.length % bundle == 0 ? 0 : 1);
+    int secondlen = second.length / bundle + (second.length % bundle == 0 ? 0 : 1);
     int len = 1;
-    sumLen = first.length + second.length;
-    while (len <= (sumLen/bundle)) len <<= 1;
-    len <<= 1;
+    sumLen = firstlen + secondlen + 2; // 곱한 다항식의 차수
+    while (len < sumLen) len <<= 1; // FFT 적용 크기
     for (int i = 0; i < bundle; i++) digit *= 10;
-    double[][] p = new double[len][2];
-    double[][] q = new double[len][2];
-    for (int i = 0; i <= first.length/bundle; i++) {
-      int val = 0;
-      int base = 1;
+    // first/second -> 다항식(계수배열 p, q)
+    double[][] p = new double[len][2]; 
+    double[][] q = new double[len][2]; 
+    for (int i = 0; i < firstlen; i++) {
+      long val = 0;
+      long base = 1;
       for (int j = 0; j < bundle; j++) {
         if (first.length - bundle * i - j - 1 < 0) break;
         val += base * (first[first.length - bundle * i - j - 1] - '0');
@@ -33,9 +36,9 @@ public class BOJ22289 {
       }
       p[i][0] = val;
     }
-    for (int i = 0; i <= second.length/bundle; i++) {
-      int val = 0;
-      int base = 1;
+    for (int i = 0; i < secondlen; i++) {
+      long val = 0;
+      long base = 1;
       for (int j = 0; j < bundle; j++) {
         if (second.length - bundle * i - j - 1 < 0) break;
         val += base * (second[second.length - bundle * i - j - 1] - '0');
@@ -47,25 +50,19 @@ public class BOJ22289 {
     bw.write(answer(p));
     bw.flush();
   }
-  static void print(double[][] p) {
-    for (int i = 0; i < p.length; i++) {
-      System.out.print(p[i][0] + " ");
-    }
-    System.out.println();
-  }
   static String answer(double[][] p) {
-    int len = p.length;
-    long[] result = new long[len];
-    for (int i = 0; i < len-1; i++) {
-      p[i + 1][0] += p[i][0] / digit;
-      result[i] = ((long) Math.round(p[i][0])) % digit;
+    long[] result = new long[sumLen];
+    for (int i = 0; i < sumLen; i++) result[i] = (long) Math.round(p[i][0]);
+    for (int i = 0; i < sumLen; i++) {
+      if (i < sumLen - 1) result[i + 1] += result[i] / digit;
+      result[i] %= digit;
     }
-    int nonzero = len;
+    int nonzero = sumLen;
     while (result[--nonzero] == 0);
     StringBuilder sb = new StringBuilder();
     sb.append(result[nonzero]);
     for (int i = nonzero - 1; i >= 0; i--) {
-      int exp = digit/10;
+      long exp = digit/10;
       while (exp != 1 && result[i] < exp) {
         sb.append(0);
         exp /= 10;
