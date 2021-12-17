@@ -1,3 +1,5 @@
+package BOJ22289;
+
 import java.io.*;
 import java.util.*;
 
@@ -18,17 +20,17 @@ public class Run {
       c4.add("./OutputChecker.java");
 
       ProcessBuilder pb1 = new ProcessBuilder(c1);
-      pb1.directory(new File("C:\\Users\\pc4\\Desktop\\BOJ22289"));
+      pb1.directory(new File("C:\\Users\\pc4\\Desktop\\JHKim\\Programming\\Git\\AlgorithmLearn\\Baekjoon\\BOJ22289"));
       Process p1 = pb1.start();
       p1.waitFor();
       
       ProcessBuilder pb2 = new ProcessBuilder(c2);
-      pb2.directory(new File("C:\\Users\\pc4\\Desktop\\BOJ22289"));
+      pb2.directory(new File("C:\\Users\\pc4\\Desktop\\JHKim\\Programming\\Git\\AlgorithmLearn\\Baekjoon\\BOJ22289"));
       Process p2 = pb2.start();
       p2.waitFor();
 
       ProcessBuilder pb3 = new ProcessBuilder(c3);
-      pb3.directory(new File("C:\\Users\\pc4\\Desktop\\BOJ22289"));
+      pb3.directory(new File("C:\\Users\\pc4\\Desktop\\JHKim\\Programming\\Git\\AlgorithmLearn\\Baekjoon\\BOJ22289"));
       Process p3 = pb3.start();
       p3.waitFor();
 

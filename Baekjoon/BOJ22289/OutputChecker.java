@@ -1,3 +1,5 @@
+package BOJ22289;
+
 import java.io.*;
 
 public class OutputChecker {
