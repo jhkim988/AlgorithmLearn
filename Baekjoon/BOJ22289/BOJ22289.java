@@ -1,7 +1,6 @@
 package BOJ22289;
 
 import java.io.*;
-import java.util.*;
 
 public class BOJ22289 {
   static int bundle = 3; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.

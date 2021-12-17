@@ -14,12 +14,16 @@ public class OutputChecker {
     while (jc != -1 && pc != -1) {
       jc = (char) jr.read();
       pc = (char) pr.read();
-      if (jc < '0' || jc > '9' || pc < '0' || pc > '9') break;
+      if ((jc < '0' || jc > '9') && (pc < '0' || pc > '9')) break;
       if (jc != pc) {
         System.out.println("Wrong!!!");
+        jr.close();
+        pr.close();
         return;
       }
     }    
     System.out.println("SAME");
+    jr.close();
+    pr.close();
   }
 }

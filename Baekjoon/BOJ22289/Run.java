@@ -5,6 +5,7 @@ import java.util.*;
 
 public class Run {
   public static void main(String[] args) throws IOException, InterruptedException {
+    String dir = "C:\\Users\\pc4\\Desktop\\JHKim\\Programming\\Git\\AlgorithmLearn\\Baekjoon\\BOJ22289";
     while (true) {
       ArrayList<String> c1 = new ArrayList<>();
       c1.add("java");
@@ -20,22 +21,22 @@ public class Run {
       c4.add("./OutputChecker.java");
 
       ProcessBuilder pb1 = new ProcessBuilder(c1);
-      pb1.directory(new File("C:\\Users\\pc4\\Desktop\\JHKim\\Programming\\Git\\AlgorithmLearn\\Baekjoon\\BOJ22289"));
+      pb1.directory(new File(dir));
       Process p1 = pb1.start();
       p1.waitFor();
       
       ProcessBuilder pb2 = new ProcessBuilder(c2);
-      pb2.directory(new File("C:\\Users\\pc4\\Desktop\\JHKim\\Programming\\Git\\AlgorithmLearn\\Baekjoon\\BOJ22289"));
+      pb2.directory(new File(dir));
       Process p2 = pb2.start();
       p2.waitFor();
 
       ProcessBuilder pb3 = new ProcessBuilder(c3);
-      pb3.directory(new File("C:\\Users\\pc4\\Desktop\\JHKim\\Programming\\Git\\AlgorithmLearn\\Baekjoon\\BOJ22289"));
+      pb3.directory(new File(dir));
       Process p3 = pb3.start();
       p3.waitFor();
 
-      File j = new File("./outputJava.txt");
-      File p = new File("./outputPython.txt");
+      File j = new File(dir + "/outputJava.txt");
+      File p = new File(dir + "/outputPython.txt");
 
       FileReader jr = new FileReader(j);
       FileReader pr = new FileReader(p);
@@ -46,10 +47,14 @@ public class Run {
         pc = (char) pr.read();
         if (jc < '0' || jc > '9' || pc < '0' || pc > '9') break;
         if (jc != pc) {
+          jr.close();
+          pr.close();
           return;
         }
       }
       System.out.println("Same");
+      jr.close();
+      pr.close();
     }
   }
 }
