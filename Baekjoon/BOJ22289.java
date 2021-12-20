@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ22289 {
-  static int bundle = 5; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.
+  static int bundle = 3; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.
   static long digit = 1; // 10^bundle
   static int sumLen;
   public static void main(String[] args) throws IOException {
