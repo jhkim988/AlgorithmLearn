@@ -13,7 +13,7 @@ public class BOJ12789 {
       que.offer(Integer.parseInt(st.nextToken()));
     }
     int count = 1;
-    while (!que.isEmpty() || (stk.isEmpty() || stk.peek() == count)) {
+    while (!que.isEmpty() || (!stk.isEmpty() && stk.peek() == count)) {
       while (!stk.isEmpty() && stk.peek() == count) {
         stk.pop();
         count++;
@@ -21,10 +21,13 @@ public class BOJ12789 {
       while (!que.isEmpty() && que.peek() != count) {
         stk.push(que.poll());
       }
-      if (!que.isEmpty()) count++;
+      if (!que.isEmpty()) {
+        que.poll();
+        count++;
+      }
     }
 
-    bw.write(count == N ? "Nice\n" : "Sad\n");
+    bw.write(count == N + 1 ? "Nice\n" : "Sad\n");
     bw.flush();
   }
 }
