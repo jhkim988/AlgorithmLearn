@@ -56,7 +56,6 @@ public class BOJ16637 {
         deq.addFirst((int) (data[i*2 + 2] - '0'));
       }
     }
-    int val = 0;
     for (int i = 0; i < check.length; i++) {
       if (check[i]) continue;
       int num1 = deq.removeLast();
