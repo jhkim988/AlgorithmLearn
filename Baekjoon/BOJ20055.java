@@ -14,8 +14,6 @@ public class BOJ20055 {
     for (int i = 0; i < 2 * len; i++) if ((durability[i] = Integer.parseInt(st.nextToken())) == 0) numZero++;  
     int upPtr = 0;
     int downPtr = len - 1;
-    int numRobot = 0;
-    // Queue<Integer> que = new LinkedList<>();
     boolean[] occupied = new boolean[len * 2];
     int process = 0;
     while (limNumZero > numZero) {
