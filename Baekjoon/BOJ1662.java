@@ -5,15 +5,12 @@ public class BOJ1662 {
   private static class Pair {
     char ch;
     int len;
-    boolean isLen;
     Pair(char ch) {
       this.ch = ch;
       this.len = 1;
-      this.isLen = false;
     }
     Pair(int len) {
       this.len = len;
-      this.isLen = true;
     }
   }
   public static void main(String[] args) throws IOException {
