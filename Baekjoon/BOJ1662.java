@@ -2,43 +2,47 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ1662 {
+  private static class Pair {
+    char ch;
+    int len;
+    boolean isLen;
+    Pair(char ch) {
+      this.ch = ch;
+      this.len = 1;
+      this.isLen = false;
+    }
+    Pair(int len) {
+      this.len = len;
+      this.isLen = true;
+    }
+  }
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     char[] input = br.readLine().toCharArray();
-    Stack<Integer> stk = new Stack<>();
-    Stack<Integer> start = new Stack<>();
-    char prev = 0;
+    Stack<Pair> stk = new Stack<>();
     for (char ch : input) {
-      if (ch == '(') {
-        start.push(stk.pop());
-        stk.push((int) '(');
-      } else if (ch == ')') {
-        if (prev == '(') stk.pop();
-        else if (prev == ')') {
-          int len = 0;
-          while (stk.peek() != '(') len += stk.pop();
-          stk.pop(); // '('
-          stk.push(start.pop() * len);
-        } else {
-          int len = 0;
-          while (stk.peek() != '(') {
-            len++;
-            stk.pop();
-          }
-          stk.pop(); // '('
-          stk.push(len);
+      if (ch == ')') {
+        Pair last = stk.pop();
+        if (last.ch == '(') {
+          stk.pop();
+          continue;
+        } 
+        int len = last.len;
+        while(stk.peek().ch != '(') {
+          Pair pop = stk.pop();
+          len += pop.len;
         }
+        stk.pop();
+        Pair start = stk.pop();
+        stk.push(new Pair((int) (start.ch - '0') * len));
       } else {
-        stk.push(ch - '0');
+        stk.push(new Pair(ch));
       }
-      prev = ch;
-
-      System.out.println("stk: " + stkToString(stk));
-      System.out.println("start: " + stkToString(start));
     }
-
-    bw.write(Integer.toString(stk.pop()));
+    int len = 0;
+    while (!stk.isEmpty()) len += stk.pop().len;
+    bw.write(Integer.toString(len));
     bw.newLine();
     bw.flush();
   }
