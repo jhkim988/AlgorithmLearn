@@ -5,10 +5,11 @@ public class BOJ22289 {
   static int bundle = 3; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.
   static long digit = 1; // 10^bundle
   static int sumLen;
+  static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+  static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
   public static void main(String[] args) throws IOException {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     StringTokenizer st = new StringTokenizer(br.readLine());
+    br.close();
     char[] first = st.nextToken().toCharArray();
     char[] second = st.nextToken().toCharArray();
     if (first[0] == '0' || second[0] == '0') {
@@ -47,30 +48,30 @@ public class BOJ22289 {
       q[i][0] = val;
     }
     productPolynomial(p, q);
-    bw.write(answer(p));
-    bw.flush();
+    answer(p);
   }
-  static String answer(double[][] p) {
+  static void answer(double[][] p) throws IOException {
     long[] result = new long[sumLen];
     for (int i = 0; i < sumLen; i++) result[i] = (long) Math.round(p[i][0]);
     for (int i = 0; i < sumLen; i++) {
+      assert result[i + 1] > Long.MAX_VALUE - result[i] / digit;
       if (i < sumLen - 1) result[i + 1] += result[i] / digit;
       result[i] %= digit;
     }
     int nonzero = sumLen;
     while (result[--nonzero] == 0);
-    StringBuilder sb = new StringBuilder();
-    sb.append(result[nonzero]);
+    bw.write(Long.toString(result[nonzero]));
     for (int i = nonzero - 1; i >= 0; i--) {
       long exp = digit/10;
       while (exp != 1 && result[i] < exp) {
-        sb.append(0);
+        bw.write(Long.toString(0L));
         exp /= 10;
       }
-      sb.append(result[i]);
+      bw.write(Long.toString(result[i]));
+      bw.flush();
     }
-    sb.append('\n');
-    return sb.toString();
+    bw.newLine();
+    bw.flush();
   }
   static void productPolynomial(double[][] p, double[][] q) {
     fft(p, false);
