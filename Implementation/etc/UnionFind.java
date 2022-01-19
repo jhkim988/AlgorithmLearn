@@ -1,5 +1,3 @@
-package etc;
-
 public class UnionFind {
   int[] id;
   int[] sz;

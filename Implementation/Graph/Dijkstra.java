@@ -1,5 +1,3 @@
-package Graph;
-
 import java.util.*;
 
 public class Dijkstra {
@@ -26,6 +24,7 @@ public class Dijkstra {
     for (int i = 0; i <= V; i++) {
       graph.add(new LinkedList<>());
     }
+    
     for (int i = 0; i < E; i++) { 
       // Generate Random Edge
       int start = (int) (Math.random() * 20) + 1;

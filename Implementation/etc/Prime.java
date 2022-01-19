@@ -1,5 +1,3 @@
-package etc;
-
 public class Prime {
   static boolean linearSearch(int num) {
     // O(N^2)

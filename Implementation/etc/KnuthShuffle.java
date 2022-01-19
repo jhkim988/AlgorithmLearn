@@ -1,5 +1,3 @@
-package etc;
-
 public class KnuthShuffle {
   static Integer[] shuffle(Integer[] input) {
     Integer[] shuffle = input.clone();

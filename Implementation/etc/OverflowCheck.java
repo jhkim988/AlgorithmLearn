@@ -1,5 +1,3 @@
-package etc;
-
 public class OverflowCheck {
   public static void main(String[] args) {
     int small = 3;

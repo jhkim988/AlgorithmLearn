@@ -1,5 +1,3 @@
-package BinSearch;
-
 import java.util.*;
 
 public class Bound {
