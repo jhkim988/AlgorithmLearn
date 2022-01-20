@@ -2,15 +2,13 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ22289 {
-  static int bundle = 2; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.
+  static int bundle = 5; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.
   static long digit = 1; // 10^bundle
-  static int twoPower = 1;
   static int sumLen;
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
   public static void main(String[] args) throws IOException {
     StringTokenizer st = new StringTokenizer(br.readLine());
-    br.close();
     char[] first = st.nextToken().toCharArray();
     char[] second = st.nextToken().toCharArray();
     if (first[0] == '0' || second[0] == '0') {
@@ -25,12 +23,12 @@ public class BOJ22289 {
     sumLen = firstlen + secondlen + 2;
     while (len < sumLen) { // FFT 적용 크기
       len <<= 1;
-      twoPower++;
     }
     for (int i = 0; i < bundle; i++) digit *= 10;
+    
     // first/second -> 다항식(계수배열 p, q)
     double[][] p = new double[len][2]; 
-    double[][] q = new double[len][2]; 
+    double[][] q = new double[len][2];
     coefficientAllocation(p, firstlen, first);
     coefficientAllocation(q, secondlen, second);
     productPolynomial(p, q);
@@ -55,13 +53,13 @@ public class BOJ22289 {
     }
   }
   static void answer(double[][] p) throws IOException {
-    for (int i = 0; i < sumLen; i++) p[i][0] = Math.round(p[i][0]);
+    for (int i = 0; i < sumLen - 1; i++) p[i][0] = Math.round(p[i][0]);
     for (int i = 0; i < sumLen - 1; i++) {
       p[i + 1][0] += Math.floor(p[i][0] / digit);
       p[i][0] %= digit;
     }
     int nonzero = sumLen;
-    while (p[--nonzero][0] < 1e-9);
+    while (p[--nonzero][0] < 0.5);
     bw.write(Long.toString((long) p[nonzero][0]));
     for (int i = nonzero - 1; i >= 0; i--) {
       long val = (long) p[i][0];
@@ -76,14 +74,6 @@ public class BOJ22289 {
     bw.flush();
   }
   static void productPolynomial(double[][] p, double[][] q) {
-    double down = 1.0;
-    double up = 1.0;
-    for (int i = 0; i <= twoPower; i++) {
-      down /= 2;
-      up *= 4;
-    }
-    scaling(p, down);
-    scaling(q, down);
     fft(p, false);
     fft(q, false);
     for (int i = 0; i < p.length; i++) {
@@ -93,7 +83,6 @@ public class BOJ22289 {
       p[i][1] = im;
     }
     fft(p, true);
-    scaling(p, up);
   }
   static void fft(double[][] p, boolean isInverse) {
     int n = p.length;
@@ -112,8 +101,6 @@ public class BOJ22289 {
     }
     for (int k = 1; k < n; k <<= 1) {
       double a = isInverse ? Math.PI/k : -Math.PI/k;
-      double cos = Math.cos(a);
-      double sin = Math.sin(a);
       for (int i = 0; i < n; i += k*2) {
         double rewp = 1.0;
         double imwp = 0.0;
@@ -128,10 +115,9 @@ public class BOJ22289 {
           p1[1] = imx + imy;
           p2[0] = rex - rey;
           p2[1] = imx - imy;
-          double re = rewp*cos - imwp*sin;
-          double im = rewp*sin + imwp*cos;
-          rewp = re;
-          imwp = im;
+          // 누적해서 곱하면 실수 오차가 생긴다.
+          rewp = Math.cos(a*(j+1));
+          imwp = Math.sin(a*(j+1));
         }
       }
     }
