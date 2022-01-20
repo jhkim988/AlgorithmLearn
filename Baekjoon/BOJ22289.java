@@ -27,47 +27,40 @@ public class BOJ22289 {
     // first/second -> 다항식(계수배열 p, q)
     double[][] p = new double[len][2]; 
     double[][] q = new double[len][2]; 
-    for (int i = 0; i < firstlen; i++) {
+    coefficientAllocation(p, firstlen, first);
+    coefficientAllocation(q, secondlen, second);
+    productPolynomial(p, q);
+    answer(p);
+  }
+  static void coefficientAllocation(double[][] p, int numTerm, char[] input) {
+    for (int i = 0; i < numTerm; i++) {
       long val = 0;
       long base = 1;
       for (int j = 0; j < bundle; j++) {
-        if (first.length - bundle * i - j - 1 < 0) break;
-        val += base * (first[first.length - bundle * i - j - 1] - '0');
+        if (input.length - bundle * i - j - 1 < 0) break;
+        val += base * (input[input.length - bundle * i - j - 1] - '0');
         base *= 10;
       }
       p[i][0] = val;
     }
-    for (int i = 0; i < secondlen; i++) {
-      long val = 0;
-      long base = 1;
-      for (int j = 0; j < bundle; j++) {
-        if (second.length - bundle * i - j - 1 < 0) break;
-        val += base * (second[second.length - bundle * i - j - 1] - '0');
-        base *= 10;
-      }
-      q[i][0] = val;
-    }
-    productPolynomial(p, q);
-    answer(p);
   }
   static void answer(double[][] p) throws IOException {
-    long[] result = new long[sumLen];
-    for (int i = 0; i < sumLen; i++) result[i] = (long) Math.round(p[i][0]);
-    for (int i = 0; i < sumLen; i++) {
-      assert result[i + 1] > Long.MAX_VALUE - result[i] / digit;
-      if (i < sumLen - 1) result[i + 1] += result[i] / digit;
-      result[i] %= digit;
+    for (int i = 0; i < sumLen; i++) p[i][0] = Math.round(p[i][0]);
+    for (int i = 0; i < sumLen - 1; i++) {
+      p[i + 1][0] += Math.floor(p[i][0] / digit);
+      p[i][0] %= digit;
     }
     int nonzero = sumLen;
-    while (result[--nonzero] == 0);
-    bw.write(Long.toString(result[nonzero]));
+    while (p[--nonzero][0] < 1e-3);
+    bw.write(Long.toString((long) p[nonzero][0]));
     for (int i = nonzero - 1; i >= 0; i--) {
+      long val = (long) p[nonzero][0];
       long exp = digit/10;
-      while (exp != 1 && result[i] < exp) {
+      while (exp != 1 && val < exp) {
         bw.write(Long.toString(0L));
         exp /= 10;
       }
-      bw.write(Long.toString(result[i]));
+      bw.write(Long.toString(val));
       bw.flush();
     }
     bw.newLine();
