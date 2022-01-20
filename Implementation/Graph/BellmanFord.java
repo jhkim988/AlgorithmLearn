@@ -32,18 +32,27 @@ public class BellmanFord {
     }
   }
   static int[] bellmanFord(int start, ArrayList<ArrayList<Pair>> graph) {
+    // time complexity: O(VE)
     int numV = graph.size();
     boolean hasNegativeCycle = false;
     int[] dist = new int[numV]; // dist[i]: start -> i mininum cost
-    Arrays.fill(dist, INF);
+    Arrays.fill(dist, INF); // step 1: initilize
     dist[start] = 0;
-    for (int i = 0; i < numV; i++) {
+    for (int i = 0; i < numV - 1; i++) { // step 2: |V| - 1 repeat
       for (int j = 0; j < numV; j++) {
-        for (Pair edge : graph.get(j)) {
+        for (Pair edge : graph.get(j)) { // Renew dist[]
           if (dist[j] != INF && dist[edge.destination] > dist[j] + edge.weight) {
             dist[edge.destination] = dist[j] + edge.weight;
-            if (i == numV - 1) hasNegativeCycle = true;
           }
+        }
+      }
+    }
+    // step 3: check NegativeCycle
+    checkHasNegativeCycle: for (int j = 0; j < numV; j++) {
+      for (Pair edge : graph.get(j)) {
+        if (dist[j] != INF && dist[edge.destination] > dist[j] + edge.weight) {
+          hasNegativeCycle = true;
+          break checkHasNegativeCycle;
         }
       }
     }

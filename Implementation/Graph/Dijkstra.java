@@ -34,7 +34,7 @@ public class Dijkstra {
       // graph.get(end).add(new Node(start, weight)); // Undirected Graph
     }
 
-    // Dijkstra Algorithm:
+    // Dijkstra Algorithm: time complexity: O(|E| + |V|log|V|)
     // Use cost array greedly.
     int start = 1;
     int target = 20;
