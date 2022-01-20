@@ -34,7 +34,9 @@ public class Dijkstra {
       // graph.get(end).add(new Node(start, weight)); // Undirected Graph
     }
 
-    // Dijkstra Algorithm: time complexity: O(|E| + |V|log|V|)
+    // Dijkstra Algorithm:
+    // time complexity: O((|E| + |V|)log|V|) (min-priority queue) ~ O(|V|^2)
+    // time complexity: O(|E| + |V|log|V|) (Fibonacci heap)
     // Use cost array greedly.
     int start = 1;
     int target = 20;

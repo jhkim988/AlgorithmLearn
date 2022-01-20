@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class FylodWarshall {
+public class FloydWarshall {
   static final int INF = Integer.MAX_VALUE/2;
   private static class Pair {
     int destination;
@@ -11,10 +11,11 @@ public class FylodWarshall {
     }
   }
   public static void main(String[] args) {
-    ArrayList<ArrayList<Pair>> graph = makeRandomGraph(10, 40);
-    
+    ArrayList<ArrayList<Pair>> graph = makeRandomGraph(10, 30);
+    int[][] dist = floydWarshall(graph);
+    for (int[] d : dist) System.out.println(Arrays.toString(d));
   }
-  static int[][] fyoldWarshall(ArrayList<ArrayList<Pair>> graph) {
+  static int[][] floydWarshall(ArrayList<ArrayList<Pair>> graph) {
     // time complexity: O(|V|^3)
     int numV = graph.size();
     int[][] dist = new int[numV][numV];
