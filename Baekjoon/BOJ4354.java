@@ -5,38 +5,46 @@ public class BOJ4354 {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     
-    String input = br.readLine();
-    int len = input.length();
-    while (!(len == 1 && input.charAt(0) =='.')) {
-      int result = root(input, len);
-      bw.write(result + "\n");
-      input = br.readLine();
-      len = input.length();
+    char[] input = br.readLine().toCharArray();
+    while (!(input[0] == '.' && input.length == 1)) {
+      int last = skip(input);
+      if (input.length % (input.length - last) != 0) bw.write("1");
+      else bw.write(Integer.toString(input.length / (input.length - last)));
+      bw.newLine();
+      input = br.readLine().toCharArray();
     }
     bw.flush();
   }
-  static int root(String str, int len) {
-    int result = 1;
-    char[] text = str.toCharArray();
-    for (int i = 2; i <= len; i++) {
-      if (len % i != 0) continue;
-      char[] pat = new char[len / i];
-      for (int j = 0; j < len/i; j++) {
-        pat[j] = text[j];
+  static int skip(char[] input) {
+    int[] skip = new int[input.length];
+    int pt = 1;
+    int pp = 0;
+    while (pt < input.length) {
+      if (input[pt] == input[pp]) {
+        skip[pt++] = ++pp;
+      } else if (pp == 0) {
+        skip[pt++] = 0;
+      } else {
+        pp = skip[pp - 1];
       }
-      if (!kmpMatch(text, pat)) continue;
-      result = i;
     }
-    return result;
+    return skip[input.length - 1];
   }
-  static boolean kmpMatch(char[] text, char[] pat) {
-    for (int ptr1 = pat.length; ptr1 < text.length; ptr1 += pat.length) {
-      for (int ptr2 = 0; ptr2 < pat.length; ptr2++) {
-        if (text[ptr1 + ptr2] != pat[ptr2]) {
-          return false;
-        }
+  static int getPi(char[] p) {
+    int max = 0;
+    int m = p.length;
+    int j = 0;
+    int[] pi = new int[m];
+    for (int i = 1; i< m; i++) {
+      while (j > 0 && p[i] != p[j])
+        j = pi[j - 1];
+      if (p[i] == p[j])
+      {
+        pi[i] = ++j;
+        if (pi[i] > max)
+          max = pi[i];
       }
-    } 
-    return true;
+    }
+    return max;
   }
 }
