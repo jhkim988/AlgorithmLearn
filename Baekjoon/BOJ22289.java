@@ -4,6 +4,7 @@ import java.util.*;
 public class BOJ22289 {
   static int bundle = 2; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.
   static long digit = 1; // 10^bundle
+  static int twoPower = 1;
   static int sumLen;
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -22,7 +23,10 @@ public class BOJ22289 {
     int secondlen = second.length / bundle + (second.length % bundle == 0 ? 0 : 1);
     int len = 1;
     sumLen = firstlen + secondlen + 2;
-    while (len < sumLen) len <<= 1; // FFT 적용 크기
+    while (len < sumLen) { // FFT 적용 크기
+      len <<= 1;
+      twoPower++;
+    }
     for (int i = 0; i < bundle; i++) digit *= 10;
     // first/second -> 다항식(계수배열 p, q)
     double[][] p = new double[len][2]; 
@@ -57,7 +61,7 @@ public class BOJ22289 {
       p[i][0] %= digit;
     }
     int nonzero = sumLen;
-    while (p[--nonzero][0] < 1e-3);
+    while (p[--nonzero][0] < 1e-9);
     bw.write(Long.toString((long) p[nonzero][0]));
     for (int i = nonzero - 1; i >= 0; i--) {
       long val = (long) p[i][0];
@@ -74,9 +78,9 @@ public class BOJ22289 {
   static void productPolynomial(double[][] p, double[][] q) {
     double down = 1.0;
     double up = 1.0;
-    for (int i = 0; i < bundle - 1; i++) {
-      down /= 10;
-      up *= 100;
+    for (int i = 0; i <= twoPower; i++) {
+      down /= 2;
+      up *= 4;
     }
     scaling(p, down);
     scaling(q, down);
@@ -132,10 +136,7 @@ public class BOJ22289 {
       }
     }
     if (isInverse) {
-      for (int i = 0; i < n; i++) {
-        p[i][0] /= n;
-        p[i][1] /= n;
-      }
+      scaling(p, 1 / (double) n);
     }
   }
 }
