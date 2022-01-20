@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ22289 {
-  static int bundle = 3; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.
+  static int bundle = 2; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.
   static long digit = 1; // 10^bundle
   static int sumLen;
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -32,6 +32,12 @@ public class BOJ22289 {
     productPolynomial(p, q);
     answer(p);
   }
+  static void scaling(double[][] p, double multi) {
+    for (int i = 0; i < p.length; i++) {
+      p[i][0] *= multi;
+      p[i][1] *= multi;
+    }
+  }
   static void coefficientAllocation(double[][] p, int numTerm, char[] input) {
     for (int i = 0; i < numTerm; i++) {
       long val = 0;
@@ -54,19 +60,26 @@ public class BOJ22289 {
     while (p[--nonzero][0] < 1e-3);
     bw.write(Long.toString((long) p[nonzero][0]));
     for (int i = nonzero - 1; i >= 0; i--) {
-      long val = (long) p[nonzero][0];
+      long val = (long) p[i][0];
       long exp = digit/10;
       while (exp != 1 && val < exp) {
         bw.write(Long.toString(0L));
         exp /= 10;
       }
       bw.write(Long.toString(val));
-      bw.flush();
     }
     bw.newLine();
     bw.flush();
   }
   static void productPolynomial(double[][] p, double[][] q) {
+    double down = 1.0;
+    double up = 1.0;
+    for (int i = 0; i < bundle - 1; i++) {
+      down /= 10;
+      up *= 100;
+    }
+    scaling(p, down);
+    scaling(q, down);
     fft(p, false);
     fft(q, false);
     for (int i = 0; i < p.length; i++) {
@@ -76,6 +89,7 @@ public class BOJ22289 {
       p[i][1] = im;
     }
     fft(p, true);
+    scaling(p, up);
   }
   static void fft(double[][] p, boolean isInverse) {
     int n = p.length;
