@@ -1,27 +1,31 @@
 import java.util.*;
 
 public class Trie {
-  HashMap<Character, HashMap> root = new HashMap<>();
-  static int size = 0;
+  private static class TrieNode {
+    HashMap<Character, TrieNode> child;
+    boolean isEnd;
+    TrieNode() { child = new HashMap<>(); }
+  }
+  TrieNode root = new TrieNode();
   void add(char[] str) {
-    HashMap<Character, HashMap> ptr = root;
+    TrieNode ptr = root;
     for (char ch : str) {
-      if (ptr.containsKey(ch)) {
-        ptr = ptr.get(ch);
+      if (ptr.child.containsKey(ch)) {
+        ptr = ptr.child.get(ch);
       } else {
-        HashMap<Character, HashMap> tmp = new HashMap<>();
-        ptr.put(ch, tmp);
+        TrieNode tmp = new TrieNode();
+        ptr.child.put(ch, tmp);
         ptr = tmp;
-        size++;
       }
     }
+    ptr.isEnd = true;
   }
   boolean search(char[] str) {
-    HashMap<Character, HashMap> ptr = root;
+    TrieNode ptr = root;
     for (char ch : str) {
-      if (!ptr.containsKey(ch)) return false;
-      ptr = ptr.get(ch);
+      if (!ptr.child.containsKey(ch)) return false;
+      ptr = ptr.child.get(ch);
     }
-    return true;
+    return ptr.isEnd;
   }
 }
