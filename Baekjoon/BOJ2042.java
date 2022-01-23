@@ -24,6 +24,9 @@ public class BOJ2042 {
     }
   }
   public static void main(String[] args) throws IOException {
+    useFenwickTree();
+  } 
+  static void useSegTree() throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     StringTokenizer st = new StringTokenizer(br.readLine());
@@ -58,5 +61,53 @@ public class BOJ2042 {
       }
     }
     bw.flush();
-  }  
+  }
+  static void useFenwickTree() throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int len = Integer.parseInt(st.nextToken());
+    int numChange = Integer.parseInt(st.nextToken());
+    int numSum = Integer.parseInt(st.nextToken());
+    int numQuery = numChange + numSum;
+    
+    long[] arr = new long[len + 1];
+    long[] tree = new long[len + 1];
+    for (int i = 1; i <= len; i++) {
+      arr[i] = Long.parseLong(br.readLine());
+      update(tree, i, arr[i]);
+    }
+    while (numQuery-- > 0) {
+      st = new StringTokenizer(br.readLine());
+      int type = Integer.parseInt(st.nextToken());
+      if (type == 1) { // array change
+        int idx = Integer.parseInt(st.nextToken());
+        long value = Long.parseLong(st.nextToken());
+        long diff = value - arr[idx];
+        arr[idx] = value;
+        update(tree, idx, diff);
+      } else { // get partial sum
+        int lo = Integer.parseInt(st.nextToken());
+        int hi = Integer.parseInt(st.nextToken());
+        long pSum = sum(tree, hi) - (lo == 1 ? 0 : sum(tree, lo - 1));
+        bw.write(Long.toString(pSum));
+        bw.newLine();
+      }
+    }
+    bw.flush();
+  }
+  static void update(long[] tree, int i, long diff) {
+    while (i < tree.length) {
+      tree[i] += diff;
+      i += i & -i;
+    }
+  }
+  static long sum(long[] tree, int i) {
+    long value = 0;
+    while (i > 0) {
+      value += tree[i];
+      i -= i & -i;
+    }
+    return value;
+  }
 }
