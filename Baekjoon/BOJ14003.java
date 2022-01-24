@@ -39,12 +39,6 @@ public class BOJ14003 {
         stk.push(i);
         copyLIS--;
       }
-      if (!stk.empty() && stk.peek() == dp[i]) {
-        if (data[stk.peek()] > data[dp[i]]) {
-          stk.pop();
-          stk.push(i);
-        }
-      }
     }
 
     bw.write(LISlen + "\n");
