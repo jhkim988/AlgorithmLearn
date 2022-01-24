@@ -14,31 +14,27 @@ public class BinSearch {
     System.out.println(binSearch(seq, 5));
   } 
   static int binSearch(int[] seq, int key) {
-    int ptr1 = 0;
-    int ptr2 = seq.length - 1;
+    // convention:
 
-    while (ptr1 < ptr2) {
-      int mid = (ptr1 + ptr2) / 2;
-      if (seq[mid] < key) {
-        ptr1 = mid + 1;
-      } else if (seq[mid] > key) {
-        ptr2 = mid - 1;
-      } else { // Find
-        return mid;
-      }
-    }
+    // 1. set init
+    // check(lo) != check(hi)가 되도록 구간을 설정한다.
+    // 문제 답이 최대 n일 때, hi = n으로 설정해선 안된다. n + 1로 설정한다.
+    // 문제 답이 최소 0일 때, lo = 0으로 설정해선 안된다. -1로 설정한다.
+    int lo = -1;
+    int hi = seq.length;
 
-    // Not Found.
-    // Find Insertion Point
-    ptr2 = seq.length - 1;
-    while (ptr1 < ptr2) { // use upper bound
-      int mid = (ptr1 + ptr2) / 2;
-      if (seq[mid] < key) {
-        ptr1 = mid + 1;
+    // 2. lo + 1 < hi로 설정해서 항상 lo < mid < hi를 만족하게 한다.(while 문을 돌면서 lo와 hi 사이에 적어도 한 칸 존재)
+    while (lo + 1 < hi) {
+      int mid = (lo + hi) / 2;
+      // check(lo) == check(mid), lo에서의 체크값과 mid에서의 체크값이 같다면 lo = mid, 아니라면 hi = mid
+      if (seq[mid] < key) { // check(x) = seq[x] < key
+        lo = mid;
       } else {
-        ptr2 = mid - 1;
+        hi = mid;
       }
     }
-    return -ptr1 - 1;
+    // 반복문이 끝나면 항상 hi = lo + 1를 만족한다.
+    // 답이 lo인지 hi인지 check 함수를 고려하여 정한다.
+    return seq[hi] == key ? hi : -hi-1;
   } 
 }

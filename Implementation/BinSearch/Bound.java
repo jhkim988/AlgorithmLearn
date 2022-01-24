@@ -17,33 +17,32 @@ public class Bound {
   }  
   static int upperBound(int[] seq, int key) {
     // find min { x : key < seq[x] } 
-    int ptr1 = 0;
-    int ptr2 = seq.length - 1;
+    int lo = -1;
+    int hi = seq.length;
 
-    while (ptr1 < ptr2) {
-      int mid = (ptr1 + ptr2) / 2;
-      if (seq[mid] <= key) {
-        ptr1 = mid + 1;
+    while (lo + 1 < hi) {
+      int mid = (lo + hi) / 2;
+      if (seq[mid] <= key) { // check(x) = seq[x] <= key
+        lo = mid;
       } else {
-        ptr2 = mid;
+        hi = mid;
       }
     }
-
-    return ptr2;
+    return hi;
   }
   static int lowerBound(int[] seq, int key) {
-    // find max { x : seq[x] < key } + 1
-    int ptr1 = 0;
-    int ptr2 = seq.length - 1;
+    // find max { x : seq[x] < key }
+    int lo = -1;
+    int hi = seq.length;
     
-    while (ptr1 < ptr2) {
-      int mid = (ptr1 + ptr2) / 2;
+    while (lo + 1 < hi) {
+      int mid = (lo + hi) / 2;
       if (seq[mid] < key) {
-        ptr1 = mid + 1;
+        lo = mid;
       } else {
-        ptr2 = mid;
+        hi = mid;
       }
     }
-    return ptr2;
+    return hi;
   }
 }
