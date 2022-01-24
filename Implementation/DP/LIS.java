@@ -29,6 +29,7 @@ public class LIS {
   static int useBinSearch(int[] seq) {
     // Get Length of LIS
     // length of LIS: ptr - 1;
+    // table[k]: minimum of last element for all length k LIS.
     int len = seq.length;
     int[] table = new int[len + 1];
     int ptr = 1;
