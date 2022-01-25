@@ -24,7 +24,6 @@ public class BOJ2357 {
     initMin(arr, mintree, 1, 0, len-1);
     initMax(arr, maxtree, 1, 0, len-1);
 
-
     while (numQuery-- > 0) {
       st = new StringTokenizer(br.readLine());
       int left = Integer.parseInt(st.nextToken()) - 1;
@@ -40,21 +39,21 @@ public class BOJ2357 {
     }
     bw.flush();
   }
-  static int init(int[] arr, int[] tree, int node, int start, int end, BinaryOperator<Integer> f) {
-    if (start == end) return tree[node] = arr[start];
-    int mid = (start + end) / 2;
-    int leftChild = init(arr, tree, node*2, start, mid, f);
-    int rightChild = init(arr, tree, node*2+1, mid+1, end, f);
-    return tree[node] = f.apply(leftChild, rightChild);
-  }
-  static int get(int[] tree, int node, int start, int end, int left, int right, BinaryOperator<Integer> f) {
-    if (start > right || end < left) return f.apply(1, -1) > 0 ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-    if (left <= start && end <= right) return tree[node];
-    int mid = (start + end) / 2;
-    int leftChild = get(tree, node*2, start, mid, left, right, f);
-    int rightChild = get(tree, node*2+1, mid+1, end, left, right, f);
-    return f.apply(leftChild, rightChild);
-  }
+  // static int init(int[] arr, int[] tree, int node, int start, int end, BinaryOperator<Integer> f) {
+  //   if (start == end) return tree[node] = arr[start];
+  //   int mid = (start + end) / 2;
+  //   int leftChild = init(arr, tree, node*2, start, mid, f);
+  //   int rightChild = init(arr, tree, node*2+1, mid+1, end, f);
+  //   return tree[node] = f.apply(leftChild, rightChild);
+  // }
+  // static int get(int[] tree, int node, int start, int end, int left, int right, BinaryOperator<Integer> f) {
+  //   if (start > right || end < left) return f.apply(1, -1) > 0 ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+  //   if (left <= start && end <= right) return tree[node];
+  //   int mid = (start + end) / 2;
+  //   int leftChild = get(tree, node*2, start, mid, left, right, f);
+  //   int rightChild = get(tree, node*2+1, mid+1, end, left, right, f);
+  //   return f.apply(leftChild, rightChild);
+  // }
   static int initMin(int[] arr, int[] tree, int node, int start, int end) {
     if (start == end) return tree[node] = arr[start];
     int mid = (start + end) / 2;
