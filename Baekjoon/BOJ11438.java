@@ -50,7 +50,6 @@ public class BOJ11438 {
         tree[i][j] = tree[i - 1][tree[i - 1][j]];
       }
     }
-
     int numQuery = Integer.parseInt(br.readLine());
     while (numQuery-- > 0) {
       st = new StringTokenizer(br.readLine());
@@ -68,29 +67,26 @@ public class BOJ11438 {
       if (q1 == q2) {
         bw.write(Integer.toString(q1));
         bw.newLine();
+        bw.flush();
         continue;
       }
-      int lo = 0; // false
-      int hi = depth[q1]; // true
-      while (lo + 1 < hi) {
-        int mid = (lo + hi) / 2;
-        if (move(q1, mid, tree) != move(q2, mid, tree)) {
-          lo = mid;
-        } else {
-          hi = mid;
+      for (int b = log - 1; b >= 0; b--) {
+        if (tree[b][q1] != tree[b][q2]) {
+          q1 = tree[b][q1];
+          q2 = tree[b][q2];
         }
-      }
-      bw.write(Integer.toString(move(q1, hi, tree)));
+      }      
+      bw.write(Integer.toString(tree[0][q1]));
       bw.newLine();
     }
     bw.flush();
   }
-  static int move(int id, int num, int[][] tree) {
-    for (int b = 0; b < log; b++) {
-      if ((num & (1 << b)) != 0) {
-        id = tree[b][id];
-      }
-    }
-    return id;
-  }
+  // static int move(int id, int num, int[][] tree) {
+  //   for (int b = 0; b < log; b++) {
+  //     if ((num & (1 << b)) != 0) {
+  //       id = tree[b][id];
+  //     }
+  //   }
+  //   return id;
+  // }
 }
