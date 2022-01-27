@@ -20,24 +20,26 @@ public class BOJ11505 {
     }
     void update(int i, long num) {
       int j = i;
-      if (num != 0) {
-        while (i <= n) {
-          nonzero[i] = (nonzero[i] * num) % DIVISOR;
-          i += i & -i;
-        }
-      }
-      i = j;
-      if (arr[i - 1] == 0) {
-        System.arraycopy(nonzero, 0, tree, 0, n);
-        while (i <= n) {
-          tree[i] = (nonzero[i] * num) % DIVISOR;
-          i += i & -i;
-        } 
-      } else {
+      if (num == 0) {
         while (i <= n) {
           tree[i] = (tree[i] * num) % DIVISOR;
           i += i & -i;
         } 
+        return;
+      }
+
+      if (arr[i - 1] == 0) {
+        System.arraycopy(nonzero, 0, tree, 0, n);
+      }
+      i = j;
+      while (i <= n) {
+        nonzero[i] = (nonzero[i] * num) % DIVISOR;
+        i += i & -i;
+      }
+      i = j;
+      while (i <= n) {
+        tree[i] = (tree[i] * num) % DIVISOR;
+        i += i & -i;
       }
     }
     long get(int i) {
@@ -124,6 +126,8 @@ public class BOJ11505 {
         long multi = arr[idx - 1] != 0 ? (change * inverse(arr[idx - 1])) % DIVISOR : change;
         arr[idx - 1] = change;
         tree.update(idx, multi);
+        System.out.println("update: " + Arrays.toString(tree.tree));
+        System.out.println("nonzero: " + Arrays.toString(tree.tree));
       } else {
         int left = Integer.parseInt(st.nextToken());
         int right = Integer.parseInt(st.nextToken());
