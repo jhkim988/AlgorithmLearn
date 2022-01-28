@@ -7,53 +7,76 @@ public class BOJ11505 {
     int n;
     long[] arr;
     long[] tree;
-    long[] nonzero;
+    long[] numzero;
     FenwickTree(int n, long[] arr) {
       this.n = n;
       this.arr = arr;
       this.tree = new long[n + 1];
-      this.nonzero = new long[n + 1];
+      this.numzero = new long[n + 1];
       Arrays.fill(tree, 1L);
-      for (int i = 1; i <= n; i++) {
-        update(i, this.arr[i - 1]);
+      updateInit();
+    }
+    void updateInit() {
+      for (int k = 1; k <= n; k++) {
+        int bit = k;
+        if (arr[k - 1] == 0) {
+          while (bit <= n) {
+            numzero[bit]++;
+            bit += bit & -bit;
+          }
+        } else {
+          while (bit <= n) {
+            tree[bit] = (tree[bit] * arr[k - 1]) % DIVISOR;
+            bit += bit & -bit;
+          }
+        } 
       }
     }
     void update(int i, long num) {
-      int j = i;
-      if (num == 0) {
-        while (i <= n) {
-          tree[i] = (tree[i] * num) % DIVISOR;
-          i += i & -i;
-        } 
-        return;
+      long multi = (num * inverse(arr[i - 1])) % DIVISOR;
+      if (num != 0) {
+        updateTree(i, multi);
+        if (getNumZero(i, i) > 0) updateNumZero(i, -1);
+      } else {
+        updateNumZero(i, 1);
       }
-
-      if (arr[i - 1] == 0) {
-        System.arraycopy(nonzero, 0, tree, 0, n);
-      }
-      i = j;
-      while (i <= n) {
-        nonzero[i] = (nonzero[i] * num) % DIVISOR;
-        i += i & -i;
-      }
-      i = j;
+      if (num != 0) arr[i - 1] = num;
+    }
+    void updateTree(int i, long num) {
       while (i <= n) {
         tree[i] = (tree[i] * num) % DIVISOR;
         i += i & -i;
       }
     }
-    long get(int i) {
-      long val = 1L;
-      while (i > 0) {
-        val = (tree[i] * val) % DIVISOR;
-        i -= i & -i;
+    void updateNumZero(int i, int num) {
+      while (i <= n) {
+        numzero[i] += num;
+        i += i & -i;
+      }
+    }
+    long get(int left, int right) {
+      if (getNumZero(left, right) > 0) return 0;
+      return (get(right) * inverse(get(left - 1))) % DIVISOR;
+    }
+    long get(int range) {
+      long val = 1;
+      while (range > 0) {
+        val = (val * tree[range]) % DIVISOR;
+        range -= range & -range;
       }
       return val;
     }
-    long get(int left, int right) {
-      return (get(right) * inverse(get(left - 1))) % DIVISOR;
+    int getNumZero(int range) {
+      int num0 = 0;
+      while (range > 0) {
+        num0 += numzero[range];
+        range -= range & -range;
+      }
+      return num0;
     }
-
+    int getNumZero(int left, int right) {
+      return getNumZero(right) - getNumZero(left - 1);
+    }
   }
   private static class SegmentTree {
     int n;
@@ -75,22 +98,20 @@ public class BOJ11505 {
       long rightChild = init(node*2+1, mid+1, end);
       return tree[node] = (leftChild * rightChild) % DIVISOR;
     }
-    void update(int idx, long multi) {
-      update(1, 0, n - 1, idx - 1, multi);
+    void update(int idx, long change) {
+      arr[idx - 1] = change;
+      update(1, 0, n - 1, idx - 1, change);
     }
-    void update(int node, int start, int end, int idx, long multi) {
-      if (start > idx || end < idx) return;
+    long update(int node, int start, int end, int idx, long change) {
+      if (start > idx || end < idx) return tree[node];
       if (start != end) {
         int mid = (start + end) / 2;
-        update(node*2, start, mid, idx, multi);
-        update(node*2+1, mid+1, end, idx, multi);
+        long leftChild = update(node*2, start, mid, idx, change);
+        long rightChild = update(node*2+1, mid+1, end, idx, change);
+        return tree[node] = (leftChild * rightChild) % DIVISOR;
       } else {
-        if (tree[node] == 0) {
-          tree[node] = multi;
-          return;
-        }
+        return tree[node] = change;
       }
-      tree[node] = (tree[node] * multi) % DIVISOR;
     }
     long get(int left, int right) {
       return get(1, 0, n - 1, left - 1, right - 1);
@@ -115,19 +136,15 @@ public class BOJ11505 {
       arr[i] = Long.parseLong(br.readLine());
     }
 
-    FenwickTree tree = new FenwickTree(n, arr);
-    // SegmentTree tree = new SegmentTree(n, arr);
+    // FenwickTree tree = new FenwickTree(n, arr);
+    SegmentTree tree = new SegmentTree(n, arr);
     while (q-- > 0) {
       st = new StringTokenizer(br.readLine());
       int type = Integer.parseInt(st.nextToken());
       if (type == 1) {
         int idx = Integer.parseInt(st.nextToken());
         int change = Integer.parseInt(st.nextToken());
-        long multi = arr[idx - 1] != 0 ? (change * inverse(arr[idx - 1])) % DIVISOR : change;
-        arr[idx - 1] = change;
-        tree.update(idx, multi);
-        System.out.println("update: " + Arrays.toString(tree.tree));
-        System.out.println("nonzero: " + Arrays.toString(tree.tree));
+        tree.update(idx, change);
       } else {
         int left = Integer.parseInt(st.nextToken());
         int right = Integer.parseInt(st.nextToken());
