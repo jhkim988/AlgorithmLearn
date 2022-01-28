@@ -2,8 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ1517 {
-  static int numCall = 0;
-  static int numTest = 0;
+  static long numCall = 0;
   static int[] data;
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -14,65 +13,55 @@ public class BOJ1517 {
     for (int i = 0; i < N; i++) {
       data[i] = Integer.parseInt(st.nextToken());
     }
-
-    recur(0, N);
-    System.out.println(numCall);
-    System.out.println(bubble());
+    recur(0, N - 1);
+    bw.write(Long.toString(numCall));
+    bw.newLine();
+    bw.flush();
   }
-  static void recur(int lo, int hi) { // [lo, hi)
-    if (hi - lo <= 1) return;
-    int[] tmp = new int[hi - lo];
-    System.out.println("lo: " + lo + ", hi: " + hi);
-    int mid = hi - (hi - lo) / 2;
+  static void recur(int lo, int hi) {
+    // System.out.println("lo: " + lo + " ~ hi: " + hi);
+    // System.out.println(Arrays.toString(data));
+    if (lo == hi) return;
+    if (lo + 1 == hi) {
+      if (data[lo] > data[hi]) {
+        numCall++;
+        int tmp = data[lo];
+        data[lo] = data[hi];
+        data[hi] = tmp;
+      }
+      return;
+    }
+    int mid = (lo + hi) / 2;
     recur(lo, mid);
-    recur(mid, hi);
-    int loPtr = mid - 1;
-    int hiPtr = hi - 1;
-    int tmpPtr = tmp.length - 1;
-    while (loPtr >= 0 && hiPtr >= mid) {
-      System.out.println("loPtr: " + loPtr + ", hiPtr: " + hiPtr);
-      while (loPtr >= 0 && hiPtr >= mid && data[loPtr] <= data[hiPtr]) {
-        tmp[tmpPtr--] = data[hiPtr];
-        hiPtr--;
+    recur(mid + 1, hi);
+    int[] tmp = new int[mid + 1 - lo];
+    System.arraycopy(data, lo, tmp, 0, mid + 1 - lo);
+    // System.out.println("lo:" + lo + " / mid: " + mid + " / hi: " + hi);
+    // System.out.println(Arrays.toString(tmp));
+    int ptr1 = 0; // tmp
+    int ptr2 = mid + 1; // data
+    int ptr = lo;
+    // System.out.println("ptr1: " + ptr1 + " / ptr2: " + ptr2);
+    while (ptr1 < mid + 1 - lo && ptr2 <= hi) {
+      if (tmp[ptr1] > data[ptr2]) {
+        numCall += mid + 1 - lo - ptr1;
+        data[ptr] = data[ptr2];
+        ptr2++;
+      } else {
+        data[ptr] = tmp[ptr1];
+        ptr1++;
       }
-      numCall += hiPtr - loPtr;
-      while (loPtr >= 0 && hiPtr >= mid && data[hiPtr] <= data[loPtr]) {
-        tmp[tmpPtr--] = data[loPtr];
-        loPtr--;
-      }
-      numCall += hiPtr - loPtr;
+      ptr++;
     }
-    System.out.println("Out: loPtr: " + loPtr + ", hiPtr: " + hiPtr + ", tmpPtr: " + tmpPtr);
-    while (loPtr >= 0) {
-      tmp[tmpPtr--] = data[loPtr--];
+    while (ptr1 < mid + 1 - lo) {
+      data[ptr] = tmp[ptr1];
+      ptr1++;
+      ptr++;
     }
-    while (hiPtr >= mid) {
-      tmp[tmpPtr--] = data[hiPtr--];
+    while (ptr2 <= hi) {
+      data[ptr] = data[ptr2];
+      ptr2++;
+      ptr++;
     }
-    for (int i = lo; i < hi; i++) {
-      data[i] = tmp[i];
-    }
-  }
-  static int bubble() {
-    int numCallSwap = 0;
-    int[] copy = data.clone();
-    for (int i = 0; i < copy.length; i++) {
-      for (int j = 0; j < copy.length - i - 1; j++) {
-        if (copy[j] > copy[j + 1]) {
-          swap(copy, j, j + 1);
-          numCallSwap++;
-        }
-      }
-    }
-    for (int i = 0; i < copy.length; i++) {
-      System.out.print(copy[i] + " ");
-    }
-    System.out.println();
-    return numCallSwap;
-  }
-  static void swap(int[] arr, int idx1, int idx2) {
-    int tmp = arr[idx1];
-    arr[idx1] = arr[idx2];
-    arr[idx2] = tmp;
   }
 }
