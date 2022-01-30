@@ -77,39 +77,46 @@ public class SCC {
 
     return scc;
   }
-  static Stack<Stack<Integer>> tarzan(Graph graph) {
+  
+  private static class Tarzan {
+    Graph graph;
     int id = 1;
-    int[] scc = new int[graph.size()];
-    boolean[] finished = new boolean[graph.size()];
+    int[] index = new int[graph.size()];
+    int[] lowlink = new int[graph.size()];
+    boolean[] onStack = new boolean[graph.size()];
     Stack<Integer> stk = new Stack<>();
-    Stack<Stack<Integer>> result = new Stack<>();
-    for (int i = 0; i < graph.size(); i++) {
-      if (scc[i] == 0) dfsTarzan(graph, i, id++, scc, stk, finished, result);
+
+    Stack<Stack<Integer>> tarzan() {
+      Stack<Stack<Integer>> result = new Stack<>();
+      for (int i = 0; i < graph.size(); i++) {
+        if (index[i] == 0) dfsTarzan(i, result);
+      }
+      return result;
     }
-    return result;
-  }
-  static int dfsTarzan(Graph graph, int x, int id, int[] scc, Stack<Integer> stk, boolean[] finished, Stack<Stack<Integer>> result) {
-    scc[x] = id;
-    stk.push(x);
-    int parent = scc[x];
-    for (int edge : graph.get(x)) {
-      if (scc[edge] == 0) {
-        parent = Integer.min(parent, dfsTarzan(graph, edge, id + 1, scc, stk, finished, result));
-      } else if (!finished[edge]) {
-        parent = Integer.min(parent, scc[edge]);
+    void dfsTarzan(int x, Stack<Stack<Integer>> result) {
+      index[x] = id;
+      lowlink[x] = id;
+      id++;
+      stk.push(x);
+      for (int edge : graph.get(x)) {
+        if (index[edge] == 0) {
+          dfsTarzan(edge, result);
+          lowlink[x] = Integer.min(lowlink[x], lowlink[edge]);
+        } else if (onStack[edge]) {
+          lowlink[x] = Integer.min(lowlink[x], index[edge]);
+        }
+      }
+      if (lowlink[x] == index[x]) {
+        Stack<Integer> component = new Stack<>();
+         while (true) {
+          int t = stk.pop();
+          onStack[t] = false;
+          component.push(t);
+          if (t == x) break;
+         }
+         result.push(component);
       }
     }
-    if (parent == scc[x]) {
-      Stack<Integer> component = new Stack<>();
-       while (true) {
-        int t = stk.pop();
-        finished[t] = true;
-        component.push(t);
-        if (t == x) break;
-       }
-       result.push(component);
-    }
-    return parent;
   }
   public static void main(String[] args) {
     Graph graph = new Graph(8);
@@ -125,7 +132,7 @@ public class SCC {
 
     // System.out.println(Arrays.toString(kosaraju(graph)));
     int id = 0;
-    Stack<Stack<Integer>> scc = tarzan(graph);
+    Stack<Stack<Integer>> scc = new Tarzan().tarzan();
     while (!scc.isEmpty()) {
       System.out.println("scc: " + id++);
       Stack<Integer> c = scc.pop();
