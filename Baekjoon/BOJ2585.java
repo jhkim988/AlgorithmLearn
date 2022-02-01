@@ -81,7 +81,7 @@ public class BOJ2585 {
       if (crnt.level > times) return false;
       for (Edge next : graph.get(crnt.id)) {
         if (visit[next.id]) continue;
-        if (next.dist > 10 * key) continue;
+        if (next.dist > 10 * key) break;
         if (next.id == nodeList.length - 1) return true;
         visit[next.id] = true;
         que.add(new Pair(next.id, crnt.level + 1));
