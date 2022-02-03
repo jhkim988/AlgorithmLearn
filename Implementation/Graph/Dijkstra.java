@@ -53,17 +53,15 @@ public class Dijkstra {
     pq.add(startNode);
     while (!pq.isEmpty()) {
       Node crnt = pq.poll();
-
-      if (crnt.end == target) {
-        // Find. cost: cost[target]
-        break;
-      }
-
+      if (crnt.weight > cost[crnt.end]) continue; // duplicate !!
       for (Node adj : graph.get(crnt.end)) {
         // If we find a shorter way to cost[adj.end], Update cost[adj.end]
         if (cost[adj.end] <= cost[crnt.end] + adj.weight) continue;
         pq.add(new Node(adj.end, cost[crnt.end] + adj.weight));
         cost[adj.end] = cost[crnt.end] + adj.weight;
+        if (adj.end == target) {
+          break;
+        }
       }
     }
     // Not Found. cost: Integer.MAX_VALUE
