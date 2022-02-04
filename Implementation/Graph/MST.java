@@ -72,9 +72,11 @@ public class MST {
     GraphWeighted tree = new GraphWeighted(graph.size());
     boolean[] selected = new boolean[graph.size()];
     int[] dist = new int[graph.size()]; // dist[i]: min dist at tree -> i
+    int[] parent = new int[graph.size()];
     Arrays.fill(dist, Integer.MAX_VALUE);
     // start: zero
-    dist[0] = 0;
+    int start = 0;
+    dist[start] = 0;
     int total = 0;
     for (int i = 0; i < graph.size() - 1; i++) {
       int now = -1;
@@ -89,18 +91,13 @@ public class MST {
       total += min_dist;
       selected[now] = true;
       // tree -> now
-      int prev = -1;
-      int weight = 0;
-      for (Edge p : graph.get(now)) {
-        if (!selected[p.end]) continue;
-        prev = p.end;
-        weight = p.weight;
-        break;
-      }
-      tree.addEdge(prev, now, weight, false);
+      if (now != start) tree.addEdge(parent[now], now, min_dist);
       for (Edge p : graph.get(now)) {
         if (selected[p.end]) continue;
-        dist[p.end] = Integer.min(dist[p.end], p.weight);
+        if (p.weight < dist[p.end]) {
+          dist[p.end] = p.weight;
+          parent[p.end] = now;
+        }
       }
     }
     return tree;
