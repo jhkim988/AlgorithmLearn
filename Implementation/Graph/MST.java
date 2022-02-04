@@ -65,7 +65,7 @@ public class MST {
     }
     return tree;
   }
-  static GraphWeighted prim(GraphWeighted graph) {
+  static GraphWeighted prim_distArr(GraphWeighted graph) {
     // Greedy Algorithm:
     // 1. use dist[] array(like Dijkstra), O(V^2)
     // 2. use PriorityQueue, O(V log E)
@@ -100,6 +100,39 @@ public class MST {
         }
       }
     }
+    return tree;
+  }
+  static GraphWeighted prim_heap(GraphWeighted graph) {
+    GraphWeighted tree = new GraphWeighted(graph.size());
+    boolean[] selected = new boolean[graph.size()];
+    Edge[] e = new Edge[graph.size()];
+    PriorityQueue<Edge> pq = new PriorityQueue<>((a, b) -> a.weight - b.weight);
+
+    for (int i = 0; i < graph.size(); i++) {
+      e[i] = new Edge(i, Integer.MAX_VALUE);
+      pq.add(e[i]);
+    }
+
+    int start = 0;
+    e[start].weight = 0;
+    selected[start] = true;
+
+    while (!pq.isEmpty()) {
+      Edge crnt = pq.poll();
+      selected[crnt.end] = true;
+      
+      int node = -1; int weight = 0;
+      for (Edge next : graph.get(crnt.end)) {
+        if (selected[next.end]) continue;
+        if (next.weight < e[next.end].weight) {
+          e[next.end].weight = next.weight;
+          node = next.end;
+          weight = next.weight;
+        }
+      }
+      tree.addEdge(crnt.end, node, weight);
+    }
+
     return tree;
   }
   public static void main(String[] args) {
