@@ -1,17 +1,6 @@
 import java.util.*;
 
 public class MST {
-  private static class Pair {
-    int start, end, weight;
-    Pair(int end, int weight) {
-      this.end = end;
-      this.weight = weight;
-    }
-    Pair(int start, int end, int weight) {
-      this(end, weight);
-      this.start = start;
-    }
-  }
   private static class UnionFind {
     int[] id, sz;
     UnionFind(int n) {
@@ -47,38 +36,40 @@ public class MST {
       return root(p) == root(q);
     }
   }
-  static ArrayList<Queue<Pair>> kruskal(ArrayList<Queue<Pair>> graph) {
+  static GraphWeighted kruskal(GraphWeighted graph) {
     // 1. Sort edges by weight
     // 2. choose edge with minimum weight.
     // 3. Add the edge if there is no cycle. (<< Determind by Union Find)
-    ArrayList<Pair> allEdge = new ArrayList<>();
+    ArrayList<Edge> allEdge = new ArrayList<>();
     for (int i = 0; i < graph.size(); i++) {
-      for (Pair p : graph.get(i)) allEdge.add(p); // if p has no 'start', new Pair(i, p.end, p.weigth)
+      for (Edge edge : graph.get(i)) {
+        edge.start = i;
+        allEdge.add(edge);
+      }
     } // O(E)
     Collections.sort(allEdge, (a, b) -> a.weight - b.weight); // O(E log E)
     
     int total = 0; // min weight
     UnionFind uf = new UnionFind(graph.size());
-    ArrayList<Pair> treeEdge = new ArrayList<>();
-    for (Pair p : allEdge) {
-      if (uf.isConnected(p.start, p.end)) continue;
-      uf.union(p.start, p.end); // UnionFind > O(1)
-      treeEdge.add(p);
-      total += p.weight;
+    ArrayList<Edge> treeEdge = new ArrayList<>();
+    for (Edge edge : allEdge) {
+      if (uf.isConnected(edge.start, edge.end)) continue;
+      uf.union(edge.start, edge.end); // UnionFind > O(1)
+      treeEdge.add(edge);
+      total += edge.weight;
     }
 
-    ArrayList<Queue<Pair>> tree = new ArrayList<>();
-    for (int i = 0; i < graph.size(); i++) tree.add(new LinkedList<>());
-    for (Pair p : treeEdge) {
-      tree.get(p.start).add(new Pair(p.end, p.weight));
+    GraphWeighted tree = new GraphWeighted(graph.size());
+    for (Edge edge : treeEdge) {
+      tree.addEdge(edge.start, edge.end, edge.weight, false);
     }
     return tree;
   }
-  static ArrayList<Queue<Pair>> prim(ArrayList<Queue<Pair>> graph) {
+  static GraphWeighted prim(GraphWeighted graph) {
     // Greedy Algorithm:
     // 1. use dist[] array(like Dijkstra), O(V^2)
     // 2. use PriorityQueue, O(V log E)
-    ArrayList<Queue<Pair>> tree = new ArrayList<>();
+    GraphWeighted tree = new GraphWeighted(graph.size());
     boolean[] selected = new boolean[graph.size()];
     int[] dist = new int[graph.size()]; // dist[i]: min dist at tree -> i
     Arrays.fill(dist, Integer.MAX_VALUE);
@@ -100,14 +91,14 @@ public class MST {
       // tree -> now
       int prev = -1;
       int weight = 0;
-      for (Pair p : graph.get(now)) {
+      for (Edge p : graph.get(now)) {
         if (!selected[p.end]) continue;
         prev = p.end;
         weight = p.weight;
         break;
       }
-      tree.get(prev).add(new Pair(now, weight));
-      for (Pair p : graph.get(now)) {
+      tree.addEdge(prev, now, weight, false);
+      for (Edge p : graph.get(now)) {
         if (selected[p.end]) continue;
         dist[p.end] = Integer.min(dist[p.end], p.weight);
       }

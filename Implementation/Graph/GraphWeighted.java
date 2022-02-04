@@ -25,9 +25,13 @@ public class GraphWeighted {
   }
 }
 class Edge {
-  int end, weight;
+  int start, end, weight;
   Edge(int end, int weight) {
     this.end = end;
     this.weight = weight;
+  }
+  Edge(int start, int end, int weight) {
+    this(end, weight);
+    this.start = start;
   }
 }
