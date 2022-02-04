@@ -6,7 +6,7 @@ public class FFT {
     while (len < _p.length + _q.length) len <<= 1;
     double[][] p = new double[len][2];
     double[][] q = new double[len][2];
-    initTrig(len/2);
+    initTrig(len >> 1);
     init(p, _p); init(q, _q);
     fft(p, false); fft(q, false);
     double[][] r = new double[len][2];
