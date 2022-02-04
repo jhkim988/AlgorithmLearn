@@ -89,6 +89,7 @@ public class FFT {
         rev -= bit;
         bit >>= 1;
       }
+      rev += bit;
       if (i < rev) {
         double[] tmp = p[i];
         p[i] = p[rev];
@@ -112,6 +113,12 @@ public class FFT {
           p2[0] = rex - rey;
           p2[1] = imx - imy; 
         }
+      }
+    }
+    if (isInverse) {
+      for (int i = 0; i < n; i++) {
+        p[i][0] /= n;
+        p[i][1] /= n;
       }
     }
   }
