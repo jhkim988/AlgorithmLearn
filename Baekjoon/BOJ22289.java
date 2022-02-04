@@ -2,9 +2,11 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ22289 {
-  static int bundle = 5; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.
+  static int bundle = 7; // 입력받은 숫자를 bundle개씩 묶어 다항식을 만든다.
   static long digit = 1; // 10^bundle
   static int sumLen;
+  static double[] cos;
+  static double[] sin;
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
   public static void main(String[] args) throws IOException {
@@ -19,28 +21,22 @@ public class BOJ22289 {
     // 다항식의 차수
     int firstlen = first.length / bundle + (first.length % bundle == 0 ? 0 : 1);
     int secondlen = second.length / bundle + (second.length % bundle == 0 ? 0 : 1);
-    int len = 1;
+    int len = 1; // FFT 적용 크기
     sumLen = firstlen + secondlen + 2;
-    while (len < sumLen) { // FFT 적용 크기
+    while (len < sumLen) { 
       len <<= 1;
     }
     for (int i = 0; i < bundle; i++) digit *= 10;
-    
     // first/second -> 다항식(계수배열 p, q)
-    double[][] p = new double[len][2]; 
-    double[][] q = new double[len][2];
-    coefficientAllocation(p, firstlen, first);
-    coefficientAllocation(q, secondlen, second);
-    productPolynomial(p, q);
-    answer(p);
+    long[] p = new long[firstlen]; 
+    long[] q = new long[secondlen];
+    coefficientAllocation(p, firstlen, first); first = null;
+    coefficientAllocation(q, secondlen, second); second = null;
+    // long[] r = product(p, q);
+    long[] r = product_highAccuracy(p, q);
+    answer(r);
   }
-  static void scaling(double[][] p, double multi) {
-    for (int i = 0; i < p.length; i++) {
-      p[i][0] *= multi;
-      p[i][1] *= multi;
-    }
-  }
-  static void coefficientAllocation(double[][] p, int numTerm, char[] input) {
+  static void coefficientAllocation(long[] p, int numTerm, char[] input) {
     for (int i = 0; i < numTerm; i++) {
       long val = 0;
       long base = 1;
@@ -49,23 +45,18 @@ public class BOJ22289 {
         val += base * (input[input.length - bundle * i - j - 1] - '0');
         base *= 10;
       }
-      p[i][0] = val;
+      p[i] = val;
     }
   }
-  static void answer(double[][] p) throws IOException {
-    for (int i = 0; i < sumLen - 1; i++) p[i][0] = Math.round(p[i][0]);
-    for (int i = 0; i < sumLen - 1; i++) {
-      p[i + 1][0] += Math.floor(p[i][0] / digit);
-      p[i][0] %= digit;
-    }
-    int nonzero = sumLen;
-    while (p[--nonzero][0] < 0.5);
-    bw.write(Long.toString((long) p[nonzero][0]));
+  static void answer(long[] p) throws IOException {
+    int nonzero = p.length;
+    while (p[--nonzero] == 0);
+    bw.write(Long.toString(p[nonzero]));
     for (int i = nonzero - 1; i >= 0; i--) {
-      long val = (long) p[i][0];
+      long val = p[i];
       long exp = digit/10;
       while (exp != 1 && val < exp) {
-        bw.write(Long.toString(0L));
+        bw.write('0');
         exp /= 10;
       }
       bw.write(Long.toString(val));
@@ -73,16 +64,100 @@ public class BOJ22289 {
     bw.newLine();
     bw.flush();
   }
-  static void productPolynomial(double[][] p, double[][] q) {
-    fft(p, false);
-    fft(q, false);
-    for (int i = 0; i < p.length; i++) {
-      double re = p[i][0]*q[i][0] - p[i][1]*q[i][1];
-      double im = p[i][0]*q[i][1] + p[i][1]*q[i][0];
-      p[i][0] = re;
-      p[i][1] = im;
+  static long[] product(long[] _p, long[] _q) {
+    int len = 1;
+    while (len < _p.length + _q.length) len <<= 1;
+    double[][] p = new double[len][2];
+    double[][] q = new double[len][2];
+    
+    cos = new double[len >> 1];
+    sin = new double[len >> 1];
+    double angle = Math.PI/(len >> 1);
+    for (int i = 0; i < (len >> 1); i++) {
+      cos[i] = Math.cos(angle*i);
+      sin[i] = Math.sin(angle*i);
     }
-    fft(p, true);
+
+    for (int i = 0; i < _p.length; i++) {
+      p[i][0] = _p[i];
+    }
+    for (int i = 0; i < _q.length; i++) {
+      q[i][0] = _q[i];
+    }
+
+    fft(p, false); fft(q, false);
+    double[][] r = new double[len][2];
+    for (int i = 0; i < len; i++) {
+      r[i][0] = p[i][0]*q[i][0] - p[i][1]*q[i][1];
+      r[i][1] = p[i][0]*q[i][1] + p[i][1]*q[i][0];
+    }
+    fft(r, true);
+    long[] result = new long[len];
+    for (int i = 0; i < len; i++) {
+      result[i] += (long) Math.round(r[i][0]);
+      if (i < len - 1 && result[i] >= digit) {
+        result[i + 1] += result[i] / digit;
+        result[i] %= digit;
+      }
+    }
+    return result;
+  }
+  static long[] product_highAccuracy(long[] _p, long[] _q) {
+    int len = 1;
+    while (len < _p.length + _q.length) len <<= 1;    
+
+    cos = new double[len >> 1];
+    sin = new double[len >> 1];
+    double angle = Math.PI/(len >> 1);
+    for (int i = 0; i < (len >> 1); i++) {
+      cos[i] = Math.cos(angle*i);
+      sin[i] = Math.sin(angle*i);
+    }
+
+    double[][] p1 = new double[len][2];
+    double[][] p2 = new double[len][2];
+    double[][] q1 = new double[len][2];
+    double[][] q2 = new double[len][2];
+
+    for (int i = 0; i < _p.length; i++) {
+      p1[i][0] = _p[i] & ((1L << 15) - 1);
+      p2[i][0] = _p[i] >> 15;
+    }
+    for (int i = 0; i < _q.length; i++) {
+      q1[i][0] = _q[i] & ((1L << 15) - 1);
+      q2[i][0] = _q[i] >> 15;
+    }
+    fft(p1, false); fft(p2, false); fft(q1, false); fft(q2, false);
+
+    double[][] r1 = new double[len][2];
+    double[][] r2 = new double[len][2];
+    double[][] r3 = new double[len][2];
+
+    for (int i = 0; i < len; i++) {
+      r1[i][0] = p1[i][0]*q1[i][0] - p1[i][1]*q1[i][1];
+      r1[i][1] = p1[i][0]*q1[i][1] + p1[i][1]*q1[i][0];
+
+      r2[i][0] = p1[i][0]*q2[i][0] - p1[i][1]*q2[i][1] + p2[i][0]*q1[i][0] - p2[i][1]*q1[i][1];
+      r2[i][1] = p1[i][0]*q2[i][1] + p1[i][1]*q2[i][0] + p2[i][0]*q1[i][1] + p2[i][1]*q1[i][0];
+
+      r3[i][0] = p2[i][0]*q2[i][0] - p2[i][1]*q2[i][1];
+      r3[i][1] = p2[i][0]*q2[i][1] + p2[i][1]*q2[i][0];
+    }
+
+    fft(r1, true); fft(r2, true); fft(r3, true);
+
+    long[] result = new long[len];
+    for (int i = 0; i < len; i++) {
+      long a = (long) Math.round(r1[i][0]);
+      long b = ((long) Math.round(r2[i][0])) << 15;
+      long c = ((long) Math.round(r3[i][0])) << 30;
+      result[i] += a + b + c;
+      if (i < len - 1 && result[i] >= digit) {
+        result[i + 1] += result[i]/digit;
+        result[i] %= digit;
+      }
+    }
+    return result;
   }
   static void fft(double[][] p, boolean isInverse) {
     int n = p.length;
@@ -100,29 +175,29 @@ public class BOJ22289 {
       }
     }
     for (int k = 1; k < n; k <<= 1) {
-      double a = isInverse ? Math.PI/k : -Math.PI/k;
       for (int i = 0; i < n; i += k*2) {
-        double rewp = 1.0;
-        double imwp = 0.0;
         for (int j = 0; j < k; j++) {
+          double c = cos[(n >> 1) / k * j];
+          double s = sin[(n >> 1) / k * j] * (isInverse ? -1 : 1);
           double[] p1 = p[i + j];
           double[] p2 = p[i + j + k];
           double rex = p1[0];
           double imx = p1[1];
-          double rey = p2[0] * rewp - p2[1] * imwp;
-          double imy = p2[0] * imwp + p2[1] * rewp;
+          double rey = p2[0] * c - p2[1] * s;
+          double imy = p2[0] * s + p2[1] * c;
           p1[0] = rex + rey;
           p1[1] = imx + imy;
           p2[0] = rex - rey;
           p2[1] = imx - imy;
           // 누적해서 곱하면 실수 오차가 생긴다.
-          rewp = Math.cos(a*(j+1));
-          imwp = Math.sin(a*(j+1));
         }
       }
     }
     if (isInverse) {
-      scaling(p, 1 / (double) n);
+      for (int i = 0; i < n; i++) {
+        p[i][0] /= n;
+        p[i][1] /= n;
+      }
     }
   }
 }
