@@ -3,12 +3,12 @@ import java.util.*;
 
 public class BOJ12016 {
   private static class SegmentTreeMin {
-    // node: index of minimum value on [i, j]
     int n, treeSize;
-    int[] arr, tree;
-    SegmentTreeMin(int[] arr) {
+    long[] arr;
+    int[] tree;
+    SegmentTreeMin(long[] arr) {
       this.n = arr.length;
-      this.arr = new int[this.n];
+      this.arr = new long[this.n];
       System.arraycopy(arr, 0, this.arr, 0, arr.length);
       treeSize = 1;
       while (treeSize < n) treeSize <<= 1;
@@ -50,38 +50,38 @@ public class BOJ12016 {
   }
   private static class SegmentTreeCount {
     int n, treeSize;
-    int[] arr, tree;
+    long[] arr, tree;
     SegmentTreeCount(int n) {
       this.n = n;
       treeSize = 1;
       while (treeSize < this.n) treeSize <<= 1;
       treeSize <<= 1;
-      arr = new int[this.n];
+      arr = new long[this.n];
       Arrays.fill(arr, 1);
-      tree = new int[treeSize];
+      tree = new long[treeSize];
       init(1, 0, this.n-1);
     }
-    int init(int node, int start, int end) {
+    long init(int node, int start, int end) {
       if (start == end) return tree[node] = arr[start];
       int mid = (start + end) >> 1;
-      int leftChild = init(node*2, start, mid);
-      int rightChild = init(node*2+1, mid+1, end);
+      long leftChild = init(node*2, start, mid);
+      long rightChild = init(node*2+1, mid+1, end);
       return tree[node] = leftChild + rightChild;
     }
-    int update(int node, int start, int end, int idx, int val) {
+    long update(int node, int start, int end, int idx, int val) {
       if (start > idx || end < idx) return tree[node];
       if (start == end) return tree[node] = arr[start] = val;
       int mid = (start + end) >> 1;
-      int leftChild = update(node*2, start, mid, idx, val);
-      int rightChild = update(node*2+1, mid+1, end, idx, val);
+      long leftChild = update(node*2, start, mid, idx, val);
+      long rightChild = update(node*2+1, mid+1, end, idx, val);
       return tree[node] = leftChild + rightChild;
     }
-    int get(int node, int start, int end, int left, int right) {
+    long get(int node, int start, int end, int left, int right) {
       if (start > right || end < left) return 0;
       if (left <= start && end <= right) return tree[node];
       int mid = (start + end) >> 1;
-      int leftChild = get(node*2, start, mid, left, right);
-      int rightChild = get(node*2+1, mid+1, end, left, right);
+      long leftChild = get(node*2, start, mid, left, right);
+      long rightChild = get(node*2+1, mid+1, end, left, right);
       return leftChild + rightChild;
     }
   }
@@ -89,7 +89,7 @@ public class BOJ12016 {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     int n = Integer.parseInt(br.readLine());
-    int[] arr = new int[n];
+    long[] arr = new long[n];
     StringTokenizer st = new StringTokenizer(br.readLine());
     for (int i = 0; i < n; i++) {
       arr[i] = Integer.parseInt(st.nextToken());
@@ -97,29 +97,26 @@ public class BOJ12016 {
 
     SegmentTreeMin sgm = new SegmentTreeMin(arr);
     SegmentTreeCount sgc = new SegmentTreeCount(n);
-    int[] time = new int[n];
-    int prevIdx = 0;
+    long[] time = new long[n];
+    int prevIdx = sgm.removeMin();
     int remainWork = n;
-    while (remainWork-- > 0) {
+    time[prevIdx] = remainWork--*(arr[prevIdx]-1) + sgc.get(1, 0, n-1, 0, prevIdx);
+    sgc.update(1, 0, n-1, prevIdx, 0);
+    while (remainWork > 0) {
       int idx = sgm.removeMin();
-      int count = 0;
+      long count = 0;
       if (arr[idx] == arr[prevIdx]) {
         count = time[prevIdx] + sgc.get(1, 0, n-1, prevIdx, idx);
       } else {
-        if (remainWork == 0) {
-          count = time[prevIdx] + arr[idx] - arr[prevIdx] + (prevIdx < idx ? 1 : 0);
-        } else {
-          count = time[prevIdx] + sgc.get(1, 0, n-1, prevIdx, n-1) + sgc.get(1, 0, n-1, 0, idx);
-        }
-        count += arr[idx] - arr[prevIdx];
+        count = time[prevIdx] + sgc.get(1, 0, n-1, prevIdx, n-1) + remainWork * (arr[idx] - arr[prevIdx] - 1) + sgc.get(1, 0, n-1, 0, idx);
       }
       sgc.update(1, 0, n-1, idx, 0);
-      System.out.println("idx: " + idx + ", count: " + count);
       time[idx] = count;
       prevIdx = idx;
+      remainWork--;
     }
-    for (int t : time) {
-      bw.write(Integer.toString(t));
+    for (long t : time) {
+      bw.write(Long.toString(t));
       bw.newLine();
     }
     bw.flush();
