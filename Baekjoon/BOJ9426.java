@@ -2,36 +2,37 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ9426 {
-  private static class SegmentTreeMax{
-    int n, treeSize;
+  private static class SegmentTreeSum{
+    final int MAX = 65536;
+    int treeSize;
     int[] arr, tree;
-    SegmentTreeMax(int[] arr) {
-      this.n = arr.length;
-      this.arr = arr;
-      treeSize = 1;
-      while (treeSize < n) treeSize <<= 1;
-      treeSize <<= 1;
+    SegmentTreeSum() {
+      arr = new int[MAX];
+      treeSize = 1 << 17;
       tree = new int[treeSize];
-      init(1, 0, n-1);
     }
-    int init(int node, int start, int end) {
-      if (start == end) return tree[node] = arr[start];
+    void update(int c, int val) {
+      update(1, 0, MAX-1, c, val);
+    }
+    int update(int node, int start, int end, int idx, int val) {
+      if (start > idx || end < idx) return tree[node];
+      if (start == end) return tree[node] = (arr[idx] += val);
       int mid = (start + end) >> 1;
-      int leftChild = init(node*2, start, mid);
-      int rightChild = init(node*2+1, mid+1, end);
-      return tree[node] = leftChild < rightChild ? rightChild : leftChild;
+      int leftChild = update(node*2, start, mid, idx, val);
+      int rightChild = update(node*2+1, mid+1, end, idx, val);
+      return tree[node] = leftChild + rightChild;
     }
-    int get(int node, int start, int end, int left, int right) {
-      if (start > right || end < left) return Integer.MIN_VALUE;
-      if (left <= start && end <= right) return tree[node];
+    int median(int node, int start, int end, int k) {
+      if (start == end) return start;
       int mid = (start + end) >> 1;
-      int leftChild = get(node*2, start, mid, left, right);
-      int rightChild = get(node*2+1, mid+1, end, left, right);
-      return leftChild < rightChild ? rightChild : leftChild; 
+      if (tree[node*2] >= k) {
+        return median(node*2, start, mid, k);
+      } else {
+        return median(node*2+1, mid+1, end, k - tree[node*2]);
+      }
     }
-    int median(int left, int right) {
-      int k = right - left + 1;
-      return get(1, 0, n-1, left, left + (k+1)/2 - 1);
+    int median(int k) {
+      return median(1, 0, MAX-1, k);
     }
   }
   public static void main(String[] args) throws IOException {
@@ -44,13 +45,25 @@ public class BOJ9426 {
     for (int i = 0; i < n; i++) {
       arr[i] = Integer.parseInt(br.readLine());
     }
-    SegmentTreeMax sgm = new SegmentTreeMax(arr);
-    long sum = 0;
-    for (int left = 0; left+k-1 < n; left++) {
-      sum += sgm.median(left, left+k-1);
-    }
-    bw.write(Long.toString(sum));
+
+    bw.write(Long.toString(useSegmentTree(n, k, arr)));
     bw.newLine();
     bw.flush();
+  }
+  static long useSegmentTree(int n, int k, int[] arr) {
+    SegmentTreeSum sgm = new SegmentTreeSum();
+    int remove = 0;
+    long sum = 0;
+    for (int i = 0; i < k; i++) {
+      sgm.update(arr[i], 1);
+    }
+    sum += sgm.median((k+1)/2);
+    sgm.update(arr[remove++], -1);
+    for (int i = k; i < n; i++) {
+      sgm.update(arr[i], 1);
+      sum += sgm.median((k+1)/2);
+      sgm.update(arr[remove++], -1);
+    }
+    return sum;
   }
 }
