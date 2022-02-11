@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class BOJ5052 {
   private static class Trie {
     HashMap<Character, HashMap> root = new HashMap<>();

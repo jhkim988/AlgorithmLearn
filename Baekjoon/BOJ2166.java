@@ -26,23 +26,23 @@ public class BOJ2166 {
         }
       }
     }
-    public double dist(Point other) {
-      return Math.sqrt((this.x - other.x) * (this.x - other.x) + (this.y - other.y) * (this.y - other.y));
-    }
-    public Comparator<Point> polarOrder() {
-      return new Comparator<Point>(){
-        @Override
-        public int compare(Point p1, Point p2) {
-          double arc1 = (double) ((p1.y - y)) / (double) ((p1.x - x));
-          double arc2 = (double) ((p2.y - y)) / (double) ((p2.x - x));
-          return Double.compare(arc1, arc2);
-        }
-      };
-    }
-    static double triangleArea(Point p1, Point p2, Point p3) {
-      double len = (p1.dist(p2) + p2.dist(p3) + p3.dist(p1)) / 2;
-      return Math.sqrt(len * (len - p1.dist(p2)) * (len - p2.dist(p3)) * (len - p3.dist(p1)));
-    }
+    // public double dist(Point other) {
+    //   return Math.sqrt((this.x - other.x) * (this.x - other.x) + (this.y - other.y) * (this.y - other.y));
+    // }
+    // public Comparator<Point> polarOrder() {
+    //   return new Comparator<Point>(){
+    //     @Override
+    //     public int compare(Point p1, Point p2) {
+    //       double arc1 = (double) ((p1.y - y)) / (double) ((p1.x - x));
+    //       double arc2 = (double) ((p2.y - y)) / (double) ((p2.x - x));
+    //       return Double.compare(arc1, arc2);
+    //     }
+    //   };
+    // }
+    // static double triangleArea(Point p1, Point p2, Point p3) {
+    //   double len = (p1.dist(p2) + p2.dist(p3) + p3.dist(p1)) / 2;
+    //   return Math.sqrt(len * (len - p1.dist(p2)) * (len - p2.dist(p3)) * (len - p3.dist(p1)));
+    // }
     @Override
     public String toString() {
       return "<" + x + ", " + y + ">";

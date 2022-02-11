@@ -5,12 +5,8 @@ public class BOJ3019 {
   static int C;
   static int P;
   private static class Block {
-    int type;
-    int rot;
     int[] height;
     Block(int type, int rot, int[] height) {
-      this.type = type;
-      this.rot = rot;
       this.height = height;
     }
     boolean possible(int idx, int[] stat) {

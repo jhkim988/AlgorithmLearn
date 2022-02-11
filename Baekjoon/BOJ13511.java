@@ -48,6 +48,7 @@ public class BOJ13511 {
     }
     bw.flush();
   }
+  @SuppressWarnings("unchecked")
   static void init(int n) throws IOException {
     Queue<Edge>[] graph = new Queue[n + 1];
     for (int i = 0; i <= n; i++) {

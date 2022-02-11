@@ -30,29 +30,21 @@ public class BOJ1849 {
       int rightChild = update(node*2+1, mid+1, end, idx, val);
       return tree[node] = leftChild + rightChild;
     }
-    int get(int node, int start, int end, int left, int right) {
-      if (start > right || end < left) return 0;
-      if (left <= start && end <= right) return tree[node];
-      int mid = (start + end) >> 1;
-      int leftChild = get(node*2, start, mid, left, right);
-      int rightChild = get(node*2+1, mid+1, end, left, right);
-      return leftChild + rightChild;
-    }
-    int query_TLE(int val) {
-      // O(N (logN)^2): TLE
-      int lo = -1;
-      int hi = n;
-      while (lo + 1 < hi) {
-        int mid = (lo + hi) >> 1;
-        if (get(1, 0, n-1, 0, mid) <= val) {
-          lo = mid;
-        } else {
-          hi = mid;
-        }
-      }
-      update(1, 0, n-1, hi, 0);
-      return hi;
-    }
+    // int query_TLE(int val) {
+    //   // O(N (logN)^2): TLE
+    //   int lo = -1;
+    //   int hi = n;
+    //   while (lo + 1 < hi) {
+    //     int mid = (lo + hi) >> 1;
+    //     if (get(1, 0, n-1, 0, mid) <= val) {
+    //       lo = mid;
+    //     } else {
+    //       hi = mid;
+    //     }
+    //   }
+    //   update(1, 0, n-1, hi, 0);
+    //   return hi;
+    // }
     int query(int val) {
       int idx = query(1, 0, n-1, val+1);
       update(1, 0, n-1, idx, 0);

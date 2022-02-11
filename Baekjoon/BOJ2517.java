@@ -3,7 +3,7 @@ import java.util.*;
 
 public class BOJ2517 {
   private static class SegmentTree {
-    int n, treeSize;
+    int treeSize;
     int[] arr, tree;
     SegmentTree(int n) {
       arr = new int[n];

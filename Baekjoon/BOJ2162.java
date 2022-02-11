@@ -143,9 +143,9 @@ public class BOJ2162 {
         sz[prt] += sz[qrt];
       }
     }
-    boolean connected(int p, int q) {
-      return root(p) == root(q);
-    }
+    // boolean connected(int p, int q) {
+    //   return root(p) == root(q);
+    // }
   }
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

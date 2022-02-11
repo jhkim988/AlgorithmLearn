@@ -6,7 +6,7 @@ public class BOJ14652 {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     StringTokenizer st = new StringTokenizer(br.readLine());
-    int N = Integer.parseInt(st.nextToken());
+    Integer.parseInt(st.nextToken());
     int M = Integer.parseInt(st.nextToken());
     int K = Integer.parseInt(st.nextToken());
     

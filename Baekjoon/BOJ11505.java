@@ -3,7 +3,7 @@ import java.util.*;
 
 public class BOJ11505 {
   static final long DIVISOR = 1_000_000_007;
-  private static class FenwickTree {
+  static class FenwickTree {
     int n;
     long[] arr;
     long[] tree;

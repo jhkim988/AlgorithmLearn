@@ -35,9 +35,9 @@ public class BOJ16988 {
         sz[pr] += sz[qr];
       }
     }
-    boolean isConnected(int p, int q) {
-      return root(p) == root(q);
-    }
+    // boolean isConnected(int p, int q) {
+    //   return root(p) == root(q);
+    // }
   }
   private static class Pair {
     int row, col;

@@ -31,9 +31,9 @@ public class BOJ16932 {
         sz[prt] += sz[qrt];
       }
     }
-    boolean isConnected(int p, int q) {
-      return root(p) == root(q);
-    }
+    // boolean isConnected(int p, int q) {
+    //   return root(p) == root(q);
+    // }
   }
   public static void main(String[] args) throws IOException {
     int[] rowDi = {-1, 0, 1, 0};

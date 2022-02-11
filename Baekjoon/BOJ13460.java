@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ13460 {
-  private static class Pair {
+  static class Pair {
     int row;
     int col;
     Pair(int row, int col) {
@@ -25,7 +25,7 @@ public class BOJ13460 {
       return "<" + row + ", " + col + ">";
     }
   }
-  private static class Simulation {
+  static class Simulation {
     static int[] rowDi = {-1, 0, 1, 0};
     static int[] colDi = {0, -1, 0, 1};
 

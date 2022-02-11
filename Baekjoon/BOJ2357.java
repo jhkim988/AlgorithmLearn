@@ -1,6 +1,6 @@
 import java.io.*;
 import java.util.*;
-import java.util.function.*;
+// import java.util.function.*;
 
 public class BOJ2357 {
   public static void main(String[] args) throws IOException {

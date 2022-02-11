@@ -4,7 +4,7 @@ public class BOJ2138 {
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    int len = Integer.parseInt(br.readLine());
+    Integer.parseInt(br.readLine());
     char[] start = br.readLine().toCharArray();
     char[] target = br.readLine().toCharArray();
     char[] copy = start.clone();

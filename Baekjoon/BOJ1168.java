@@ -3,10 +3,9 @@ import java.util.*;
 
 public class BOJ1168 {
   private static class SegmentTree {
-    int n, height, treeSize;
+    int height, treeSize;
     int[] count, tree;
     SegmentTree(int n) {
-      this.n = n;
       while (1 << height < n) height++;
       treeSize = 1 << (height + 1);
       count = new int[n];

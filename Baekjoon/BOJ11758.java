@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ11758 {
-  private static class Point{
+  static class Point{
     int x;
     int y;
     Point(int x, int y) {

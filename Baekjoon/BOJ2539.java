@@ -6,7 +6,7 @@ public class BOJ2539 {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     StringTokenizer st = new StringTokenizer(br.readLine());
-    int numRow = Integer.parseInt(st.nextToken());
+    Integer.parseInt(st.nextToken());
     int numCol = Integer.parseInt(st.nextToken());
     int lim = Integer.parseInt(br.readLine().trim());
     int numWrong = Integer.parseInt(br.readLine().trim());

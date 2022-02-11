@@ -31,9 +31,9 @@ public class BOJ4195 {
         sz.set(prt, sz.get(prt) + sz.get(qrt));
       }
     }
-    boolean connected(int p, int q) {
-      return root(p) == root(q);
-    }
+    // boolean connected(int p, int q) {
+    //   return root(p) == root(q);
+    // }
     int size(int p) {
       return sz.get(root(p));
     }

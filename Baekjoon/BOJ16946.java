@@ -32,9 +32,9 @@ public class BOJ16946 {
         sz[prt] += sz[qrt];
       }
     }
-    boolean isConnected(int p, int q) {
-      return root(p) == root(q);
-    }
+    // boolean isConnected(int p, int q) {
+    //   return root(p) == root(q);
+    // }
   }
   static int row;
   static int col;

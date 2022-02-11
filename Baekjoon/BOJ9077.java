@@ -5,7 +5,7 @@ public class BOJ9077 {
   static final int sz = 10_001;
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-  private static class UseBruteForce {
+  static class UseBruteForce {
     int[][] pSum = new int[sz][sz];
     void clear() {
       for (int i = 0; i < sz; i++) Arrays.fill(pSum[i], 0);
@@ -83,13 +83,13 @@ public class BOJ9077 {
       update(node<<1|1, mid+1, end, left, right, diff);
       tree[node] = Integer.max(tree[node<<1], tree[node<<1|1]);
     }
-    int get(int node, int start, int end, int left, int right) {
-      updateLazy(node, start, end);
-      if (start > right || end < left) return 0;
-      if (left <= start && end <= right) return tree[node];
-      int mid = (start + end) >> 1;
-      return Integer.max(get(node<<1, start, mid, left, right), get(node<<1|1, mid+1, end, left, right));
-    }
+    // int get(int node, int start, int end, int left, int right) {
+    //   updateLazy(node, start, end);
+    //   if (start > right || end < left) return 0;
+    //   if (left <= start && end <= right) return tree[node];
+    //   int mid = (start + end) >> 1;
+    //   return Integer.max(get(node<<1, start, mid, left, right), get(node<<1|1, mid+1, end, left, right));
+    // }
     int max() {
       updateLazy(1, 0, 10000);
       return tree[1];

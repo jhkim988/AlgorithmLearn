@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ14426 {
+  @SuppressWarnings({"unchecked", "rawtypes"})
   private static class Trie {
     HashMap<Character, HashMap> root = new HashMap<>();
     void insert(String str) {

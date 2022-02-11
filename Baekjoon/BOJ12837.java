@@ -3,10 +3,9 @@ import java.util.*;
 
 public class BOJ12837 {
   private static class SegTree {
-    int n, treeSize;
+    int treeSize;
     long[] tree;
     SegTree(int n) {
-      this.n = n;
       treeSize = 1;
       while (treeSize < n) treeSize <<= 1;
       treeSize <<= 1;

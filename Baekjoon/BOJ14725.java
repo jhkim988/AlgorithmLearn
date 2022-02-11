@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class BOJ14725 {
   private static class Pair {
     TreeMap<String, TreeMap> ptr;

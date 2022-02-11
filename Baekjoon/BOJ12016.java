@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ12016 {
-  private static class SegmentTreeMin {
+  static class SegmentTreeMin {
     int n, treeSize;
     long[] arr;
     int[] tree;
