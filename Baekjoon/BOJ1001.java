@@ -1,6 +1,6 @@
 import java.util.*;
 
-class Main {
+public class BOJ1001 {
     public static void main(String[] args){
         Scanner stdIn = new Scanner(System.in);
         int a = stdIn.nextInt();
