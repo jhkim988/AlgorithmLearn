@@ -79,22 +79,32 @@ public class BOJ7626 {
     int[] compressX = IntStream.of(xcordi).sorted().distinct().toArray();
     int[] compressY = IntStream.of(ycordi).sorted().distinct().toArray();
     Collections.sort(line, (a, b) -> a.y==b.y ? (a.x2==b.x2 ? a.x1-b.x1 : a.x2-b.x2) : a.y-b.y);
-    int len = compressX.length;
+    int len = compressX.length-1;
     SegTree sg = new SegTree(compressX);
     int ptr = 0;
     long area = 0;
-    for (int y = 0; y < compressY.length; y++) {
+    for (int y = 0; y < compressY.length-1; y++) {
       while (ptr < line.size() && line.get(ptr).y == compressY[y]) {
         Line l = line.get(ptr);
-        System.out.println(l);
-        sg.update(1, 0, len-1, l.x1, l.x2-1, l.isStart);
+        sg.update(1, 0, len-1, getCompressIdx(l.x1, compressX), getCompressIdx(l.x2, compressX)-1, l.isStart);
         ptr++;
       }
-      System.out.println("add: " + sg.get());
-      area += sg.get() * (compressY[y]);
+      area += sg.get() * (compressY[y+1] - compressY[y]);
     }
     bw.write(Long.toString(area));
     bw.newLine();
     bw.flush();
+  }
+  static int getCompressIdx(int val, int[] arr) {
+    int lo = -1, hi = arr.length;
+    while (lo + 1 < hi) {
+      int mid = (lo + hi) >> 1;
+      if (arr[mid] < val) {
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+    return hi;
   }
 }
