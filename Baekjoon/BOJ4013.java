@@ -79,7 +79,7 @@ public class BOJ4013 {
     long find(int start) {
       long[] dp = new long[sccTree.size()];
       Arrays.fill(dp, -1);
-      return findRecur(start, dp);
+      return findRecur(sccId[start], dp);
     }
     long findRecur(int node, long[] dp) {
       if (dp[node] != -1) return dp[node];
