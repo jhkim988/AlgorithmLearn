@@ -78,15 +78,22 @@ public class SCC {
     return scc;
   }
   
-  private static class Tarzan {
+  private static class Tarjan {
     Graph graph;
-    int id = 1;
-    int[] index = new int[graph.size()];
-    int[] lowlink = new int[graph.size()];
-    boolean[] onStack = new boolean[graph.size()];
-    Stack<Integer> stk = new Stack<>();
-
-    Stack<Stack<Integer>> tarzan() {
+    int id;
+    int[] index;
+    int[] lowlink;
+    boolean[] onStack;
+    Stack<Integer> stk;
+    Tarjan(Graph graph) {
+      id = 1;
+      index = new int[graph.size()];
+      lowlink = new int[graph.size()];
+      onStack = new boolean[graph.size()];
+      stk = new Stack<>();
+      this.graph = graph;
+    }
+    Stack<Stack<Integer>> tarjan() {
       Stack<Stack<Integer>> result = new Stack<>();
       for (int i = 0; i < graph.size(); i++) {
         if (index[i] == 0) dfsTarzan(i, result);
@@ -132,7 +139,7 @@ public class SCC {
 
     // System.out.println(Arrays.toString(kosaraju(graph)));
     int id = 0;
-    Stack<Stack<Integer>> scc = new Tarzan().tarzan();
+    Stack<Stack<Integer>> scc = new Tarjan(graph).tarjan();
     while (!scc.isEmpty()) {
       System.out.println("scc: " + id++);
       Stack<Integer> c = scc.pop();
