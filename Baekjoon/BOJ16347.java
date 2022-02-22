@@ -11,92 +11,85 @@ public class BOJ16347 {
   }
   private static class SegTree {
     int n = 100_000;
-    int[] tree, maxL, maxR, free, malloc;
+    int[] arr, tree, count;
     SegTree() {
       int size = 1;
       while (size < n) size <<= 1;
       size <<= 1;
+      arr = new int[n];
       tree = new int[size];
-      maxL = new int[size];
-      maxR = new int[size];
-      free = new int[size]; // free[node] = 1: free child nodes.(not itself)
-      malloc = new int[size];
-      init(1, 0, n-1);
+      count = new int[size];
+      update(1, 0, n-1, 0, n);
     }
-    void update(int node, int start, int end) {
-      if (start == end) return;
-      int mid = (start + end) >> 1;
-      maxL[node] = tree[node<<1] == (mid-start+1) ? tree[node<<1] + maxL[node<<1|1] : maxL[node<<1]; 
-      maxR[node] = tree[node<<1|1] == (end - mid) ? tree[node<<1|1] + maxR[node<<1] : maxR[node<<1|1];
-      tree[node] = Integer.max(Integer.max(tree[node<<1], tree[node<<1|1]), maxR[node<<1] + maxL[node<<1|1]);
-    }
-    void freeLazy(int node, int start, int end) {
-      if (free[node] == 0) return;
-      if (start != end) {
-        int mid = (start + end) >> 1;
-        maxL[node<<1] = maxR[node<<1] = tree[node<<1] = mid-start+1;
-        maxL[node<<1|1] = maxR[node<<1|1] = tree[node<<1|1] = end-mid;
-        free[node<<1] = free[node<<1|1] = 1;
-      }
-      free[node] = 0;
-    }
-    void mallocLazy(int node, int start, int end) {
-      if (malloc[node] == 0) return;
-      
-      malloc[node] = 0;
-    }
-    void init(int node, int start, int end) {
+    void update(int node, int start, int end, int idx, int val) {
+      if (start > idx || end < idx) return;
       if (start == end) {
-        maxL[node] = maxR[node] = tree[node] = 1;
+        tree[node] = arr[idx] = val;
+        count[idx] = val == 0 ? 0 : 1;
         return;
       }
       int mid = (start + end) >> 1;
-      init(node<<1, start, mid);
-      init(node<<1|1, mid+1, end);
-      maxL[node] = maxR[node] = tree[node] = tree[node<<1] + tree[node<<1|1];
+      update(node<<1, start, mid, idx, val);
+      update(node<<1|1, mid+1, end, idx, val);
+      tree[node] = Integer.max(tree[node<<1], tree[node<<1|1]);
+      count[node] = count[node<<1] + count[node<<1|1];
+    }
+    int getCount(int node, int start, int end, int left, int right) {
+      if (start > right || end < left) return 0;
+      if (left <= start && end <= right) return count[node];
+      int mid = (start + end) >> 1;
+      return getCount(node<<1, start, mid, left, right) + getCount(node<<1|1, mid+1, end, left, right);
+    }
+    int find(int k) {
+      return find(1, 0, n-1, k);
+    }
+    int find(int node, int start, int end, int k) {
+      if (tree[node] < k) return -1;
+      if (start == end) return start;
+      int mid = (start + end) >> 1;
+      if (tree[node<<1] >= k) {
+        return find(node<<1, start, mid, k);
+      } else {
+        return find(node<<1|1, mid+1, end, k);
+      } 
+    }
+    int findForward(int node, int start, int end, int k) {
+      if (count[node] < k) return -1;
+      if (start == end) return start;
+      int mid = (start + end) >> 1;
+      if (count[node<<1] >= k) {
+        return findForward(node<<1, start, mid, k);
+      } else {
+        return findForward(node<<1|1, mid+1, end, k-count[node<<1]);
+      }
     }
     int malloc(int memory) {
-      return malloc(1, 0, n-1, memory);
-    }
-    int malloc(int node, int start, int end, int memory) {
-      freeLazy(node, start, end);
-      mallocLazy(node, start, end);
-      if (tree[node] < memory) return -1;
-      if (start == end) {
-        maxL[node] = maxR[node] = tree[node] = 0;
-        return start;
-      }
-      int mid = (start + end) >> 1;
-      int address = -1;
-      if (tree[node<<1] >= memory) { // left
-        address = malloc(node<<1, start, mid, memory); 
-      } else if (maxR[node<<1] + maxL[node<<1|1] >= memory) { // merge
-        malloc[node<<1] = maxR[node<<1];
-        malloc[node<<1|1] = memory-maxR[node<<1];
-        address = mid - maxR[node<<1] + 1;
-      } else if (tree[node<<1|1] >= memory) { // right
-        address = malloc(node<<1|1, mid+1, end, memory);
-      }
-      update(node, start, end);
-      return address;
+      int idx = find(memory);
+      if (idx < 0 || idx+memory >= n) return -1;
+      int len = arr[idx];
+      update(1, 0, n-1, idx, 0);
+      if (len > memory)
+        update(1, 0, n-1, idx+memory, len-memory);
+      return idx;
     }
     void free(int idx, int memory) {
-      int left = idx;
-      int right = idx + memory - 1;
-      free(1, 0, n-1, left, right);
-    }
-    void free(int node, int start, int end, int left, int right) {
-      freeLazy(node, start, end);
-      if (start > right || end < left) return;
-      if (left <= start && end <= right) {
-        maxL[node] = maxR[node] = tree[node] = end-start+1;
-        free[node] = 1;
-        return;
+      update(1, 0, n-1, idx, memory);
+      if (idx + arr[idx] < n && arr[idx + arr[idx]] != 0) {
+        merge(idx, idx+arr[idx]);
       }
-      int mid = (start + end) >> 1;
-      free(node<<1, start, mid, left, right);
-      free(node<<1|1, mid+1, end, left, right);
-      update(node, start, end);
+      int k = getCount(1, 0, n-1, 0, idx);   
+      int forward = findForward(1, 0, n-1, k-1);
+      System.out.println("idx: " + idx + "/k: " + k + "/forward: " + forward);
+      System.out.println("totalCount: " + count[1]);
+      if (forward >= 0 && forward + arr[forward] == idx) {
+        merge(forward, idx);
+      }
+    }
+    void merge(int i, int j) {
+      // i < j
+      int len = arr[i] + arr[j];
+      update(1, 0, n-1, j, 0);
+      update(1, 0, n-1, i, len);      
     }
   }
   public static void main(String[] args) throws IOException {
@@ -104,7 +97,7 @@ public class BOJ16347 {
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     int n = Integer.parseInt(br.readLine());
     SegTree sg = new SegTree();
-    HashMap<String, Node> store = new HashMap<>();
+    HashMap<String, Node> store = new HashMap<>(); // <VarName, Node(Address, Memory Size)>
     while (n-- > 0) {
       String command = br.readLine();
       int len = command.length();
@@ -113,13 +106,10 @@ public class BOJ16347 {
         int memory = Integer.parseInt(command.substring(12, len-2));
         int address = sg.malloc(memory);
         if (address < 0) {
-          if (store.containsKey(varName)) {
-            store.remove(varName);
-          }
+          if (store.containsKey(varName)) store.remove(varName);
           continue;
         }
-        Node node = new Node(address, memory);
-        store.put(varName, node);
+        store.put(varName, new Node(address, memory));
       } else {
         if (command.charAt(0) == 'p') { // print
           String varName = command.substring(6, len-2);
@@ -139,7 +129,10 @@ public class BOJ16347 {
           } 
         }
       }
+      bw.flush();
+      for (int i = 0; i < 5; i++) {
+        System.out.println("sg.arr["+i+"]=" + sg.arr[i]);
+      }
     }
-    bw.flush();
   }
 }
