@@ -25,7 +25,7 @@ public class BOJ16347 {
       if (start > idx || end < idx) return;
       if (start == end) {
         tree[node] = arr[idx] = val;
-        count[idx] = val == 0 ? 0 : 1;
+        count[node] = val == 0 ? 0 : 1;
         return;
       }
       int mid = (start + end) >> 1;
@@ -65,7 +65,7 @@ public class BOJ16347 {
     }
     int malloc(int memory) {
       int idx = find(memory);
-      if (idx < 0 || idx+memory >= n) return -1;
+      if (idx < 0 || idx+memory > n) return -1;
       int len = arr[idx];
       update(1, 0, n-1, idx, 0);
       if (len > memory)
@@ -77,10 +77,8 @@ public class BOJ16347 {
       if (idx + arr[idx] < n && arr[idx + arr[idx]] != 0) {
         merge(idx, idx+arr[idx]);
       }
-      int k = getCount(1, 0, n-1, 0, idx);   
+      int k = getCount(1, 0, n-1, 0, idx);
       int forward = findForward(1, 0, n-1, k-1);
-      System.out.println("idx: " + idx + "/k: " + k + "/forward: " + forward);
-      System.out.println("totalCount: " + count[1]);
       if (forward >= 0 && forward + arr[forward] == idx) {
         merge(forward, idx);
       }
@@ -119,7 +117,7 @@ public class BOJ16347 {
           } else {
             bw.write('0');
           }
-          bw.newLine();
+          if (n!=0) bw.newLine();
         } else { // free
           String varName = command.substring(5, len-2);
           if (store.containsKey(varName)) {
@@ -129,10 +127,7 @@ public class BOJ16347 {
           } 
         }
       }
-      bw.flush();
-      for (int i = 0; i < 5; i++) {
-        System.out.println("sg.arr["+i+"]=" + sg.arr[i]);
-      }
     }
+    bw.flush();
   }
 }
