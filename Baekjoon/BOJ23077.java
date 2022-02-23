@@ -1,9 +1,7 @@
-package Test;
-
 import java.io.*;
 import java.util.*;
 
-public class Test {
+public class BOJ23077 {
   private static class Pair {
     int happy, day;
     Pair(int happy, int day) {

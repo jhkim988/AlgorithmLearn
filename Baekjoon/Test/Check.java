@@ -3,9 +3,10 @@ import java.io.*;
 
 public class Check {
   public static void main(String[] args) throws IOException {
-    for (int id = 1; id <= 10; id++) {
-      BufferedReader test = new BufferedReader(new FileReader(new File("./Test/test_" + id + ".txt")));
-      BufferedReader solution = new BufferedReader(new FileReader(new File("./Test/alloc.out."+id)));
+    int num = 1;
+    for (int id = 1; id <= num; id++) {
+      BufferedReader test = new BufferedReader(new FileReader(new File("./Test/output.txt")));
+      BufferedReader solution = new BufferedReader(new FileReader(new File("./Test/ts1_output.txt")));
       String t = test.readLine();
       String s = solution.readLine();
       int line = 0;
