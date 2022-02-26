@@ -73,7 +73,6 @@ public class BOJ23077 {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     int numTest = Integer.parseInt(br.readLine());
-    SegTree sg = new SegTree(300_001);
     for (int testId = 1; testId <= numTest; testId++) {
       StringTokenizer st = new StringTokenizer(br.readLine());
       int d = Integer.parseInt(st.nextToken());
@@ -92,6 +91,7 @@ public class BOJ23077 {
       
       // sweeping:
       long max = 0;
+      SegTree sg = new SegTree(300_001);
       for (Pair p : attraction) {
         sg.update(p.happy);
         long sum = sg.get(k);
@@ -102,7 +102,9 @@ public class BOJ23077 {
       bw.write(": ");
       bw.write(Long.toString(max));
       bw.newLine();
-      sg.clear();
+      sg = null;
+      attraction = null;
+      System.gc();
     }
     bw.flush();
   }
