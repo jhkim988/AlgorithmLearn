@@ -3,8 +3,9 @@ import java.util.*;
 
 public class BOJ2336 {
   private static class Pair {
-    int t1, t2;
-    Pair(int t1, int t2) {
+    int id, t1, t2;
+    Pair(int id, int t1, int t2) {
+      this.id = id;
       this.t1 = t1;
       this.t2 = t2;
     }
@@ -53,7 +54,7 @@ public class BOJ2336 {
       for (int test2 = test1+1; test2 < 3; test2++) {
         ArrayList<Pair> relative = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-          relative.add(new Pair(rank[test1][i], rank[test2][i]));
+          relative.add(new Pair(i, rank[test1][i], rank[test2][i]));
         }
         Collections.sort(relative, (a, b) -> a.t1-b.t1);
         for (Pair p : relative) {
@@ -61,10 +62,12 @@ public class BOJ2336 {
         }
         System.out.println();
         SegTree sg = new SegTree(n);
-        for (int i = 0; i < n; i++) {
+        for (int i = n-1; i >= 0; i--) {
           Pair p = relative.get(i);
           int ic = sg.get(1, 0, n-1, 0, p.t2);
-          if (ic > 0) isGreat[i] = false;
+          if (ic > 0) {
+            isGreat[p.id] = false;
+          }
           sg.update(1, 0, n-1, p.t2, 1);
         }
       }
