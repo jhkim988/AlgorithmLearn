@@ -70,26 +70,23 @@ public class BOJ1325 {
     ArrayList<HashSet<Integer>> scc = tarjan.scc;
     ArrayList<Queue<Integer>> dag = new ArrayList<>();
     for (int i = 0; i < scc.size(); i++) dag.add(new LinkedList<>());
+    int[] indegree = new int[dag.size()];
     for (int i = 1; i <= n; i++) {
       for (int adj : graph.get(i)) {
         if (tarjan.sccId[i] == tarjan.sccId[adj]) continue;
         dag.get(tarjan.sccId[i]).add(tarjan.sccId[adj]);
-      } 
-    }
-    for (int i = 0; i < scc.size(); i++) {
-      System.out.print(i + ": ");
-      for (int v : scc.get(i)) {
-        System.out.print(v + " ");
+        indegree[tarjan.sccId[adj]]++;
       }
-      System.out.println();
+    }
+    Queue<Integer> zeroIndegree = new LinkedList<>();
+    for (int i = 0; i < indegree.length; i++) {
+      if (indegree[i] == 0) zeroIndegree.add(i);
     }
     ArrayList<Integer> answerSCCID = new ArrayList<>();
-    int[] dp = new int[dag.size()];
     int max = 0;
-    for (int id = 0; id < dag.size(); id++) {
-      boolean[] visit = new boolean[dag.size()];
-      int val = dfs(id, dag, dp, tarjan, visit);
-      System.out.println("id: " + id + "/ val: " + val);
+    while (!zeroIndegree.isEmpty()) {
+      int id = zeroIndegree.poll();
+      int val = bfs(id, dag, tarjan);
       if (max < val) {
         max = val;
         answerSCCID = new ArrayList<>();
@@ -113,14 +110,21 @@ public class BOJ1325 {
     bw.newLine();
     bw.flush();
   }
-  static int dfs(int v, ArrayList<Queue<Integer>> graph, int[] dp, Tarjan tarjan, boolean[] visit) {
-    if (dp[v] != 0) return dp[v];
-    int sum = tarjan.scc.get(tarjan.sccId[v]).size();
-    for (int adj : graph.get(v)) {
-      if (visit[adj]) continue;
-      visit[adj] = true;
-      sum += dfs(adj, graph, dp, tarjan, visit);
+  static int bfs(int v, ArrayList<Queue<Integer>> dag, Tarjan tarjan) {
+    Queue<Integer> que = new LinkedList<>();
+    boolean[] visit = new boolean[dag.size()];
+    que.add(v);
+    visit[v] = true;
+    int sum = tarjan.scc.get(v).size();
+    while (!que.isEmpty()) {
+      int crnt = que.poll();
+      for (int adj : dag.get(crnt)) {
+        if (visit[adj]) continue;
+        sum += tarjan.scc.get(adj).size();
+        visit[adj] = true;
+        que.add(adj);
+      }
     }
-    return dp[v] = sum;
+    return sum;
   }
 }
