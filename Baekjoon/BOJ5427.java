@@ -7,36 +7,42 @@ public class BOJ5427 {
   private static final int INF = 5000;
   private static int[] rowDi = {-1, 0, 1, 0}, colDi = {0, -1, 0, 1};
   private static char[][] map = new char[MAX][];
-  private static int[][] fire = new int[MAX][MAX], move = new int[MAX][MAX];
+  private static int[][] move = new int[MAX][MAX];
   private static Queue<Integer> fireQue = new LinkedList<>();
   private static Queue<Integer> moveQue = new LinkedList<>();
-  static void bfsFire() {
-    while (!fireQue.isEmpty()) {
+  static void fire() {
+    int size = fireQue.size();
+    for (int i = 0; i < size; i++) {
       int crnt = fireQue.poll();
       for (int k = 0; k < 4; k++) {
         int adjRow = crnt/col + rowDi[k];
         int adjCol = crnt%col + colDi[k];
         if (adjRow < 0 || adjRow >= row || adjCol < 0 || adjCol >= col) continue;
-        if (map[adjRow][adjCol] == '#') continue;
-        if (fire[adjRow][adjCol] < INF) continue;
-        fire[adjRow][adjCol] = fire[crnt/col][crnt%col] + 1;
+        if (map[adjRow][adjCol] == '#' || map[adjRow][adjCol] == '*') continue;
+        map[adjRow][adjCol] = '*';
         fireQue.add(adjRow * col + adjCol);
       }
     }
   }
   static int simulation() {
+    int time = -1;
     while (!moveQue.isEmpty()) {
       int crnt = moveQue.poll();
+      int crntRow = crnt/col;
+      int crntCol = crnt%col;
+      if (time < move[crntRow][crntCol]) {
+        time = move[crntRow][crntCol];
+        fire();
+      }
       for (int k = 0; k < 4; k++) {
-        int adjRow = crnt/col + rowDi[k];
-        int adjCol = crnt%col + colDi[k];
+        int adjRow = crntRow + rowDi[k];
+        int adjCol = crntCol + colDi[k];
         if (adjRow < 0 || adjRow >= row || adjCol < 0 || adjCol >= col) {
-          return move[crnt/col][crnt%col] + 1;
+          return move[crntRow][crntCol] + 1;
         }
         if (map[adjRow][adjCol] != '.') continue;
-        if (move[adjRow][adjCol] < INF) continue;
-        if (fire[adjRow][adjCol] <= move[crnt/col][crnt%col] + 1) continue;
-        move[adjRow][adjCol] = move[crnt/col][crnt%col] + 1;
+        if (move[adjRow][adjCol] != INF) continue;
+        move[adjRow][adjCol] = move[crntRow][crntCol] + 1;
         moveQue.add(adjRow * col + adjCol);
       }
     }
@@ -55,7 +61,7 @@ public class BOJ5427 {
       }
       for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
-          move[i][j] = fire[i][j] = INF;
+          move[i][j] = INF;
         }
       }
       for (int i = 0; i < row; i++) {
@@ -65,11 +71,9 @@ public class BOJ5427 {
             move[i][j] = 0;
           } else if (map[i][j] == '*') {
             fireQue.add(i * col + j);
-            fire[i][j] = 0;
           }
         }
       }
-      bfsFire();
       int answer = simulation();
       bw.write(answer >= 0 ? Integer.toString(answer) : "IMPOSSIBLE");
       bw.newLine();
