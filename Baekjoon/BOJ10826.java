@@ -1,4 +1,5 @@
 import java.io.*;
+import java.math.*;
 
 public class BOJ10826 {
   public static void main(String[] args) throws IOException {
@@ -11,12 +12,13 @@ public class BOJ10826 {
       bw.flush();
       return;
     }
-    long[] dp = new long[n+1];
-    dp[1] = 1;
+    BigInteger[] dp = new BigInteger[n+1];
+    dp[0] = BigInteger.ZERO;
+    dp[1] = BigInteger.ONE;
     for (int i = 2; i <= n; i++) {
-      dp[i] = dp[i-1] + dp[i-2];
+      dp[i] = dp[i-1].add(dp[i-2]);
     }
-    bw.write(Long.toString(dp[n]));
+    bw.write(dp[n].toString());
     bw.newLine();
     bw.flush();
   }
