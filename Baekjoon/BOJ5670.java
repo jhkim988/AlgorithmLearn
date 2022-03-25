@@ -22,7 +22,6 @@ public class BOJ5670 {
       return hm.size();
     }
   }
-  @SuppressWarnings({"unchecked", "rawtypes"})
   private static class Trie {
     int numClick = 0;
     Node root;
@@ -46,7 +45,6 @@ public class BOJ5670 {
         for (char ch : node.hm.keySet()) node = node.get(ch);
       }
       if (node.ch == '\0') {
-        System.out.println("num: " + num);
         numClick += num;
         return;
       }
@@ -60,7 +58,9 @@ public class BOJ5670 {
       }
     }
     int numClick() {
-      numClick(root, 0);
+      for (char ch : root.hm.keySet()) {
+        numClick(root.get(ch), 1);
+      }
       return numClick;
     }
   }
@@ -74,8 +74,9 @@ public class BOJ5670 {
       for (int i = 0; i < numWord; i++) {
         trie.add(br.readLine());
       }
-      System.out.println(((double) trie.numClick()) / numWord);
+      bw.write(String.format("%.2f\n", ((double) trie.numClick()) / numWord));
       input = br.readLine();
     }
+    bw.flush();
   }
 }
