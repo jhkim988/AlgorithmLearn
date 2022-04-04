@@ -5,7 +5,11 @@ public class BOJ1789 {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     long S = Long.parseLong(br.readLine());
-
+    if (S == 1) {
+      bw.write("1\n");
+      bw.flush();
+      return;
+    }
     long lo = 0;
     long hi = S;
     while (lo + 1 < hi) {
