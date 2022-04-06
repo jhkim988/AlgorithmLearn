@@ -32,12 +32,12 @@ public class BOJ2243 {
       return rank;
     }
     void addQuery(int rank, int num) {
-      update(1, 0, n-1, rank+1, num);
+      update(1, 0, n-1, rank, num);
     }
     int takeQuery(int k) {
       int rank = get(1, 0, n-1, k);
       update(1, 0, n-1, rank, -1);
-      return rank-1;
+      return rank;
     }
   }
   public static void main(String[] args) throws IOException {

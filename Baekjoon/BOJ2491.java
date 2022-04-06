@@ -13,41 +13,50 @@ public class BOJ2491 {
     StringTokenizer st = new StringTokenizer(br.readLine());
     int a = Integer.parseInt(st.nextToken());
     int[] diff = new int[n-1];
+    int numZero = 0;
     for (int i = 0; i < n-1; i++) {
       int input = Integer.parseInt(st.nextToken());
       diff[i] = input - a;
       a = input;
+      if (diff[i] == 0) numZero++;
+    }
+    if (numZero == n-1) {
+      bw.write(Integer.toString(n));
+      bw.newLine();
+      bw.flush();
+      return;
     }
     int answer = 1;
-    int posi = 0, nega = 0, zero = 0; // positive, negative, zero
-    if (diff[0] > 0) posi = 2;
-    else if (diff[0] < 0) nega = 2;
-    else zero = 2;
-    for (int i = 1; i < n-1; i++) {
-      System.out.println("diff[i]: " + diff[i]);
-      if (posi > 0) {
-        if (diff[i] > 0) {
-          posi = posi + zero + 1;
-          answer = Integer.max(answer, posi);
-        } else if (diff[i] < 0) {
-          posi = 0;
-          nega = 2;
-          zero = 0;
-          answer = Integer.max(answer, nega);
-        } else {
-          zero++;
+    boolean[] visit = new boolean[n-1];
+    for (int i = 0; i < n-1; i++) {
+      if (visit[i]) continue;
+      if (diff[i] == 0) continue;
+      visit[i] = true;
+      int len = 2;
+      if (diff[i] > 0) {
+        for (int j = 1; i+j < n-1; j++) {
+          if (diff[i+j] < 0) break;
+          if (diff[i+j] != 0) visit[i+j] = true;
+          len++;
         }
-      } else { // nega > 0
-        if (diff[i] < 0) {
-          nega++;
-          answer = Integer.max(answer, nega);
-        } else if (diff[i] > 0) {
-          posi = 2;
-          nega = 0;
-          zero = 0;
-          answer = Integer.max(answer, posi);
+        for (int j = 1; i-j >= 0; j++) {
+          if (diff[i-j] < 0) break;
+          if (diff[i-j] != 0) visit[i-j] = true;
+          len++;
         }
-      } 
+      } else {
+        for (int j = 1; i+j < n-1; j++) {
+          if (diff[i+j] > 0) break;
+          if (diff[i+j] != 0) visit[i+j] = true;
+          len++;
+        }
+        for (int j = 1; i-j >= 0; j++) {
+          if (diff[i-j] > 0) break;
+          if (diff[i-j] != 0) visit[i-j] = true;
+          len++;
+        }
+      }
+      answer = Integer.max(answer, len);
     }
     bw.write(Integer.toString(answer));
     bw.newLine();
