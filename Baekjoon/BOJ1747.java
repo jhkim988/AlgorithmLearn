@@ -8,18 +8,14 @@ public class BOJ1747 {
     int x = Integer.parseInt(br.readLine());
     boolean[] isPrime = eratosthenes(10_000_000);
     boolean[] isPalindrome = palindrome(10_000_000);
-    // for (int i = x; i <= 10_000_000; i++) {
-    //   if (isPrime[i] && isPalindrome[i]) {
-    //     bw.write(Integer.toString(i));
-    //     bw.newLine();
-    //     bw.flush();
-    //     return;
-    //   }
-    // } 
-    System.out.println(isPalindrome[1113111]);
-    System.out.println(isPalindrome[1013101]);
-    System.out.println(isPalindrome[1003001]);
-    System.out.println(isPalindrome[1000001]);
+    for (int i = x; i <= 10_000_000; i++) {
+      if (isPrime[i] && isPalindrome[i]) {
+        bw.write(Integer.toString(i));
+        bw.newLine();
+        bw.flush();
+        return;
+      }
+    }
   }  
   static boolean[] eratosthenes(int n) {
     boolean[] result = new boolean[n+1];
@@ -42,7 +38,7 @@ public class BOJ1747 {
       for (int i = 1; i <= 9; i++) result[i*digit+i] = true;
       for (int z = 1; z <= digit/100; z *= 100) {
         int pos = 1;
-        while (pos*pos < digit) pos*=10;
+        while (pos*pos*10 < digit/z) pos*=10;
         for (int j = z; j < z*10; j++) {
           if (result[j]) {
             for (int i = 1; i <= 9; i++) if (i*digit+i + j*pos < n) result[i*digit+i + j*pos] = true;
