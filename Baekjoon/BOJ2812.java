@@ -8,25 +8,23 @@ public class BOJ2812 {
     StringTokenizer st = new StringTokenizer(br.readLine());
     int n = Integer.parseInt(st.nextToken());
     int k = Integer.parseInt(st.nextToken());
+    int copy = k;
     char[] input = br.readLine().toCharArray();
-    Stack<Integer> stk = new Stack<>();
-    int start = 0, remainder = n-k;
-    for (int i = start; i <= input.length-remainder; i++) {
-
-    }
-    while (start < input.length && remainder > 0) {
-      int maxIdx = start;
-      for (int i = start; i <= input.length-remainder; i++) {
-        if (input[maxIdx] < input[i]) {
-          stk.clear();
-          stk.push(maxIdx);
-        } else if (!stk.isEmpty() && stk.peek() >= input[i]) {
-          stk.push(i);
-        }
+    Stack<Character> stk = new Stack<>();
+    stk.push(input[0]);
+    for (int i = 1; i < n; i++) {
+      while (k > 0 && !stk.isEmpty() && stk.peek() < input[i]) {
+        stk.pop();
+        k--;
       }
-      bw.write(input[maxIdx]);
-      start = maxIdx+1;
-      remainder--;
+      stk.push(input[i]);
+    }
+    Stack<Character> tmp = new Stack<>();
+    while (!stk.isEmpty()) {
+      tmp.push(stk.pop());
+    }
+    for (int i = 0; i < n-copy; i++) {
+      bw.write(tmp.pop());
     }
     bw.newLine();
     bw.flush();
