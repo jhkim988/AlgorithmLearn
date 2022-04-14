@@ -15,6 +15,9 @@ public class BOJ2036 {
       else if (input < 0) negative.add(input);
       else zero++;
     }
-    
+    Collections.sort(positive, Collections.reverseOrder());
+    Collections.sort(negative);
+    long answer = 0;
+    int ptr = 0;
   }  
 }
