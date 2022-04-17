@@ -12,9 +12,15 @@ public class BOJ2576 {
       sum += input;
       if (input < minOdd) minOdd = input;
     }
+    if (minOdd == 101) {
+      bw.write("-1\n");
+      bw.flush();
+      return;
+    }
     bw.write(Integer.toString(sum));
     bw.newLine();
-    bw.write(Integer.toString(minOdd == 101 ? -1 : minOdd));
+    bw.write(Integer.toString(minOdd));
+    bw.newLine();
     bw.flush();
   }
 }
