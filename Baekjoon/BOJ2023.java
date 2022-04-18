@@ -1,31 +1,30 @@
 import java.io.*;
-import java.util.*;
 
 public class BOJ2023 {
+  static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+  static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+  static int n;
   public static void main(String[] args) throws IOException {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    int n = Integer.parseInt(br.readLine());
-    int digit = 1;
-    while (n-- > 0) digit *= 10;
-    boolean[] isPrime = new boolean[digit];
-    Arrays.fill(isPrime, true);
-    isPrime[0] = isPrime[1] = false;
-    for (int i = 2; i*i <= digit; i++) {
-      if (!isPrime[i]) continue;
-      for (int j = i+i; j < digit; j += i) {
-        isPrime[j] = false;
-      }
-    }
-    next: for (int i = digit/10; i < digit; i++) {
-      int test = i;
-      while (test > 0) {
-        if (!isPrime[test]) continue next;
-        test /= 10;
-      }
-      bw.write(Integer.toString(i));
-      bw.newLine();
-    }
+    n = Integer.parseInt(br.readLine());
+    recur(0, 0);
     bw.flush();
+  }
+  static void recur(int depth, int num) throws IOException {
+    if (depth == n) {
+      bw.write(Integer.toString(num));
+      bw.newLine();
+      return;
+    }
+    for (int i = 0; i <= 9; i++) {
+      if (!isPrime(num*10+i)) continue;
+      recur(depth+1, num*10+i);
+    }
+  }
+  static boolean isPrime(int n) {
+    if (n <= 1) return false;
+    for (int i = 2; i*i <= n; i++) {
+      if (n % i == 0) return false;
+    }
+    return true;
   }
 }
