@@ -11,18 +11,12 @@ public class BOJ2531 {
     int k = Integer.parseInt(st.nextToken());
     int c = Integer.parseInt(st.nextToken());
 
-    int totalKind = 0;
-    boolean couponOnBelt = false;
     int[] arr = new int[n];
     int[] numPick = new int[d+1]; // 1 ~ d
     for (int i = 0; i < n; i++) {
       arr[i] = Integer.parseInt(br.readLine());
-      if (arr[i] == c) couponOnBelt = true;
-      if (numPick[arr[i]] == 0) totalKind++;
-      numPick[arr[i]]++;
     }
-    Arrays.fill(numPick, 0);
-    int maxKind = totalKind >= k ? k : totalKind + (couponOnBelt ? 0 : 1);
+    int maxKind = 0;
     int kind = 0;
     
     // k pick: [0, ..., k-1]
@@ -30,6 +24,14 @@ public class BOJ2531 {
       if (numPick[arr[i]] == 0) kind++;
       numPick[arr[i]]++;
     }
-    
+    if (numPick[c] == 0 && maxKind < (kind+1)) maxKind = kind+1;
+    for (int ptr = 1; ptr < n; ptr++) {
+      if (--numPick[arr[ptr-1]] == 0) kind--;
+      if (numPick[arr[(ptr + k - 1) % n]]++ == 0) kind++;
+      if (numPick[c] == 0 && maxKind < (kind+1)) maxKind = kind+1;
+      if (maxKind < kind) maxKind = kind;
+    }
+    bw.write(Integer.toString(maxKind));
+    bw.flush();
   }
 }
