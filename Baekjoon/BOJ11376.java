@@ -10,24 +10,25 @@ public class BOJ11376 {
     int m = Integer.parseInt(st.nextToken());
     
     ArrayList<Queue<Integer>> graph = new ArrayList<>();
-    int[] employee = new int[2*n+1];
+    int[] employee = new int[n+1];
     int[] work = new int[m+1];
     
-    for (int i = 0; i <= 2*n; i++) graph.add(new LinkedList<>());
+    for (int i = 0; i <= n; i++) graph.add(new LinkedList<>());
     for (int i = 1; i <= n; i++) {
       st = new StringTokenizer(br.readLine());
       int w = Integer.parseInt(st.nextToken());
       while (w-- > 0) {
         int input = Integer.parseInt(st.nextToken());
-        graph.get(2*i-1).add(input);
-        graph.get(2*i).add(input);
+        graph.get(i).add(input);
       }
     }
 
     int numMatch = 0;
-    boolean[] visit = new boolean[2*n+1];
-    for (int i = 1; i <= 2*n; i++) {
+    boolean[] visit = new boolean[n+1];
+    for (int i = 1; i <= n; i++) {
       if (employee[i] != 0) continue;
+      Arrays.fill(visit, false);
+      if (dfs(i, graph, visit, employee, work)) numMatch++;
       Arrays.fill(visit, false);
       if (dfs(i, graph, visit, employee, work)) numMatch++;
     }
