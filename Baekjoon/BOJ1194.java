@@ -57,7 +57,7 @@ public class BOJ1194 {
         }
         if (map[adjRow][adjCol] == '1') return crnt.turn+1;
         if ('a' <= map[adjRow][adjCol] && map[adjRow][adjCol] <= 'f') {
-          int key = map[adjRow][adjCol] - 'A';
+          int key = map[adjRow][adjCol] - 'a';
           adjKey = adjKey | (1<<key);
         }
         if (visit[adjRow][adjCol][adjKey]) continue;
