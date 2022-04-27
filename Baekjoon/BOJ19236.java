@@ -52,7 +52,8 @@ public class BOJ19236 {
       }
     }
     Shark shark = new Shark(0, 0, watertank[0][0].direction);
-    int answer = recur(farr, watertank, shark, 1);
+    watertank[shark.row][shark.col].alive = false;
+    int answer = recur(farr, watertank, shark, watertank[shark.row][shark.col].id);
     bw.write(Integer.toString(answer));
     bw.flush();
   }
@@ -98,8 +99,9 @@ public class BOJ19236 {
       int nextCol = shark.col + k*colDi[shark.direction];
       if (nextRow < 0 || nextRow >= 4 || nextCol < 0 || nextCol >= 4) break;
       if (!watertank[nextRow][nextCol].alive) continue;
-      
-      max = Integer.max(max, recur(fclone, cclone, new Shark(nextRow, nextCol, cclone[nextRow][nextCol].direction), val+1));
+      cclone[nextRow][nextCol].alive = false;
+      max = Integer.max(max, recur(fclone, cclone, new Shark(nextRow, nextCol, cclone[nextRow][nextCol].direction), val+cclone[nextRow][nextCol].id));
+      cclone[nextRow][nextCol].alive = true;
     }
     return max;
   }
