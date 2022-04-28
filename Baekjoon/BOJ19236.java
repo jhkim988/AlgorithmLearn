@@ -30,11 +30,9 @@ public class BOJ19236 {
       this.id = id;
       this.direction = direction;
     }
-    @Override
-    public Cell clone() {
-      Cell copy = new Cell(id, direction);
-      copy.alive = this.alive;
-      return copy;
+    Cell(int id, int direction, boolean alive) {
+      this(id, direction);
+      this.alive = alive;
     }
   }
   public static void main(String[] args) throws IOException {
@@ -53,7 +51,7 @@ public class BOJ19236 {
     }
     Shark shark = new Shark(0, 0, watertank[0][0].direction);
     watertank[shark.row][shark.col].alive = false;
-    int answer = recur(farr, watertank, shark, watertank[shark.row][shark.col].id);
+    int answer = recur(farr, watertank, shark, watertank[shark.row][shark.col].id+1, 0);
     bw.write(Integer.toString(answer));
     bw.flush();
   }
@@ -62,9 +60,9 @@ public class BOJ19236 {
       Fish fcrnt = farr[id];
       Cell ccrnt = watertank[fcrnt.row][fcrnt.col];
       if (!ccrnt.alive) continue;
-      for (int k = 0; k < 8; k++, watertank[farr[id].row][farr[id].col].direction = (watertank[farr[id].row][farr[id].col].direction+1) % 8) {
-        int adjRow = farr[id].row + rowDi[watertank[farr[id].row][farr[id].col].direction];
-        int adjCol = farr[id].col + colDi[watertank[farr[id].row][farr[id].col].direction];
+      for (int k = 0; k < 8; k++, ccrnt.direction = (ccrnt.direction+1) % 8) {
+        int adjRow = fcrnt.row + rowDi[ccrnt.direction];
+        int adjCol = fcrnt.col + colDi[ccrnt.direction];
         if (adjRow < 0 || adjRow >= 4 || adjCol < 0 || adjCol >= 4) continue;
         if (adjRow == shark.row && adjCol == shark.col) continue;
         Cell cadj = watertank[adjRow][adjCol];
@@ -81,28 +79,28 @@ public class BOJ19236 {
       }
     }
   }
-  static int recur(Fish[] farr, Cell[][] watertank, Shark shark, int val) {
-    System.out.println("shark: " + shark.row + ", " + shark.col + ", " + shark.direction);
+  static int recur(Fish[] farr, Cell[][] watertank, Shark shark, int val, int depth) {
+    Fish[] fclone = new Fish[16];
+    Cell[][] cclone = new Cell[4][4];
+    for (int i = 0; i < 16; i++) {
+      fclone[i] = new Fish(farr[i].row, farr[i].col);
+    }
     for (int i = 0; i < 4; i++) {
       for (int j = 0; j < 4; j++) {
-        System.out.print("[" + watertank[i][j].id + ": " + watertank[i][j].direction + ", " + (watertank[i][j].alive ? "aliv]" : "dead]"));
+        cclone[i][j] = new Cell(watertank[i][j].id, watertank[i][j].direction, watertank[i][j].alive);
       }
-      System.out.println();
-    }
-    Fish[] fclone = farr.clone();
-    Cell[][] cclone = new Cell[watertank.length][];
-    for (int i = 0; i < 4; i++) cclone[i] = watertank[i].clone();
+    }  
     move(fclone, cclone, shark);
     int max = 0;
     for (int k = 1; k < 4; k++) {
       int nextRow = shark.row + k*rowDi[shark.direction];
       int nextCol = shark.col + k*colDi[shark.direction];
       if (nextRow < 0 || nextRow >= 4 || nextCol < 0 || nextCol >= 4) break;
-      if (!watertank[nextRow][nextCol].alive) continue;
+      if (!cclone[nextRow][nextCol].alive) continue;
       cclone[nextRow][nextCol].alive = false;
-      max = Integer.max(max, recur(fclone, cclone, new Shark(nextRow, nextCol, cclone[nextRow][nextCol].direction), val+cclone[nextRow][nextCol].id));
+      max = Integer.max(max, recur(fclone, cclone, new Shark(nextRow, nextCol, cclone[nextRow][nextCol].direction), cclone[nextRow][nextCol].id+1, depth+1));
       cclone[nextRow][nextCol].alive = true;
     }
-    return max;
+    return val+max;
   }
 }
