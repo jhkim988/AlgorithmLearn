@@ -106,7 +106,7 @@ public class BOJ16566 {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     StringTokenizer st = new StringTokenizer(br.readLine());
-    int n = Integer.parseInt(st.nextToken());
+    Integer.parseInt(st.nextToken());
     int m = Integer.parseInt(st.nextToken());
     int k = Integer.parseInt(st.nextToken());
     st = new StringTokenizer(br.readLine());
