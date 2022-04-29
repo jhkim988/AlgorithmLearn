@@ -40,14 +40,8 @@ public class BOJ13334 {
       }
     });
     for (int ptr = 0; ptr < n; ptr++) {
-      if (pq.isEmpty()) {
-        pq.add(lines.get(ptr));
-      } else {
-        if (lines.get(ptr).end <= pq.peek().start + d) {
-          pq.add(lines.get(ptr));
-        }
-      }
-      if (pq.peek().start + d < lines.get(ptr).end) {
+      pq.add(lines.get(ptr));
+      while (!pq.isEmpty() && pq.peek().start + d < lines.get(ptr).end) {
         pq.poll();
       }
       max = Integer.max(max, pq.size());
