@@ -1,17 +1,42 @@
 import java.io.*;
 
 public class BOJ1019 {
+  static long[] answer;
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     int n = Integer.parseInt(br.readLine());
-    long[] answer = new long[11];
-
-    for (int i = 1; i <= Integer.min(n, 9); i++) {
-      answer[i] = 1;
+    answer = new long[10];
+    answer(n);
+    for (int i = 0; i < 10; i++) {
+      bw.write(Long.toString(answer[i]));
+      bw.write(' ');
     }
-    for (int i = 1; i <= 9; i++) {
-
+    bw.flush();
+  }
+  static void calc(int n, int add) {
+    while (n > 0) {
+      answer[n%10] += add;
+      n /= 10;
     }
+  }
+  static int toNine(int n, int add) {
+    while (n > 0 && n%10 != 9) {
+      calc(n--, add);
+    }
+    return n;
+  }
+  static void answer(int n) {
+    int digit = 1;
+    n = toNine(n, digit);
+    while (n > 0) {
+      for (int i = 0; i <= 9; i++) {
+        answer[i] += ((n/10)+1)*digit;
+      }
+      n /= 10;
+      digit *= 10;
+      n = toNine(n, digit);
+    }
+    answer[0]--;
   }
 }
