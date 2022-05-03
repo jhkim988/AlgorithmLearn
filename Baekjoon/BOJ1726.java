@@ -38,8 +38,8 @@ public class BOJ1726 {
     int td = Integer.parseInt(st.nextToken())-1;
     Info target = new Info(tr, tc, td);
 
-    int[] rowDi = {-1, 0, 1, 0};
-    int[] colDi = {0, -1, 0, 1};
+    int[] rowDi = {0, 0, 1, -1};
+    int[] colDi = {1, -1, 0, 0};
     Queue<Info> que = new LinkedList<>();
     boolean[][][] visit = new boolean[row][col][4];
     visit[sr][sc][sd] = true;
@@ -60,16 +60,14 @@ public class BOJ1726 {
         que.add(new Info(crnt.row, crnt.col, d, crnt.move+1));
       }
       // go
-      for (int k = 0; k < 4; k++) {
-        for (int dist = 1; dist <= 3; dist++) {
-          int nextRow = crnt.row + rowDi[k]*dist;
-          int nextCol = crnt.col + colDi[k]*dist;
-          if (nextRow < 0 || nextRow >= row || nextCol < 0 || nextCol >= col) break;
-          if (map[nextRow][nextCol] == 1) continue;
-          if (visit[nextRow][nextCol][crnt.direction]) continue;
-          visit[nextRow][nextCol][crnt.direction] = true;
-          que.add(new Info(nextRow, nextCol, crnt.direction, crnt.move+1));
-        }
+      for (int dist = 1; dist <= 3; dist++) {
+        int nextRow = crnt.row + rowDi[crnt.direction]*dist;
+        int nextCol = crnt.col + colDi[crnt.direction]*dist;
+        if (nextRow < 0 || nextRow >= row || nextCol < 0 || nextCol >= col) break;
+        if (map[nextRow][nextCol] == 1) break;
+        if (visit[nextRow][nextCol][crnt.direction]) continue;
+        visit[nextRow][nextCol][crnt.direction] = true;
+        que.add(new Info(nextRow, nextCol, crnt.direction, crnt.move+1));
       }
     }
   }
