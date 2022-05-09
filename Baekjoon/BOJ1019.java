@@ -15,15 +15,18 @@ public class BOJ1019 {
     bw.flush();
   }
   static void calc(int n, int add) {
+    if (n == 0) answer[0] += add;
     while (n > 0) {
       answer[n%10] += add;
       n /= 10;
     }
   }
   static int toNine(int n, int add) {
-    while (n > 0 && n%10 != 9) {
-      calc(n--, add);
+    if (n == 0) return 0;
+    if (n < 9) {
+      while (n > 0) calc(n--, add);
     }
+    while (n > 0 && n%10 != 9) calc(n--, add);
     return n;
   }
   static void answer(int n) {
@@ -34,9 +37,9 @@ public class BOJ1019 {
         answer[i] += ((n/10)+1)*digit;
       }
       n /= 10;
+      answer[0] -= digit;
       digit *= 10;
       n = toNine(n, digit);
     }
-    answer[0]--;
   }
 }
