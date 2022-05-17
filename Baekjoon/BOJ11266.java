@@ -3,6 +3,8 @@ import java.util.*;
 
 public class BOJ11266 {
   static int num = 1;
+  static int[] dfsNum;
+  static boolean[] isAP;
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -20,25 +22,9 @@ public class BOJ11266 {
       graph.get(a).add(b);
       graph.get(b).add(a);
     }
-    boolean[] isAP = new boolean[v+1];
-    Arrays.fill(isAP, true);
-    int[] dfsNum = new int[v+1];
-    for (int i = 1; i <= v; i++) {
-      if (dfsNum[i] == 0) {
-        dfs(graph, dfsNum, i);
-        if (graph.get(i).size() <= 1) isAP[i] = false; 
-      } else {
-        int numChild = 0;
-        for (int j : graph.get(i)) {
-          if (dfsNum[j] < dfsNum[i]) continue;
-          numChild++;
-          for (int adj : graph.get(j)) {
-            if (dfsNum[adj] < dfsNum[i]) isAP[i] = false;
-          }
-        }
-        if (numChild == 0) isAP[i] = false;
-      } 
-    }
+    isAP = new boolean[v+1];
+    dfsNum = new int[v+1];
+    for (int i = 1; i <= v; i++) if (dfsNum[i] == 0) dfs(graph, i, true);
     int numAP = 0;
     for (int i = 1; i <= v; i++) if (isAP[i]) numAP++;
     bw.write(Integer.toString(numAP));
@@ -49,14 +35,22 @@ public class BOJ11266 {
       bw.write(' ');
     }
     bw.flush();
-
-    System.out.println(Arrays.toString(dfsNum));
   }
-  static void dfs(ArrayList<Queue<Integer>> graph, int[] dfsNum, int node) {
+  static int dfs(ArrayList<Queue<Integer>> graph, int node, boolean isRoot) {
+    int min = num;
+    int numChild = 0;
     dfsNum[node] = num++;
     for (int adj : graph.get(node)) {
-      if (dfsNum[adj] != 0) continue;
-      dfs(graph, dfsNum, adj);
+      if (dfsNum[adj] == 0) {
+        numChild++;
+        int low = dfs(graph, adj, false);
+        if (!isRoot && low >= dfsNum[node]) isAP[node] = true;
+        min = Integer.min(min, low);
+      } else {
+        min = Integer.min(min, dfsNum[adj]);
+      }
     }
+    if (isRoot) isAP[node] = numChild >= 2;
+    return min;
   }
 }
