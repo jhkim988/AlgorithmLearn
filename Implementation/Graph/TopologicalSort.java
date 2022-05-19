@@ -38,6 +38,28 @@ public class TopologicalSort {
 
     return result;
   }
+
+
+  static Stack<Integer> TopologicalSort_DFS(ArrayList<Queue<Integer>> graph) {
+    // graph: vertex [0, ..., graph.size()-1]
+    int[] indegree = new int[graph.size()];
+    boolean[] visit = new boolean[graph.size()];
+    Stack<Integer> stk = new Stack<>();
+    for (int v = 0; v < graph.size(); v++) {
+      for (int u : graph.get(v)) indegree[u]++;
+    }
+    for (int v = 0; v < graph.size(); v++) {
+      if (indegree[v] == 0) dfs(graph, v, visit, stk);
+    }
+    return stk;
+  }
+  static void dfs(ArrayList<Queue<Integer>> graph, int node, boolean[] visit, Stack<Integer> stk) {
+    for (int adj : graph.get(node)) {
+      if (visit[adj]) continue;
+      dfs(graph, adj, visit, stk);
+    }
+    stk.push(node);    
+  }
   public static void main(String[] args) {
     
   }  
