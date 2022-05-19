@@ -121,10 +121,18 @@ public class SCC {
   }
   
   private static class Tarjan {
+    // DFS Tree에서 u -> v 가 Tree 간선이라면
+    // v를 root로 하는 subtree에서 가장 높이 올라가는 역방향 간선이 u보다 높이 올라가는지 비교한다.
+    // 높이 올라간다면 v -> u로 가는 간선이 존재한다는 의미이기 때문에 u와 v는 같은 SCC에 속한다.
+    // 높이 올라가지 않는다면 무방향 그래프의 경우(즉, 교차간선이 없다면)
+    // v -> u 간선이 없기 때문에 같은 SCC에 속하지 않는다.
+    // 교차간선이 있다면, 교차간선을 통해 v -> u 경로가 있을 수도 있고 없을 수도 있다.
+    // 두 가지 경우를 구분하는 방법:
+    // 교차간선을 통해 이동한 점이 이미 다른 SCC으로 지정돼 있다면, v -> u 경로는 없다.
     Graph graph;
     int id;
-    int[] index;
-    int[] lowlink;
+    int[] index; // dfs tree number
+    int[] lowlink; // smallest vertex, through reverse edge 
     boolean[] onStack;
     Stack<Integer> stk;
     Tarjan(Graph graph) {
@@ -148,14 +156,14 @@ public class SCC {
       id++;
       stk.push(x);
       for (int edge : graph.get(x)) {
-        if (index[edge] == 0) {
+        if (index[edge] == 0) { // not discovered
           dfsTarzan(edge, result);
           lowlink[x] = Integer.min(lowlink[x], lowlink[edge]);
-        } else if (onStack[edge]) {
+        } else if (onStack[edge]) { // reverse edge
           lowlink[x] = Integer.min(lowlink[x], index[edge]);
         }
       }
-      if (lowlink[x] == index[x]) {
+      if (lowlink[x] == index[x]) { // there is no reverse edge...
         Stack<Integer> component = new Stack<>();
          while (true) {
           int t = stk.pop();
