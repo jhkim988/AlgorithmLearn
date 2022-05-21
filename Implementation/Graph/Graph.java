@@ -12,8 +12,8 @@ public class Graph {
     graph.get(a).add(b);
     graph.get(b).add(a);
   }
-  Iterator<Integer> get(int i) {
-    return graph.get(i).iterator();
+  Iterable<Integer> get(int i) {
+    return graph.get(i);
   }
   int size() {
     return graph.size();

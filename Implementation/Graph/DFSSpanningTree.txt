@@ -1,0 +1,13 @@
+DFS Spanning Tree:
+DFS 를 하면서 따라가는 간선을 모으면 Tree 형태가 된다.
+
+Edge 분류:
+1. Tree Edge: DFS Spanning Tree의 Edge
+2. Forward Edge: Tree Edge는 아니지만, 선조 -> 자손으로 연결돼 있는 Edge
+3. Backward Edge: 자손 -> 선조로 연결돼 있는 Edge
+4. Cross Edge: 선조/자손 관계가 아닌 정점들 간에 연결된 Edge
+
+무향그래프에서는 순방향간선/역방향간선의 구분이 없고, 교차간선이 발생하지 않는다.
+DFS를 통해 Tree를 만들기 때문에 교차간선이 발생할 수 없다.(진행 순서를 생각해보면 된다.)
+
+그래프에서 Cycle 존재하는 것과 역방향 간선이 존재하는 것이 동치이다.
