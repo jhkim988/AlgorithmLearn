@@ -12,24 +12,24 @@ public class BOJ1533 {
     int start = Integer.parseInt(st.nextToken());
     int end = Integer.parseInt(st.nextToken());
     int t = Integer.parseInt(st.nextToken());
-    long[][] mat = new long[5*n][5*n];    
+    long[][] mat = new long[5*n][5*n];
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < 4; j++) {
+        mat[i*5+j+1][i*5+j] = 1;
+      }
+    }
     for (int i = 0; i < n; i++) {
       char[] charr = br.readLine().toCharArray();
       for (int j = 0; j < n; j++) {
         int val = charr[j] - '0';
-        mat[i*5+val][j*5] = 1;
+        if (val == 0) continue;
+        mat[i*5][j*5+val-1] = 1;
       }
     }
     tmp = new long[5*n][5*n];
 
     long[][] mat_t = pow(mat, t);
-    long sum = 0;
-    for (int i = 0; i < 5; i++) {
-      for (int j = 0; j < 5; j++) {
-        sum = (sum+mat_t[(start-1)*5+i][(end-1)*5+j])%DIVISOR;
-      }
-    }
-    bw.write(Long.toString(sum));
+    bw.write(Long.toString(mat_t[(start-1)*5][(end-1)*5]));
     bw.flush();
   }
   static long[][] pow(long[][] base, int exp) {
