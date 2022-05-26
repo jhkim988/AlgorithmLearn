@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ19585 {
-  static int maxColor = 0, maxTeam = 0;
+  static int maxColor = 0, minName = 10_000;
   private static class Node {
     boolean isEnd;
     Node prev;
@@ -36,6 +36,47 @@ public class BOJ19585 {
     }
   }
   public static void main(String[] args) throws IOException {
+    useTrieHash();
+  }
+  public static void useTrieHash() throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    int c = Integer.parseInt(st.nextToken());
+    int n = Integer.parseInt(st.nextToken());
+    Trie color = new Trie();
+    HashSet<String> name = new HashSet<>();
+    while (c-- > 0) {
+      char[] add = br.readLine().toCharArray();
+      color.add(add, false);
+      maxColor = Integer.max(maxColor, add.length);
+    }
+    while (n-- > 0) {
+      String add = br.readLine();
+      name.add(add);
+      minName = Integer.min(minName, add.length());
+    }
+
+    int q = Integer.parseInt(br.readLine());
+    while (q-- > 0) {
+      String query = br.readLine();
+      bw.write(query(query, color, name) ? "Yes\n" : "No\n");
+    }
+    bw.flush();
+  }
+  static boolean query(String query, Trie color, HashSet<String> name) {
+    char[] qarr = query.toCharArray();
+    Node ptr = color.head;
+    for (int i = 0; i < qarr.length-1; i++) {
+      if (i > maxColor || qarr.length-1-i < minName) return false;
+      if (ptr.charr[qarr[i]-'a'] == null) return false;
+      ptr = ptr.charr[qarr[i]-'a'];
+      if (ptr.isEnd && name.contains(query.substring(i+1))) return true;
+    }
+    return false;
+  }
+  public static void useTwoTrie() throws IOException {
+    // Sad Java...
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     StringTokenizer st = new StringTokenizer(br.readLine());
@@ -51,7 +92,6 @@ public class BOJ19585 {
     while (n-- > 0) {
       char[] add = br.readLine().toCharArray();
       name.add(add, true);
-      maxTeam = Integer.max(maxTeam, add.length);
     }
 
     int q = Integer.parseInt(br.readLine());
@@ -67,7 +107,7 @@ public class BOJ19585 {
     for (int i = 0; i < query.length; i++) {
       if (ptr_c.charr[query[i]-'a'] != null) {
         ptr_c = ptr_c.charr[query[i]-'a'];
-        if (query.length-1-i <= maxTeam && ptr_c.isEnd) {
+        if (ptr_c.isEnd) {
           idx_c = i;
           break;
         }
