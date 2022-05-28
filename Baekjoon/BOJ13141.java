@@ -27,46 +27,37 @@ public class BOJ13141 {
       int w = Integer.parseInt(st.nextToken());
       graph.get(a).add(new Edge(b, w));
       graph.get(b).add(new Edge(a, w));
-    }
-
-    for (int i = 1; i <= v; i++) {
-      boolean[] visit = new boolean[v+1];
-      Queue<Edge> que = new LinkedList<>();
-      visit[i] = true;
-      que.add(new Edge(i, 0));
-      while (!que.isEmpty()) {
-        Edge crnt = que.poll();
-        for (Edge edge : graph.get(i)) {
-          if (!visit[edge.end])que.add(new Edge(edge.end, crnt.weight+edge.weight));
-          max[i][edge.end] = Double.max(max[i][edge.end], crnt.weight+edge.weight);
-          visit[edge.end] = true;
-        }
-      }
+      max[a][b] = max[b][a] = Double.max(max[b][a], w);
     }
 
     final int INF = 3_000_000;
-    double[][] floyd = new double[v+1][v+1];
-    for (int i = 0; i <= v; i++) Arrays.fill(floyd[i], INF);
-    for (int i = 1; i <= v; i++) floyd[i][i] = 0;
+    double[][] dist = new double[v+1][v+1];
+    for (int i = 0; i <= v; i++) Arrays.fill(dist[i], INF);
+    for (int i = 1; i <= v; i++) dist[i][i] = 0;
     for (int i = 1; i <= v; i++) {
       for (Edge edge : graph.get(i)) {
-        floyd[i][edge.end] = edge.weight;
+        dist[i][edge.end] = Double.min(dist[i][edge.end], edge.weight);
       }
     }
     for (int k = 1; k <= v; k++) {
       for (int i = 1; i <= v; i++) {
         for (int j = 1; j <= v; j++) {
-          floyd[i][j] = Double.min(floyd[i][j], floyd[i][k] + floyd[k][j]);
+          dist[i][j] = Double.min(dist[i][j], dist[i][k] + dist[k][j]);
         }
       }
     }
-    double time = 0;
-    for (int i = 1; i <= v; i++) {
-      for (int j = 1; j <= v; j++) {
-        time = Double.max(time, (max[i][j]+floyd[i][j])/2);
+
+    double min = Double.MAX_VALUE;
+    for (int start = 1; start <= v; start++) {
+      double val = 0;
+      for (int end = 1; end <= v; end++) {
+        for (int adj = 1; adj <= v; adj++) {
+          val = Double.max(val, (max[end][adj]+dist[start][adj]+dist[start][end])/2);
+        }
       }
+      min = Double.min(min, val);
     }
-    bw.write(Double.toString(time));
+    bw.write(Double.toString(min));
     bw.flush();
   } 
 }
