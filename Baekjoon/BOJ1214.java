@@ -22,11 +22,11 @@ public class BOJ1214 {
   }
   static long solution(long d, long p, long q) {
     if (d % p == 0 || d % q == 0 || p == 1 || q == 1) return d;
-    long min = Long.MAX_VALUE/2;
-    long dp = d/p;
-    for (long i = 0; i <= dp; i++) {
-      long y = ((d-p*i)%q == 0 ? 0 : 1) + (d-p*i)/q;
-      if (p*i+q*y < min) min = p*i+q*y;
+    long lim = Long.min(p-1, d/q);
+    long min = q*(d/q+1);
+    for (long i = 0; i <= lim; i++) {
+      if ((d-q*i)%p == 0) return d;
+      min = Long.min(min, p*((d-q*i)/p+1)+q*i);
     }
     return min;
   }
