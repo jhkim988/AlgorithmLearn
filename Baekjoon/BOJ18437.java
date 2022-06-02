@@ -30,8 +30,10 @@ public class BOJ18437 {
     void updateLazy(int node, int start, int end) {
       if (lazy[node] == 0) return;
       tree[node] = lazy[node] == 1 ? end-start+1 : 0;
-      if (start == end) return;
-      lazy[node<<1] = lazy[node<<1|1] = lazy[node];
+      if (start != end) {
+        lazy[node<<1] = lazy[node];
+        lazy[node<<1|1] = lazy[node];
+      }
       lazy[node] = 0;
     }
     void update(int node, int start, int end, int left, int right, int q) {
@@ -39,12 +41,16 @@ public class BOJ18437 {
       if (end < left || right < start) return;
       if (left <= start && end <= right) {
         tree[node] = q == 1 ? end-start+1 : 0;
-        if (start != end) lazy[node<<1] = lazy[node<<1|1] = q;
+        if (start != end) {
+          lazy[node<<1] = q;
+          lazy[node<<1|1] = q;
+        }
         return;
       }
       int mid = (start+end)>>1;
       update(node<<1, start, mid, left, right, q);
       update(node<<1|1, mid+1, end, left, right, q);
+      tree[node] = tree[node<<1] + tree[node<<1|1];
     }
     void update(int left, int right, int q) {
       update(1, 0, n-1, left, right, q);
