@@ -19,18 +19,17 @@ public class BOJ1377 {
     }
     Pair[] sorted = new Pair[n];
     for (int i = 0; i < n; i++) {
-      sorted[i] = new Pair(i, input[i]);
+      sorted[i] = new Pair(i+1, input[i]);
     }
     Arrays.sort(sorted, (a, b) -> a.value == b.value ? a.index - b.index : a.value - b.value);
-
-  }
-  static void swap(int[] input, Pair[] sorted, int a, int b) {
     
-    int tmp = input[a];
-    input[a] = input[b];
-    input[b] = tmp;
-  }
-  static int binarySearch(Pair[] sorted, int value) {
-    return 0;
+    int max = 0;
+    for (int i = 0; i < n; i++) {
+      if (max < sorted[i].index - i) {
+        max = sorted[i].index - i;
+      }
+    }
+    bw.write(Integer.toString(max));
+    bw.flush();
   }
 }
