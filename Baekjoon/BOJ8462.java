@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ8462 {
-  static int[] count;
+  static long[] count;
   static long val;
   private static class Query {
     int lo, hi, id;
@@ -40,7 +40,7 @@ public class BOJ8462 {
       }
     });
   
-    count = new int[1_000_001];
+    count = new long[1_000_001];
     long[] res = new long[t];
     int lo = 0, hi = 0;
     val = 0;
