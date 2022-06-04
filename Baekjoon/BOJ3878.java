@@ -8,6 +8,10 @@ public class BOJ3878 {
       this.x = x;
       this.y = y;
     }
+    @Override
+    public String toString() {
+      return "(" + x + ", " + y + ") ";
+    }
   }
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -34,8 +38,7 @@ public class BOJ3878 {
 
       ArrayList<Point> blackhull = convexhull(black);
       ArrayList<Point> whitehull = convexhull(white);
-
-      bw.write(isSeparable(blackhull, whitehull) && isSeparable(whitehull, blackhull)? "YES\n" : "NO\n");
+      bw.write(isSeparable(blackhull, whitehull) ? "YES\n" : "NO\n");
     }
     bw.flush();
   }
@@ -106,18 +109,60 @@ public class BOJ3878 {
     return (p1.x-o.x)*(p2.y-o.y)-(p2.x-o.x)*(p1.y-o.y);
   }
   static boolean isSeparable(ArrayList<Point> set1, ArrayList<Point> set2) {
-    for (Point p : set1) {
-      boolean allccw = true;
-      for (int i = 0; i < set2.size()-1; i++) {
-        long ccw = ccw(set2.get(i), set2.get(i+1), p); 
-        if (ccw == 0) {
-          if (set2.get(i).x < p.x && p.x < set2.get(i+1).x || set2.get(i+1).x < p.x && p.x < set2.get(i).x) return false;
-        } else {
-          allccw = allccw && (ccw > 0);
-        }
+    if (set1.size() == 1 && set2.size() == 1) return true;
+    if (set1.size() > set2.size()) {
+      ArrayList<Point> tmp = set1;
+      set1 = set2;
+      set2 = tmp;
+    }
+    int n = set1.size();
+    int m = set2.size();
+    // check Intersect Segment
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        if (intersect(set1.get(i), set1.get((i+1)%n), set2.get(j), set2.get((j+1)%m))) return false;
       }
-      if (allccw) return false;
+    }
+    // Inclusion case
+    boolean contain = true;
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        contain = contain && ccw(set1.get(i), set1.get((i+1)%n), set2.get(j)) > 0;
+      }
+    }
+    if (contain) {
+      return false;     
+    }
+    contain = true;
+    for (int j = 0; j < m; j++) {
+      for (int i = 0; i < n; i++) {
+        contain = contain && ccw(set2.get(j), set2.get((j+1)%m), set1.get(i)) > 0;
+      }
+    }
+    if (contain) {
+      return false;     
     }
     return true;
+  }
+  static boolean intersect(Point p1, Point p2, Point q1, Point q2) {
+    long ppq1 = sign(ccw(p1, p2, q1));
+    long ppq2 = sign(ccw(p1, p2, q2));
+    long qqp1 = sign(ccw(q1, q2, p1));
+    long qqp2 = sign(ccw(q1, q2, p2));
+    if (ppq1 != ppq2 && qqp1 != qqp2) return true;
+    if (ppq1 == 0 && onSegment(p1, p2, q1)) return true;
+    if (ppq2 == 0 && onSegment(p1, p2, q2)) return true;
+    if (qqp1 == 0 && onSegment(q1, q2, p1)) return true;
+    if (qqp2 == 0 && onSegment(q1, q2, p2)) return true;
+    return false;
+  }
+  static boolean onSegment(Point p1, Point p2, Point q) {
+    // p1, p2, q: colinear
+    return Long.min(p1.x, p2.x) <= q.x && q.x <= Long.max(p1.x, p2.x) && Long.min(p1.y, p2.y) <= q.y && q.y <= Long.max(p1.y, p2.y);
+  }
+  static long sign(long x) {
+    if (x > 0) return 1;
+    if (x < 0) return -1;
+    return 0;
   }
 }

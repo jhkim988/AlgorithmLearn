@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.*;
 
 public class ConvexHull {
@@ -8,11 +9,24 @@ public class ConvexHull {
       this.y = y;
     }
   }
-  public static void main(String[] args) {
-    int n = 10;
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    int n = Integer.parseInt(br.readLine());
     Point[] points = new Point[n];
-    
+    for (int i = 0; i < n; i++) {
+      StringTokenizer st = new StringTokenizer(br.readLine());
+      int x = Integer.parseInt(st.nextToken());
+      int y = Integer.parseInt(st.nextToken());
+      points[i] = new Point(x, y);
+    }
     ArrayList<Point> graham = grahamScan(points);
+    bw.write("Convex Hull:\n");
+    for (Point p : graham) {
+      bw.write("(" + Long.toString(p.x) + ", " + Long.toString(p.y) + ")");
+      bw.newLine();
+    }
+    bw.flush();
   }
   static ArrayList<Point> grahamScan(Point[] points) {
     int n = points.length;
@@ -35,7 +49,7 @@ public class ConvexHull {
         else return 0;
       }
     });
-
+    
     // 3. Scan
     Deque<Point> deq = new LinkedList<>();
     for (Point p : points) {
