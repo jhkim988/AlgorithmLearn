@@ -1,6 +1,6 @@
 import java.io.*;
 import java.util.*;
-
+// java -> c/c++
 public class BOJ15576 {
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -8,35 +8,50 @@ public class BOJ15576 {
     StringTokenizer st = new StringTokenizer(br.readLine());
     char[] char_a = st.nextToken().toCharArray();
     char[] char_b = st.nextToken().toCharArray();
-    int bundle = 3;
+    if (char_a[0] == '0' || char_b[0] == '0') {
+      bw.write('0');
+      bw.flush();
+      return;
+    }
+    int bundle = 5;
     long[] a = bundle(char_a, bundle);
     long[] b = bundle(char_b, bundle);;
-    System.out.println(Arrays.toString(b));    
 
-    int val = 10;
+    long val = 1;
     for (int i = 0; i < bundle; i++) val *= 10;
     long[] product = product(a, b);
-    for (int i = 0; i < product.length; i++) {
-      System.out.print(product[i] + " ");
-    }
-    System.out.println();
     for (int i = 0; i < product.length-1; i++) {
       if (product[i] < val) continue;
       product[i+1] += product[i] / val;
       product[i] %= val;
     }
-    for (int i = 0; i < product. length; i++) {
-      bw.write(Long.toString(product[i]) + " ");
+    boolean first = true;
+    for (int i = product.length-1; i >= 0; i--) {
+      if (first) {
+        if (product[i] == 0) continue;
+        bw.write(Long.toString(product[i]));
+        first = false;
+      } else {
+        long exp = val/10;
+        while (exp > product[i]) {
+          bw.write('0');
+          exp /= 10;
+        }
+        if (product[i] == 0) continue;
+        bw.write(Long.toString(product[i]));
+      }
     }
     bw.flush();
   }
   static long[] bundle(char[] arr, int bundle) {
     int ptr = arr.length;
     long[] ret = new long[(arr.length+bundle-1)/bundle];
-    for (int i = ret.length-1; i >= 0; i--) {
+    for (int i = 0; i < ret.length; i++) {
       long val = 0;
+      long exp = 1;
       for (int j = 0; j < bundle && ptr > 0; j++) {
-        val = val*10 + arr[--ptr]-'0';
+        val += (arr[--ptr]-'0')*exp;
+        exp *= 10;
       }
       ret[i] = val;
     }
@@ -66,7 +81,8 @@ public class BOJ15576 {
   }
   static long[] product_highAccuracy(long[] _p, long[] _q) {
     int len = 1;
-    while (len < _p.length + _q.length) len <<= 1;    
+    while (len < _p.length + _q.length) len <<= 1;
+    initTrig(len >> 1);
     double[][] p1 = new double[len][2];
     double[][] p2 = new double[len][2];
     double[][] q1 = new double[len][2];

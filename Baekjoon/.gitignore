@@ -2,5 +2,6 @@
 !*.java
 !*.py
 !*.js
+!*.c
 !.gitignore
 /Test.java
