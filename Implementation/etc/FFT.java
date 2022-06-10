@@ -23,7 +23,8 @@ public class FFT {
   }
   static long[] product_highAccuracy(long[] _p, long[] _q) {
     int len = 1;
-    while (len < _p.length + _q.length) len <<= 1;    
+    while (len < _p.length + _q.length) len <<= 1;
+    initTrig(len >> 1);
     double[][] p1 = new double[len][2];
     double[][] p2 = new double[len][2];
     double[][] q1 = new double[len][2];
