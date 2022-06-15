@@ -64,10 +64,10 @@ public class BOJ23077 {
       int countAfterIdx = getCount(1, 0, n-1, idx+1, n-1);
       return get(1, 0, n-1, idx+1, n-1) + (k-countAfterIdx) * idx;
     }
-    void clear() {
-      Arrays.fill(count, 0);
-      Arrays.fill(sum, 0);
-    }
+    // void clear() {
+    //   Arrays.fill(count, 0);
+    //   Arrays.fill(sum, 0);
+    // }
   }
   public static void main(String[] args) throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
