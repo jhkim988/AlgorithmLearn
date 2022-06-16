@@ -28,25 +28,23 @@ public class BOJ1092 {
       bw.flush();
       return;
     }
+    int count = 0;
     int time = 0;
     boolean[] visit = new boolean[m];
-    while (true) {
-      boolean flag = false;
-      for (int i = 0; i < n; i++) {
+    while (count < m) {
+      for (int i = n-1; i >= 0; i--) {
         while (index[i] >= 0 && visit[index[i]]) index[i]--;
         if (index[i] < 0) continue;
         visit[index[i]] = true;
-        index[i]--;
-        flag = true;
+        count++;
       }
-      if (!flag) break;
       time++;
     }
     bw.write(Integer.toString(time));
     bw.flush();
   }
   static int binSearch(int[] arr, int key) {
-    int lo = 0, hi = arr.length;
+    int lo = -1, hi = arr.length;
     while (lo+1 < hi) {
       int mid = (lo + hi) >> 1;
       if (arr[mid] <= key) {
