@@ -28,9 +28,10 @@ public class BOJ2141 {
     
     long sum = 0;
     for (int i = 0; i < n; i++) {
-      if (sum+arr[i].num < total/2) {
+      if (sum < (total+1)/2) {
         sum += arr[i].num;
-      } else {
+      }
+      if (sum >= (total+1)/2) {
         bw.write(Integer.toString(arr[i].pos));
         bw.flush();
         return;
