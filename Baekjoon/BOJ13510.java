@@ -123,7 +123,7 @@ public class BOJ13510 {
         a = b;
         b = tmp;
       }
-      return Integer.max(ret, sg.get(in[a], in[b]-1));
+      return Integer.max(ret, sg.get(in[a]+1, in[b]));
     }
   }
   public static void main(String[] args) throws IOException {
