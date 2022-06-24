@@ -69,6 +69,7 @@ public class BOJ13510 {
         sg.update(in[edges[i].start], edges[i].weight);
         System.out.println("sg init: " + in[edges[i].start] + " -> " + edges[i].weight);
       }
+      System.out.println("sg.get():" + sg.get(2, 3));
     }
     void dfs1(int v) {
       sz[v] = 1;
