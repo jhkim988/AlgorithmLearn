@@ -1,4 +1,14 @@
+import java.util.*;
+
 public class HLD {
+  private static class SegTree {
+    void update(int idx, int val) {
+
+    }
+    int get(int left, int right) {
+      return 0;
+    }
+  }
   private static class Node {
     int vertex, weight;
   }
@@ -8,27 +18,31 @@ public class HLD {
   // Euler Tour order(in, out), top node of same heavy chain
   ArrayList<ArrayList<Node>> tree;
   SegTree sg;
-  HLD(int n, ArrayList<ArrayList<Node>> tree, SegTree sg) {
-
+  HLD(int n, ArrayList<ArrayList<Node>> tree) {
+    n++;
+    this.tree = tree;
+    dep = new int[n]; par = new int[n]; sz = new int[n];
+    in = new int[n]; out = new int[n]; top = new int[n];
+    dfs1(1); dfs2(1);
   }
   void dfs1(int v) {
     sz[v] = 1;
     ArrayList<Node> edge = tree.get(v);
-    for (int i = 0; i < edge.size(); edge++) {
-      int adj = edge.get(i);
+    for (int i = 0; i < edge.size(); i++) {
+      int adj = edge.get(i).vertex;
       dep[adj] = dep[v]+1;
       par[adj] = v;
       dfs1(adj);
       sz[v] += sz[adj];
       // Set Heavy Edge as index 0:
-      if (sz[adj] > sz[edges.get(0).vertex]) swap(edges, 0, i);
+      if (sz[adj] > sz[edge.get(0).vertex]) swap(edge, 0, i);
     }
   }
   void dfs2(int v) {
     in[v] = ++id;
     ArrayList<Node> edge = tree.get(v);
     for (int i = 0; i < edge.size(); i++) {
-      int adj = edge.get(i);
+      int adj = edge.get(i).vertex;
       top[adj] = i == 0 ? top[v] : adj;
       dfs2(adj);
     }
