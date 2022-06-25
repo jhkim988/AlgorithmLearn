@@ -39,7 +39,6 @@ public class BOJ13309 {
     }
   }
   private static class HLD {
-    String yes = "YES\n", no = "NO\n";
     int id = 0;
     int[] dep, par, sz, in, out, top, vertex;
     SegTree sg;
@@ -89,12 +88,11 @@ public class BOJ13309 {
     }
     String query(int b, int c, int d) {
       boolean isConnected = isConnected(b, c);
-      String answer = isConnected ? yes : no;
       if (d == 1) {
         if (isConnected) cut(b);
         else cut(c);
       }
-      return answer;
+      return isConnected ? "YES\n" : "NO\n";
     }
   }
   public static void main(String[] args) throws IOException {
