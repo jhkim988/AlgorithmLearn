@@ -58,14 +58,14 @@ public class BOJ13510 {
     Edge[] edges;
     ArrayList<ArrayList<Pair>> tree;
     SegTree sg;
-    HLD(int n, ArrayList<ArrayList<Pair>> tree, Edge[] edges) {
+    HLD(int n, ArrayList<ArrayList<Pair>> tree, Edge[] edges, int root) {
       n++;
       this.tree = tree;
       this.edges = edges;
       sg = new SegTree(n);
       dep = new int[n]; par = new int[n]; sz = new int[n];
       in = new int[n]; out = new int[n]; top = new int[n];
-      dfs1(1); dfs2(1); edgesSort();
+      dfs1(root); dfs2(root); edgesSort();
       for (int i = 1; i < edges.length; i++) {
         sg.update(in[edges[i].start], edges[i].weight);
       }
@@ -133,11 +133,12 @@ public class BOJ13510 {
       graph.get(end).add(new Pair(start, weight));
       edges[i] = new Edge(start, end, weight);
     }
+    int root = (int) (Math.random()*n + 1);
     visit = new boolean[n+1];
-    visit[1] = true;
-    dfs(graph, tree, 1);
+    visit[root] = true;
+    dfs(graph, tree, root);
 
-    HLD hld = new HLD(n, tree, edges);
+    HLD hld = new HLD(n, tree, edges, root);
     int q = Integer.parseInt(br.readLine());
     while (q-- > 0) {
       StringTokenizer st = new StringTokenizer(br.readLine());
