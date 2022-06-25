@@ -22,6 +22,7 @@ public class BOJ13510 {
     int n;
     int[] max;
     SegTree(int n) {
+      this.n = n;
       int treeSize = 1;
       while (treeSize < n) treeSize <<= 1;
       treeSize <<= 1;
@@ -67,9 +68,7 @@ public class BOJ13510 {
       dfs1(1); dfs2(1); edgesSort();
       for (int i = 1; i < edges.length; i++) {
         sg.update(in[edges[i].start], edges[i].weight);
-        System.out.println("sg init: " + in[edges[i].start] + " -> " + edges[i].weight);
       }
-      System.out.println("sg.get():" + sg.get(2, 3));
     }
     void dfs1(int v) {
       sz[v] = 1;
@@ -79,11 +78,7 @@ public class BOJ13510 {
         par[adj] = v;
         dfs1(adj);
         sz[v] += sz[adj];
-        if (sz[adj] > sz[tree.get(v).get(0).vertex]) {
-          Pair tmp = tree.get(v).get(0);
-          tree.get(v).set(0, tree.get(v).get(i));
-          tree.get(v).set(i, tmp);
-        }
+        if (sz[adj] > sz[tree.get(v).get(0).vertex]) swap(tree.get(v), i, 0);
       }
     }
     void dfs2(int v) {
@@ -98,32 +93,21 @@ public class BOJ13510 {
     void edgesSort() {
       for (int i = 1; i < edges.length; i++) {
         if (dep[edges[i].start] > dep[edges[i].end]) continue;
-        int tmp = edges[i].start;
-        edges[i].start = edges[i].end;
-        edges[i].end = tmp;
+        edges[i].end = swap(edges[i].start, edges[i].start=edges[i].end);
       }
     }
     void update(int idx, int w) {
       sg.update(in[edges[idx].start], w);
     }
     int query(int a, int b) {
-      System.out.println("Query: " + a + ", " + b);
       int ret = 0;
       while (top[a] != top[b]) {
-        if (dep[top[a]] < dep[top[b]]) {
-          int tmp = a;
-          a = b;
-          b = tmp;
-        }
+        if (dep[top[a]] < dep[top[b]]) b = swap(a, a=b);
         int st = top[a];
-        ret = Integer.max(ret, sg.get(in[st]+1, in[a]));
+        ret = Integer.max(ret, sg.get(in[st], in[a]));
         a = par[st];
       }
-      if (dep[a] > dep[b]) {
-        int tmp = a;
-        a = b;
-        b = tmp;
-      }
+      if (dep[a] > dep[b]) b = swap(a, a=b);
       return Integer.max(ret, sg.get(in[a]+1, in[b]));
     }
   }
@@ -168,6 +152,13 @@ public class BOJ13510 {
       }
       bw.flush();
     }
+  }
+  static <T> T swap(T value1, T value2) {
+    return value1;
+  }
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  static void swap(ArrayList arrList, int idx1, int idx2) {
+    arrList.set(idx2, arrList.set(idx1, arrList.get(idx2)));
   }
   static void dfs(ArrayList<ArrayList<Pair>> graph, ArrayList<ArrayList<Pair>> tree, int v) {
     for (Pair adj : graph.get(v)) {
