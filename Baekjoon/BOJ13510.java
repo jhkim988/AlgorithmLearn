@@ -72,20 +72,22 @@ public class BOJ13510 {
     }
     void dfs1(int v) {
       sz[v] = 1;
-      for (int i = 0; i < tree.get(v).size(); i++) {
-        int adj = tree.get(v).get(i).vertex;
+      ArrayList<Pair> e = tree.get(v);
+      for (int i = 0; i < e.size(); i++) {
+        int adj = e.get(i).vertex;
         dep[adj] = dep[v]+1;
         par[adj] = v;
         dfs1(adj);
         sz[v] += sz[adj];
-        if (sz[adj] > sz[tree.get(v).get(0).vertex]) swap(tree.get(v), i, 0);
+        if (sz[adj] > sz[e.get(0).vertex]) swap(tree.get(v), i, 0);
       }
     }
     void dfs2(int v) {
       in[v] = ++id;
-      for (int i = 0; i < tree.get(v).size(); i++) {
-        int adj = tree.get(v).get(i).vertex;
-        top[adj] = adj == tree.get(v).get(0).vertex ? top[v] : adj;
+      ArrayList<Pair> e = tree.get(v);
+      for (int i = 0; i < e.size(); i++) {
+        int adj = e.get(i).vertex;
+        top[adj] = i == 0 ? top[v] : adj;
         dfs2(adj);
       }
       out[v] = id;
