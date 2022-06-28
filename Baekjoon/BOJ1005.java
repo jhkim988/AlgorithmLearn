@@ -59,4 +59,64 @@ public class BOJ1005 {
     }
     stack.push(vertex);
   }
+
+
+  static private class newSolution {
+    static ArrayList<Queue<Integer>> rev;
+    static Queue<Integer> que;
+    static boolean[] visit;
+    public static void main(String[] args) throws IOException {
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+      int t = Integer.parseInt(br.readLine());
+      while (t-- > 0) {
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int k = Integer.parseInt(st.nextToken());
+        rev = new ArrayList<>();
+        que = new LinkedList<>();
+        visit = new boolean[n+1];
+        for (int i = 0; i <= n; i++) {
+          rev.add(new LinkedList<>());
+        }
+        st = new StringTokenizer(br.readLine());
+        int[] cost = new int[n+1];
+        for (int i = 1; i <= n; i++) {
+          cost[i] = Integer.parseInt(st.nextToken());
+        }
+        for (int i = 0; i < k; i++) {
+          st = new StringTokenizer(br.readLine());
+          int prev = Integer.parseInt(st.nextToken());
+          int next = Integer.parseInt(st.nextToken());
+          rev.get(next).add(prev);
+        }
+        int start = Integer.parseInt(br.readLine());
+        visit[start] = true;
+        revdfs(start);
+        
+        int[] dp = new int[n+1];
+        while (!que.isEmpty()) {
+          int node = que.poll();
+          for (int adj : rev.get(node)) {
+            if (!visit[adj]) continue;
+            dp[node] = Integer.max(dp[node], dp[adj]);
+          }
+          dp[node] += cost[node];
+        }
+        bw.write(Integer.toString(dp[start]));
+        bw.newLine();
+      }
+      bw.flush();
+    }
+    static void revdfs(int v) {
+      for (int adj : rev.get(v)) {
+        if (visit[adj]) continue;
+        visit[adj] = true;
+        revdfs(adj);
+      }
+      que.add(v);
+    }
+  }
 }
+
+
