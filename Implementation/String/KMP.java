@@ -64,4 +64,20 @@ public class KMP {
     }
     return memo;
   }
+  static int[] pi(String pattern) {
+    char[] arr = pattern.toCharArray();
+    int n = arr.length;
+    int[] pi = new int[n];
+
+    // pi[i]: max len prefix = suffix in pattern[0...i] (prefix != pattern[0...i])
+    pi[0] = 0;
+    int j = 0;
+    for (int i = 1; i < n; i++) {
+      while (j > 0 && arr[i] != arr[j]) j = pi[j-1];
+      if (arr[i] == arr[j]) {
+        pi[i] = ++j;
+      }
+    }
+    return pi;
+  }
 }
