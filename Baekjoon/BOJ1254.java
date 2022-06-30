@@ -5,15 +5,18 @@ public class BOJ1254 {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     char[] arr = br.readLine().toCharArray();
-    int findIdx = arr.length;
-    next: for (int i = 0; i < arr.length; i++) {
-      for (int j = arr.length-1; j >= 0 && i+arr.length-1-j < arr.length; j--) {
-        if (arr[i+arr.length-1-j] != arr[j]) continue next;
-      }
-      findIdx = i;
-      break;      
+    int[] pi = new int[arr.length];
+    int j = 0;
+    for (int i = 1; i < arr.length; i++) {
+      while (j > 0 && arr[arr.length-1-i] != arr[arr.length-1-j]) j = pi[j-1];
+      if (arr[arr.length-1-i] == arr[arr.length-1-j]) pi[i] = ++j;
     }
-    bw.write(Integer.toString(findIdx + arr.length));
+    j = 0;
+    for (int i = 0; i < arr.length; i++) {
+      while (j > 0 && arr[i] != arr[arr.length-1-j]) j = pi[j-1];
+      if (arr[i] == arr[arr.length-1-j]) j++;
+    }
+    bw.write(Integer.toString(2*arr.length-j));
     bw.flush();
   }
 }
