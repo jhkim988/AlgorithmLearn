@@ -84,7 +84,7 @@ public class KMP {
     int[] pi = pi(pat);
     int j = 0;
     for (int i = 0; i < str.length; i++) {
-      while (j > 0 && str[i] != pat[j]) j = pat[j-1];
+      while (j > 0 && str[i] != pat[j]) j = pi[j-1];
       if (str[i] == pat[j]) {
         if (j == pat.length-1) {
           ret.add(i-pat.length+1);
