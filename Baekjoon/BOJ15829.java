@@ -1,29 +1,23 @@
-import java.math.BigInteger;
-import java.util.Scanner;
+import java.io.*;
 
 public class BOJ15829 {
-  public static void main(String[] args) {
-    Scanner scn = new Scanner(System.in);
-    int L = scn.nextInt();
-    char[] input = new char[L];
-    input = scn.next().toCharArray();
-    scn.close();
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-    BigInteger result = BigInteger.ZERO;
+    int l = Integer.parseInt(br.readLine());
+    char[] input = br.readLine().toCharArray();
     long r = 31;
     long M = 1234567891;
+    long exp = 1;
+    long ret = 0;
 
-    for (int i = 0; i < L; i++) {
+    for (int i = 0; i < l; i++) {
       int tmp = (int) input[i] - 96;
-      result = result.add(new BigInteger(tmp + "").multiply(pow(r, i)));
+      ret = (exp*tmp%M + ret)%M;
+      exp = (exp*r)%M;
     }
-    System.out.println(result.mod(new BigInteger(M + "")));
-  }
-  static BigInteger pow (long base, int exp) {
-    BigInteger result = BigInteger.ONE;
-    for (int i = 0; i < exp; i++) {
-      result = result.multiply(new BigInteger(base + ""));
-    }
-    return result;
+    bw.write(Long.toString(ret));
+    bw.flush();
   }
 }
