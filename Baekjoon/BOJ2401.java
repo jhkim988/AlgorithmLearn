@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ2401 {
-  static int answer;
+  static int n, answer;
   static char[] str;
   static ArrayList<Pair> arrlist;
   static int[] dp;
@@ -17,7 +17,7 @@ public class BOJ2401 {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     str = br.readLine().toCharArray();
-    int n = Integer.parseInt(br.readLine());
+    n = Integer.parseInt(br.readLine());
     char[][] pats = new char[n][];
     for (int i = 0; i < n; i++) {
       pats[i] = br.readLine().toCharArray();
@@ -25,26 +25,30 @@ public class BOJ2401 {
     arrlist = new ArrayList<>();
     for (int i = 0; i < n; i++) {
       for (int idx : kmp(str, pats[i])) {
-        arrlist.add(new Pair(idx, i));
+        arrlist.add(new Pair(idx, pats[i].length));
       }
     }
     Collections.sort(arrlist, (a, b) -> a.idx-b.idx);
-    dp = new int[arrlist.size()];
-    for (int i = 0; i < arrlist.size(); i++) recur(i);
+    dp = new int[n];
+    for (int i = 0; i < n; i++) {
+      recur(i);
+    }
     bw.write(Integer.toString(answer));
     bw.flush();
   }
-  static int recur(int depth) {
-    if (depth >= arrlist.size()) return 0;
-    if (dp[depth] != 0) return dp[depth];
+  static int recur(int idx) {
+    System.out.println("idx: " + idx);
+    if (idx >= n) return 0;
+    if (dp[idx] != 0) return dp[idx];
     int max = 0;
-    int lo = inf(arrlist.get(depth).idx);
-    int hi = sup(arrlist.get(depth).idx);
+    int lo = inf(idx);
+    int hi = sup(idx);
+    if (arrlist.get(lo).idx != idx && arrlist.get(hi).idx != idx) return 0;
     for (int i = lo; i <= hi; i++) {
-      System.out.println("lo: " + lo + ", hi: " + hi);
-      max = Integer.max(max, recur(i)+arrlist.get(i).npat);
+      System.out.println(arrlist.get(i).npat);
+      max = Integer.max(max, recur(idx + arrlist.get(i).npat-1)+arrlist.get(i).npat);
     }
-    return answer = Integer.max(answer, dp[depth] = max);
+    return answer = Integer.max(answer, dp[idx] = max);
   }
   static int inf(int key) {
     int lo = -1, hi = arrlist.size();
