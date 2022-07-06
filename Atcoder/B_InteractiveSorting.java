@@ -86,20 +86,43 @@ public class B_InteractiveSorting {
       char a = 'A', b = 'B', c = 'C', d = 'D', e = 'E';
       if (compare(a, b) < 0) a = swap(b, b=a);
       if (compare(c, d) < 0) c = swap(d, d=c);
-      if (compare(a, c) < 0) a = swap(c, c=a);
+      if (compare(a, c) < 0) {
+        a = swap(c, c=a);
+        b = swap(d, d=b);
+      }
       if (compare(c, e) < 0) {
-        if (compare(d, e) < 0) {
-
+        if (compare(a, e) < 0) {
+          char tmp = e;
+          e = d;
+          d = c;
+          c = a;
+          a = tmp;
         } else {
-
+          char tmp = e;
+          e = d;
+          d = c;
+          c = tmp;
         }
       } else {
-        if (compare(a, e) < 0) {
-
-        } else {
-
-        }
+        if (compare(d, e) < 0) d = swap(e, e=d);
       }
+      if (compare(b, d) < 0) {
+        if (compare(b, e) < 0) {
+          char tmp = b;
+          b = c;
+          c = d;
+          d = e;
+          e = tmp;
+        } else {
+          char tmp = b;
+          b = c;
+          c = d;
+          d = tmp;
+        }
+      } else {
+        if (compare(b, c) < 0) c = swap(b, b=c);
+      }
+      System.out.println("! " + e + d + c + b + a);
     } else {
       AVLTree avl = new AVLTree();
       for (int i = 0; i < n; i++) {
@@ -112,7 +135,6 @@ public class B_InteractiveSorting {
     }
   }
   static int compare(char c1, char c2) {
-    System.out.println("call: " + c1 + ", " + c2);
     if (cache[c1-'A'][c2-'A'] != 0) return cache[c1-'A'][c2-'A'];
     System.out.println("? " + c1 + " " + c2);
     int ret = sc.nextLine().charAt(0) == '<' ? -1 : 1;
