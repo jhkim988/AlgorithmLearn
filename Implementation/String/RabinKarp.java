@@ -26,8 +26,9 @@ public class RabinKarp {
     }
     long rev = pow(key, d-2, d);
     Queue<Integer> que = new LinkedList<>();
-    for (int i = 0; i+pat.length < str.length; i++) {
+    for (int i = 0; i+pat.length-1 < str.length; i++) {
       if (strHash == patHash) que.add(i);
+      if (i+pat.length == str.length) break;
       strHash += (d-str[i])%d; strHash %= d;
       strHash += str[i+pat.length]*exp%d; strHash %= d;
       strHash = strHash*rev%d;
