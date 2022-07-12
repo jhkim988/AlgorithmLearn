@@ -1,8 +1,11 @@
 // Naive Implementation:
-public class BST {
+public class BinarySearchTree {
   private static class Node {
     int key;
     Node parent, leftChild, rightChild;
+    Node(int key) {
+      this.key = key;
+    }
   }
   Node root;
   void add(int key) {
@@ -31,7 +34,7 @@ public class BST {
     else return ptr;
   }
   Node delete(int key) {
-    return delete(ptr, key);
+    return delete(root, key);
   }
   Node delete(Node ptr, int key) {
     if (ptr == null) return ptr;
@@ -39,12 +42,12 @@ public class BST {
     else if (ptr.key > key) return delete(ptr.leftChild, key);
     if (ptr.leftChild == null) return ptr.rightChild;
     if (ptr.rightChild == null) return ptr.leftChild;
-    ptr.key = minValue(ptr.right);
-    ptr.right = delete(ptr.right, ptr.key);
+    ptr.key = minValue(ptr.rightChild);
+    ptr.rightChild = delete(ptr.rightChild, ptr.key);
     return ptr;
   }
   int minValue(Node ptr) {
-    return ptr.leftChild == null ? ptr.key : minValue(ptr.leftChild).key;
+    return ptr.leftChild == null ? ptr.key : minValue(ptr.leftChild);
   }
   public static void main(String[] args) {
 
