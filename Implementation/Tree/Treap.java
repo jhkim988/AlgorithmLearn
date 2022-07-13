@@ -1,20 +1,18 @@
-import java.io.*;
-
 public class Treap {
-  static final int INF = Integer.MAX_VALUE/2;
   private static class Node {
-    int weight, key;
+    int key;
+    double weight;
     Node leftChild, rightChild;
     Node(int key) {
       this.key = key;
-      weight = (int) (INF*Math.random());
+      weight = Math.random();
     }
   }
   // weight: MaxHeap
   // key: BinarySearchTree
   Node root;
   void add(int key) {
-    add(root, new Node(key));
+    root = add(root, new Node(key));
   }
   Node find(int key) {
     return null;
@@ -22,27 +20,33 @@ public class Treap {
   Node delete(int key) {
     return null;
   }
-  void add(Node ptr, Node node) {
-    if (ptr == null) {
-      ptr = node;
-      return;
-    }
+  Node add(Node ptr, Node node) {
+    if (ptr == null) return node;
     if (ptr.weight > node.weight) {
       if (ptr.key > node.key) {
-        add(ptr.leftChild, node);
+        ptr.leftChild = add(ptr.leftChild, node);
       } else if (ptr.key < node.key) {
-        add(ptr.rightChild, node);
+        ptr.rightChild = add(ptr.rightChild, node);
       } else {
         // duplicate key:
       }
+      return ptr;
     } else {
       if (ptr.key > node.key) {
-
+        node.leftChild = ptr.leftChild;
+        node.rightChild = ptr;
+        ptr.leftChild = null;
       } else if (ptr.key < node.key) {
-
+        node.rightChild = ptr.rightChild;
+        node.leftChild = ptr;
+        ptr.rightChild = null;
       } else {
-
+        // duplicate key:
       }
+      return node;
     }
+  }
+  public static void main(String[] args) {
+
   }
 }

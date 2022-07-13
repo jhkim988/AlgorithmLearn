@@ -14,7 +14,6 @@ public class BinarySearchTree {
   }
   private Node add(Node ptr, int key) {
     if (ptr == null) return ptr = new Node(key);
-    
     if (ptr.key < key) {
       ptr.rightChild = add(ptr.rightChild, key);
     } else if (ptr.key > key) {
