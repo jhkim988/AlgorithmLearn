@@ -10,8 +10,26 @@ public class BOJ2436 {
     int l = Integer.parseInt(st.nextToken());
     int x = l/g;
     int rx = (int) Math.sqrt(x);
+    int a = 0, b = 0;
     for (int i = rx; i > 0; i--) {
-      if (x % rx != 0) continue;
+      if (x % i != 0) continue;
+      a = i;
+      b = x/i;
+      if (gcd(a, b) == 1) break;
     }
+    bw.write(Integer.toString(a*g));
+    bw.write(' ');
+    bw.write(Integer.toString(b*g));
+    bw.flush();
+  }
+  static int gcd(int a, int b) {
+    int r = a%b;
+    while (r != 0) {
+      int tmp = b%r;
+      a = b;
+      b = r;
+      r = tmp;
+    }
+    return b;
   }
 }
