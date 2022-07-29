@@ -1,13 +1,20 @@
 import java.util.*;
 
-public class MergeSort <T extends Comparable<? super T>> implements Sort {
+public class MergeSort <T extends Comparable<? super T>> implements Sort<T> {
   ArrayList<T> arrList;
   MergeSort(ArrayList<T> arrList) {
     this.arrList = arrList;
   }
+
+  @Override
   public void sort() {
     sort(0, arrList.size()-1);
   }
+  @Override
+  public ArrayList<T> get() {
+    return arrList;
+  }
+
   public void sort(int lo, int hi) {
     if (hi <= lo) return;
     int mid = (lo+hi) >> 1;
