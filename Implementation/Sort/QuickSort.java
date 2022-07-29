@@ -39,8 +39,9 @@ public class QuickSort <T extends Comparable<? super T>> implements Sort<T> {
     System.out.println();
   }
   public static void main(String[] args) {
+    int numData = 200;
     ArrayList<Integer> test = new ArrayList<>();
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < numData; i++) {
       test.add((int) (Math.random()*200));
     }
     QuickSort<Integer> qs = new QuickSort<>(test);

@@ -28,8 +28,9 @@ public class DualPivotQuickSort <T extends Comparable<? super T>> implements Sor
         left++;
       } else if (arrList.get(ptr).compareTo(rightPivot) > 0) {
         if (right-ptr != 1) swap(right-1, ptr);
-        swap(right, ptr);
+        swap(right, right-1);
         right--;
+        ptr--;
       }
     }
     sort(lo, left-1);
