@@ -35,8 +35,8 @@ public class SortTest {
     System.out.printf("Accuracy Test - %s: %s\n", sort.getClass().toString(), accuracy() ? "PASS" : "FAIL");
   }
   public static void main(String[] args) {
-    int numData = 10_000_000;
-    // ArrayList<Integer> arrList = makeRandomTestCase(numData, 10000); // Too small range, Too slow quick sort
+    int numData = 1_000_000;
+    // ArrayList<Integer> arrList = makeRandomTestCase(numData, 10_000_000); // Too small range, Too slow quick sort
     ArrayList<Integer> arrList = makeSortedTestCase(numData); // worst case of Quick Sort, must shuffle it.
     SortTest quickSort = new SortTest(new QuickSort<Integer>((ArrayList<Integer>) arrList.clone()));
     SortTest dualPivot = new SortTest(new DualPivotQuickSort<Integer>((ArrayList<Integer>) arrList.clone()));

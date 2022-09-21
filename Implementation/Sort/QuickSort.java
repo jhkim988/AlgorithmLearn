@@ -16,16 +16,16 @@ public class QuickSort <T extends Comparable<? super T>> implements Sort<T> {
   }
 
   public void sort(int lo, int hi) {
-    if (hi <= lo) return;
-    T pivot = arrList.get(hi);
-    int i = lo-1; // max{x | arrList[x] < pivot}
-    for (int j = lo; j < hi; j++) {
-      if (arrList.get(j).compareTo(pivot) >= 0) continue;
-      swap(++i, j);      
-    }
-    swap(++i, hi);
-    sort(lo, i-1);
-    sort(i+1, hi);
+    int pl = lo;
+    int pr = hi;
+    T pivot = arrList.get((pl+pr)/2);
+    do {
+      while (pl <= hi && arrList.get(pl).compareTo(pivot) < 0) pl++;
+      while (lo <= pr && arrList.get(pr).compareTo(pivot) > 0) pr--;
+      if (pl <= pr) swap(pl++, pr--);
+    } while (pl <= pr);
+    if (lo < pl) sort(lo, pr);
+    if (pr < hi) sort(pl, hi);
   } 
   private void swap(int a, int b) {
     T tmp = arrList.get(a);
