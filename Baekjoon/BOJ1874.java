@@ -1,59 +1,41 @@
 import java.io.*;
-import java.util.Stack;
+import java.util.*;
 
 public class BOJ1874 {
-  public static void main(String[] args) {
-    try {
-      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-      StringBuffer sb = new StringBuffer();
-
-      int num = Integer.parseInt(br.readLine());
-      Stack<Integer> stk = new Stack<>();
-      int[] data = new int[num];
-
-      for (int i = 0; i < num; i++) {
-        data[i] = Integer.parseInt(br.readLine());
-      }
-
-      int ptrData = 0;
-      int j = 0;
-      int pop;
-      int ptrCheck = 0;
-      boolean flag = true;
-      for (int i = 1; i <= num; i++) {
-        // input
-        for (j = i; j <= data[ptrData]; j++) {
-          stk.push(j);
-          sb.append("+\n");
-        }
-        pop = stk.pop();
-        if (data[ptrCheck++] != pop) {
-          flag = false;
-          break;
-        }
-        sb.append("-\n");
-        ptrData++;
-        i = j - 1;
-      }
-    
-      
-      while (!stk.isEmpty()) {
-        pop = stk.pop();
-        if (pop != data[ptrCheck++]) {
-          flag = false;
-          break;
-        }
-        sb.append("-\n");
-      }
-
-      if (!flag) {
-        System.out.print("NO");
-      } else {
-        System.out.print(sb);
-      }
-    
-    } catch (IOException e) {
-
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    Stack<Integer> stk = new Stack<>();
+    StringBuilder sb = new StringBuilder();
+    int n = Integer.parseInt(br.readLine());
+    int[] seq = new int[n];
+    for (int i = 0; i < n; i++) {
+      seq[i] = Integer.parseInt(br.readLine());
     }
+
+    int seqPtr = 0;
+    int push = 1;
+    
+    while (push <= n) {
+      boolean isInfiniteLoop = true;
+      while (stk.isEmpty() || stk.peek() < seq[seqPtr]) {
+        stk.push(push++);
+        sb.append("+\n");
+        isInfiniteLoop = false;
+      }
+      while (!stk.isEmpty() && stk.peek() == seq[seqPtr]) {
+        stk.pop();
+        seqPtr++;
+        sb.append("-\n");
+        isInfiniteLoop = false;
+      }
+      if (isInfiniteLoop) break;
+    }
+    if (stk.isEmpty() && push > n) {
+      bw.write(sb.toString());
+    } else {
+      bw.write("NO\n");
+    }
+    bw.flush();
   }
 }
