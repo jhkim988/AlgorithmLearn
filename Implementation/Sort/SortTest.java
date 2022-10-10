@@ -8,7 +8,7 @@ public class SortTest {
   }
   void timeTest() {
     long start = System.currentTimeMillis();
-    shuffle();
+    // shuffle();
     sort.sort();
     System.out.printf("Run Time - %s: %d ms\n", sort.getClass().toString(), System.currentTimeMillis()-start);
   }
@@ -35,7 +35,7 @@ public class SortTest {
     System.out.printf("Accuracy Test - %s: %s\n", sort.getClass().toString(), accuracy() ? "PASS" : "FAIL");
   }
   public static void main(String[] args) {
-    int numData = 1_000_000;
+    int numData = 1_000;
     // ArrayList<Integer> arrList = makeRandomTestCase(numData, 10_000_000); // Too small range, Too slow quick sort
     ArrayList<Integer> arrList = makeSortedTestCase(numData); // worst case of Quick Sort, must shuffle it.
     SortTest quickSort = new SortTest(new QuickSort<Integer>((ArrayList<Integer>) arrList.clone()));
@@ -53,7 +53,7 @@ public class SortTest {
   static ArrayList<Integer> makeRandomTestCase(int numData, int range) {
     ArrayList<Integer> arrList = new ArrayList<>();
     for (int i = 0; i < numData; i++) {
-      arrList.add((int) (Math.random() * 1000));
+      arrList.add((int) (Math.random() * range));
     }
     return arrList;
   }
