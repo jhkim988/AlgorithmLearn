@@ -47,7 +47,7 @@ public class BOJ2316 {
         int answer = 0;
         int[][] flow = new int[n+1][n+1];
         int[] par = new int[n+1];
-        for (int iter=1;;iter++) {
+        while (true) {
             Arrays.fill(par, -1);
             Queue<Integer> que = new LinkedList<>();
             que.add(START);
