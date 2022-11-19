@@ -39,7 +39,7 @@ public class EdmondKarp {
             while (!que.isEmpty()) {
                 int crnt = que.poll();
                 for (int next : graph.get(crnt)) {
-                    if (par[next] == -1 || cap[crnt][next] - flow[crnt][next] <= 0) continue;
+                    if (par[next] != -1 || cap[crnt][next] - flow[crnt][next] <= 0) continue;
                     par[next] = crnt;
                     que.add(next);
                     if (next == SINK) break;
@@ -49,7 +49,7 @@ public class EdmondKarp {
 
             int cost = INF;            
             for (int i = SINK; i != SOURCE; i = par[i]) {
-                cost = Integer.min(cost, cap[par[i]][i]);
+                cost = Integer.min(cost, cap[par[i]][i] - flow[par[i]][i]);
             }
             answer += cost;
 
