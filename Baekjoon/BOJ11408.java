@@ -77,7 +77,8 @@ public class BOJ11408 {
                 
                 int minFlow = INF;
                 for (int node = SINK; node != SOURCE; node = par[node]) {
-                    if (capacityArr[par[node]][node] < minFlow) minFlow = capacityArr[par[node]][node] - flow[par[node]][node];
+                    int f = capacityArr[par[node]][node] - flow[par[node]][node];
+                    if (f < minFlow) minFlow = f;
                 }
                 // System.out.println("path start");
                 for (int node = SINK; node != SOURCE; node = par[node]) {
