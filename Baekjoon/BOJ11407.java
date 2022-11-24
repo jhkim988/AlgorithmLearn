@@ -117,15 +117,31 @@ public class BOJ11407 {
             mcmf.add(source, i*2+2*n-1, INF, 0);
             mcmf.add(i*2+2*n-1, i*2+2*n, val, 0);
         }
-        for (int i = 1; i <= m; i++) {
+
+        int[][] capacity = new int[m][n];
+        int[][] cost = new int[m][n];
+        for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; j++) {
+                capacity[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; j++) {
+                cost[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+
+        for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                int val = Integer.parseInt(st.nextToken());
-                mcmf.add(i*2+2*n, 2*j-1, INF, val);
+                mcmf.add(i*2+2*n, 2*j-1, capacity[i-1][j-1], cost[i-1][j-1]);
             }
         }
 
         mcmf.run();
+        bw.write(Integer.toString(mcmf.getMaxFlow()));
+        bw.newLine();
         bw.write(Integer.toString(mcmf.getMinCost()));
         bw.flush();
     }
