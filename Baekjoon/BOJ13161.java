@@ -2,12 +2,14 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ13161 {
+    // TODO: USE DINIC ALGORITHM
     private static final int INF = Integer.MAX_VALUE >> 4;
     private static class MCMF {
         private final int size, source, sink;
         private final int[][] capacity, cost, flow;
         private final List<Queue<Integer>> graph;
         private int maxFlow = 0, minCost = 0;
+
         MCMF(int size, int source, int sink, int[][] cost) {
             this.size = size;
             this.source = source;
@@ -20,6 +22,7 @@ public class BOJ13161 {
                 graph.add(new LinkedList<>());
             }
         }
+
         void add(int from, int to, int cap) {
             graph.get(from).add(to);
             graph.get(to).add(from);
