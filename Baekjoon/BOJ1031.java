@@ -5,6 +5,7 @@ public class BOJ1031 {
     private static final int INF = Integer.MAX_VALUE >> 4;
     private static class MaxFlow {
         private final int size, source, sink;
+        private final int[] par;
         private final int[][] capacity, flow;
         private final List<Queue<Integer>> graph;
 
@@ -12,9 +13,10 @@ public class BOJ1031 {
             this.size = size;
             this.source = source;
             this.sink = sink;
-            capacity = new int[size][size];
-            flow = new int[size][size];
-            graph = new ArrayList<>();
+            this.graph = new ArrayList<>();
+            this.par = new int[size];
+            this.capacity = new int[size][size];
+            this.flow = new int[size][size];
             for (int i = 0; i <= size; i++) {
                 graph.add(new LinkedList<>());
             }
@@ -26,22 +28,16 @@ public class BOJ1031 {
             capacity[from][to] = cap;
         }
 
-        int getMaxFlow() {
+        int getMaxFlow(int start, int end) {
             int answer = 0;
-            int[] par = new int[size];
-            for (int i = 0; i < size; i++) {
-                Arrays.fill(flow[i], 0);
-            }
             while (true) {
-                Arrays.fill(par, -1);
-                par[source] = -2;
-                if (!bfs(par)) break;
+                if (!bfs(par, start, end)) break;
                 int min = INF;
-                for (int node = sink; node != source; node = par[node]) {
+                for (int node = end; node != start; node = par[node]) {
                     int f = capacity[par[node]][node] - flow[par[node]][node];
                     if (f < min) min = f;
                 }
-                for (int node = sink; node != source; node = par[node]) {
+                for (int node = end; node != start; node = par[node]) {
                     flow[par[node]][node] += min;
                     flow[node][par[node]] -= min;
                 }
@@ -50,42 +46,58 @@ public class BOJ1031 {
             return answer;
         }
 
-        boolean bfs(int[] par) {
+        boolean bfs(int[] par, int start, int end) {
             Queue<Integer> que = new LinkedList<>();
-            que.add(source);
+            Arrays.fill(par, -1);
+            que.add(start);
+            par[start] = -2;
             while (!que.isEmpty()) {
                 int crnt = que.poll();
                 for (int next : graph.get(crnt)) {
                     if (par[next] != -1 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
                     par[next] = crnt;
                     que.add(next);
-                    if (next == sink) return true;
+                    if (next == end) return true;
                 }
             }
             return false;
         }
 
-        int[][] getAnswer(int needMatch, int row, int col) {
-            if (needMatch != getMaxFlow()) {
-                return null;
-            }
-            int[][] ret = new int[size][size];
-            for (int i = 0; i < size; i++) {
-                System.arraycopy(flow[i], 0, ret[i], 0, size);
-            } 
+        boolean ordering(int needMatch, int row, int col) {
+            int maxFlow = getMaxFlow(source, sink);
+            if (needMatch != maxFlow) return false;
             for (int i = 1; i <= row; i++) {
                 for (int j = 1; j <= col; j++) {
-                    capacity[i][row+j] = 0;
-                    if (needMatch != getMaxFlow()) {
-                        capacity[i][row+j] = 1;
-                    } else {
-                        for (int x = 0; x < size; x++) {
-                            System.arraycopy(flow[x], 0, ret[x], 0, size);
-                        } 
-                    }
+                    if (flow[i][j+row] == 0) continue;
+                    changeFlow(i, j+row);
                 }
             }
-            return ret;
+            return true;
+        }
+
+        void changeFlow(int start, int end) {
+            Queue<Integer> que = new LinkedList<>();
+            Arrays.fill(par, -1);
+            que.add(start);
+            while (!que.isEmpty() && par[end] == -1) {
+                int crnt = que.poll();
+                for (int next : graph.get(crnt)) {
+                    if (crnt < start || crnt == start && next < end) continue;
+                    if (par[next] != -1 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
+                    que.add(next);
+                    par[next] = crnt;
+                }
+            }
+            if (par[end] == -1) return;
+            flow[start][end] = flow[end][start] = 0;
+            for (int node = end; node != start; node = par[node]) {
+                flow[par[node]][node]++;
+                flow[node][par[node]]--;
+            }
+        }
+
+        int[][] getFlow() {
+            return flow;
         }
     }
     public static void main(String[] args) throws IOException {
@@ -116,23 +128,21 @@ public class BOJ1031 {
                 maxFlow.add(i, n+j, 1);
             }
         }
-
         int[][] answer = null;
-        if (sumA == sumB && (answer = maxFlow.getAnswer(sumA, n, m)) != null) {
-            bw.write(answerToString(answer, n, m));
+        if (sumA == sumB && maxFlow.ordering(sumA, n, m)) {
+            answer = maxFlow.getFlow();
+            printAnswer(answer, n, m, bw);
         } else {
             bw.write("-1");
         }
         bw.flush();
     }
-    private static String answerToString(int[][] flow, int n, int m) {
-        StringBuilder sb = new StringBuilder();
+    private static void printAnswer(int[][] flow, int n, int m, BufferedWriter bw) throws IOException {
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= m; j++) {
-                sb.append(flow[i][n+j]);
+                bw.write(Integer.toString(flow[i][n+j]));
             }
-            sb.append('\n');
+            bw.newLine();
         }
-        return sb.toString();
     }
 }
