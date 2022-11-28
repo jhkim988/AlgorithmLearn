@@ -7,8 +7,9 @@ public class BOJ13161 {
     private static class MCMF {
         private final int size, source, sink;
         private final int[][] capacity, cost, flow;
-        private final List<Queue<Integer>> graph;
-        private int maxFlow = 0, minCost = 0;
+        private final int[] level, work;
+        private final List<List<Integer>> graph;
+        private int minCost = 0;
 
         MCMF(int size, int source, int sink, int[][] cost) {
             this.size = size;
@@ -17,9 +18,11 @@ public class BOJ13161 {
             this.capacity = new int[size][size];
             this.cost = cost;
             this.flow = new int[size][size];
+            this.level = new int[size];
+            this.work = new int[size];
             this.graph = new ArrayList<>();
             for (int i = 0; i <= size; i++) {
-                graph.add(new LinkedList<>());
+                graph.add(new ArrayList<>());
             }
         }
 
@@ -30,25 +33,26 @@ public class BOJ13161 {
         }
 
         void run() {
-            maxFlow = 0;
             minCost = 0;
-            int[] par = new int[size];
-            while (true) {
-                Arrays.fill(par, -1);
-                Integer val = spfa(par);
-                if (val == null) return;
-                maxFlow += flowUpdate(par);
-                minCost += val;
+            Integer val = spfa();
+            while (val != null) {
+                while (true) {
+                    Arrays.fill(work, 0);
+                    int flowVal = dfs(source, INF);
+                    if (flowVal == 0) break;
+                    minCost += val;
+                }
+                val = spfa();
             }
         }
         
-        Integer spfa(int[] par) {
+        Integer spfa() {
             Queue<Integer> que = new LinkedList<>();
             boolean[] inQue = new boolean[size];
             int[] dist = new int[size];
+            Arrays.fill(level, -1);
             Arrays.fill(dist, INF);
             que.add(source);
-            par[source] = -2;
             dist[source] = 0;
             inQue[source] = true;
             while (!que.isEmpty()) {
@@ -57,38 +61,50 @@ public class BOJ13161 {
                     if (capacity[crnt][next] - flow[crnt][next] <= 0) continue;
                     if (dist[next] <= dist[crnt] + cost[crnt][next]) continue;
                     dist[next] = dist[crnt] + cost[crnt][next];
-                    par[next] = crnt;
+                    level[next] = level[crnt] + 1;
                     if (!inQue[next]) {
                         inQue[next] = true;
                         que.add(next);
-                        // if (numVisit[next] >= size) return false;
                     }
                 }
             }
-            if (par[sink] == -1) return null;
+            if (level[sink] == -1) return null;
             return dist[sink];
         }
 
-        int flowUpdate(int[] par) {
-            int min = INF;
-            for (int node = sink; node != source; node = par[node]) {
-                int f = capacity[par[node]][node] - flow[par[node]][node];
-                if (f < min) min = f;
+        int dfs(int crnt, int flowVal) {
+            if (crnt == sink) return flowVal;
+            for (; work[crnt] < graph.get(crnt).size(); work[crnt]++) {
+                int next = graph.get(crnt).get(work[crnt]);
+                if (level[next] != level[crnt]+1 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
+                int ret = dfs(next, Integer.min(flowVal, capacity[crnt][next] - flow[crnt][next]));
+                if (ret > 0) {
+                    flow[crnt][next] += ret;
+                    flow[next][crnt] -= ret;
+                    return ret;
+                }
             }
-            for (int node = sink; node != source; node = par[node]) {
-                flow[par[node]][node] += min;
-                flow[node][par[node]] -= min;
-            }
-            return min;
+            return 0;
         }
 
         int getMinCost() {
-            System.out.println("maxFlow: " + maxFlow);
             return minCost;
         }
 
-        int[][] getFlow() {
-            return flow;
+        int[] getLevel() {
+            Arrays.fill(level, -1);
+            Queue<Integer> que = new LinkedList<>();
+            que.add(source);
+            level[source] = 0;
+            while (!que.isEmpty()) {
+                int crnt = que.poll();
+                for (int next : graph.get(crnt)) {
+                    if (level[next] != -1) continue;
+                    level[next] = level[crnt] + 1;
+                    que.add(next);
+                }
+            }
+            return level;
         }
     }
     public static void main(String[] args) throws IOException {
@@ -110,45 +126,39 @@ public class BOJ13161 {
             }
         }
 
-        final int size = n*2+2;
-        final int source = n*2;
-        final int sink = n*2+1;
+        final int size = n+2;
+        final int source = n;
+        final int sink = n+1;
         MCMF mcmf = new MCMF(size, source, sink, cost);
         for (int i = 0; i < n; i++) {
-            if (team[i] == 2) continue;
-            mcmf.add(source, i, INF);
-            for (int j = 0; j < n; j++) {
-                if (team[j] == 1 || i == j) continue;
-                mcmf.add(i, j+n, 1);
-            }
+            if (team[i] == 1) mcmf.add(source, i, INF);
+            else if (team[i] == 2) mcmf.add(i, sink, INF);
         }
         for (int i = 0; i < n; i++) {
-            if (team[i] == 1) continue;
-            mcmf.add(i+n, sink, INF);
+            for (int j = 0; j < n; j++) {
+                if (i == j) continue;
+                mcmf.add(i, j, 1);
+            }
         }
         mcmf.run();
 
         int minCost = mcmf.getMinCost();
-        int[][] flow = mcmf.getFlow();
-        List<Integer> sourceNeighbors = new ArrayList<>();
-        List<Integer> sinkNeighbors = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            if (flow[source][i] == 0) continue;
-            sourceNeighbors.add(i);
-        }
+        int[] level = mcmf.getLevel();
         bw.write(Integer.toString(minCost));
         bw.newLine();
-        bw.write(printList(sourceNeighbors));
+        bw.write(printLevel(level, 0, n));
         bw.newLine();
-        bw.write(printList(sinkNeighbors));
+        bw.write(printLevel(level, 1, n));
         bw.flush();
     }
-    private static String printList(List<Integer> list) {
-        if (list.size() == 0) return "";
+    private static String printLevel(int[] level, int x, int n) {
+        boolean flag = false;
         StringBuilder sb = new StringBuilder();
-        sb.append(list.get(0));
-        for (int i = 1; i < list.size(); i++) {
-            sb.append(' ').append(list.get(i));
+        for (int i = 0; i < n; i++) {
+            if (level[i] % 2 == x) continue;
+            if (flag) sb.append(' ');
+            sb.append(i+1);
+            flag = true;            
         }
         return sb.toString();
     }
