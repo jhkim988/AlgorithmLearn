@@ -45,14 +45,13 @@ public class Dinic {
 
     public int dfs(int crnt, int flowVal) {
         if (crnt == sink) return flowVal;
-        for (int i = work[crnt]; i < graph.get(crnt).size(); i++) {
-            int next = graph.get(crnt).get(i);
+        for (; work[crnt] < graph.get(crnt).size(); work[crnt]++) {
+            int next = graph.get(crnt).get(work[crnt]);
             if (level[next] != level[crnt] + 1 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
             int ret = dfs(next, Integer.min(flowVal, capacity[crnt][next] - flow[crnt][next]));
             if (ret > 0) {
                 flow[crnt][next] += ret;
                 flow[next][crnt] -= ret;
-                work[crnt] = i;
                 return ret;
             }
         }
