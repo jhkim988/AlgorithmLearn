@@ -114,7 +114,7 @@ public class BOJ13161 {
             for (int j = 0; j < n; j++) {
                 int val = Integer.parseInt(st.nextToken());
                 if (i == j || val == 0) continue;
-                maxFlow.add(i, j, Integer.parseInt(st.nextToken()));
+                maxFlow.add(i, j, val);
             }
         }
 
