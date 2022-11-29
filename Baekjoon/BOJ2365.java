@@ -4,7 +4,6 @@ import java.util.*;
 public class BOJ2365 {
     private static int n;
     private static final int INF = Integer.MAX_VALUE >> 4;
-    private static final int[] rowDi = {-1, 0}, colDi = {0, 1};
     private static class MaxFlow {
         private final int size, source, sink;
         private final int[][] capacity, flow;
