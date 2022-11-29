@@ -6,28 +6,27 @@ public class BOJ13161 {
     private static class MaxFlow {
         private final int size, source, sink;
         private final int[][] capacity, flow;
-        private final int[] level;
-        private int[] work;
-        private final List<List<Integer>> graph;
+        private final int[] level, work;
+        private final ArrayList<Integer>[] graph;
         private int maxFlow = 0;
 
         MaxFlow(int size, int source, int sink) {
             this.size = size;
             this.source = source;
             this.sink = sink;
-            this.capacity = new int[size][size];
-            this.flow = new int[size][size];
-            this.level = new int[size];
-            this.work = new int[size];
-            this.graph = new ArrayList<>();
-            for (int i = 0; i <= size; i++) {
-                graph.add(new ArrayList<>());
+            capacity = new int[size][size];
+            flow = new int[size][size];
+            level = new int[size];
+            work = new int[size];
+            graph = new ArrayList[size];
+            for (int i = 0; i < size; i++) {
+                graph[i] = new ArrayList<>();
             }
         }
 
         void add(int from, int to, int cap) {
-            graph.get(from).add(to);
-            graph.get(to).add(from);
+            graph[from].add(to);
+            graph[to].add(from);
             capacity[from][to] = cap;
         }
 
@@ -35,7 +34,7 @@ public class BOJ13161 {
             maxFlow = 0;
             while (bfs()) {
                 while (true) {
-                    work = new int[size];
+                    Arrays.fill(work, 0);
                     int flowVal = dfs(source, INF);
                     if (flowVal == 0) break;
                     maxFlow += flowVal;
@@ -44,13 +43,13 @@ public class BOJ13161 {
         }
         
         boolean bfs() {
-            Queue<Integer> que = new LinkedList<>();
+            Queue<Integer> que = new ArrayDeque<>();
             Arrays.fill(level, -1);
             que.add(source);
             level[source] = 0;
             while (!que.isEmpty()) {
                 int crnt = que.poll();
-                for (int next : graph.get(crnt)) {
+                for (int next : graph[crnt]) {
                     if (level[next] != -1 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
                     level[next] = level[crnt] + 1;
                     que.add(next);
@@ -62,8 +61,8 @@ public class BOJ13161 {
 
         int dfs(int crnt, int flowVal) {
             if (crnt == sink) return flowVal;
-            for (; work[crnt] < graph.get(crnt).size(); work[crnt]++) {
-                int next = graph.get(crnt).get(work[crnt]);
+            for (; work[crnt] < graph[crnt].size(); work[crnt]++) {
+                int next = graph[crnt].get(work[crnt]);
                 if (level[next] != level[crnt]+1 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
                 int ret = dfs(next, Integer.min(flowVal, capacity[crnt][next] - flow[crnt][next]));
                 if (ret > 0) {
@@ -86,7 +85,7 @@ public class BOJ13161 {
             level[source] = 1;
             while (!que.isEmpty()) {
                 int crnt = que.poll();
-                for (int next : graph.get(crnt)) {
+                for (int next : graph[crnt]) {
                     if (level[next] != 0 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
                     level[next] = 1;
                     que.add(next);
@@ -113,7 +112,8 @@ public class BOJ13161 {
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < n; j++) {
-                if (i == j) continue;
+                int val = Integer.parseInt(st.nextToken());
+                if (i == j || val == 0) continue;
                 maxFlow.add(i, j, Integer.parseInt(st.nextToken()));
             }
         }
@@ -135,7 +135,7 @@ public class BOJ13161 {
         bw.newLine();
         bw.flush();
     }
-    
+
     private static void printLevel(int[] level, int x, int n, BufferedWriter bw) throws IOException {
         for (int i = 0; i < n; i++) {
             if (level[i] == x) continue;
