@@ -6,7 +6,9 @@ public class BOJ11406 {
     private static class MaxFlow {
         private final int source, sink;
         private final int[][] capacity, flow;
-        private final int[] level, work;
+        private final int[] level;
+        private final int[] work;
+        // private final Queue<Integer>[] work;
         private final List<List<Integer>> graph;
 
         MaxFlow(int size, int source, int sink) {
@@ -16,6 +18,11 @@ public class BOJ11406 {
             flow = new int[size][size];
             level = new int[size];
             work = new int[size];
+            // work = new Queue[size];
+            // for (int i = 0; i < size; i++) {
+            //     work[i] = new ArrayDeque<>();
+            // }
+
             graph = new ArrayList<>();
             for (int i = 0; i <= size; i++) {
                 graph.add(new ArrayList<>());
@@ -42,7 +49,7 @@ public class BOJ11406 {
         }
 
         boolean bfs() {
-            Queue<Integer> que = new LinkedList<>();
+            Queue<Integer> que = new ArrayDeque<>();
             Arrays.fill(level, -1);
             que.add(source);
             level[source] = 0;
@@ -51,6 +58,7 @@ public class BOJ11406 {
                 for (int next : graph.get(crnt)) {
                     if (level[next] != -1 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
                     level[next] = level[crnt]+1;
+                    // work[crnt].add(next);
                     que.add(next);
                     if (next == sink) return true;
                 }
@@ -62,6 +70,8 @@ public class BOJ11406 {
             if (crnt == sink) return flowValue;
             for (; work[crnt] < graph.get(crnt).size(); work[crnt]++) {
                 int next = graph.get(crnt).get(work[crnt]);
+            // while (!work[crnt].isEmpty()) {
+                // int next = work[crnt].poll();
                 if (level[next] != level[crnt]+1 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
                 int ret = dfs(next, Integer.min(flowValue, capacity[crnt][next] - flow[crnt][next]));
                 if (ret > 0) {
@@ -87,17 +97,23 @@ public class BOJ11406 {
         MaxFlow maxFlow = new MaxFlow(size, source, sink);
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            maxFlow.add(i, sink, Integer.parseInt(st.nextToken()));
+            int cap = Integer.parseInt(st.nextToken());
+            if (cap == 0) continue;
+            maxFlow.add(i, sink, cap);
         }
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < m; i++) {
-            maxFlow.add(source, i+n, Integer.parseInt(st.nextToken()));
+            int cap = Integer.parseInt(st.nextToken());
+            if (cap == 0) continue;
+            maxFlow.add(source, i+n, cap);
         }
 
         for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < n; j++) {
-                maxFlow.add(i+n, j, Integer.parseInt(st.nextToken()));
+                int cap = Integer.parseInt(st.nextToken());
+                if (cap == 0) continue;
+                maxFlow.add(i+n, j, cap);
             }
         }
 
