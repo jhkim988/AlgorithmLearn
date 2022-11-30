@@ -6,7 +6,7 @@ public class BOJ13161 {
     private static class MaxFlow {
         private final int size, source, sink;
         private final int[][] capacity, flow;
-        private final int[] level, work;
+        private int[] level, work;
         private final ArrayList<Integer>[] graph;
         private int maxFlow = 0;
 
@@ -33,8 +33,8 @@ public class BOJ13161 {
         void run() {
             maxFlow = 0;
             while (bfs()) {
+                work = new int[size];
                 while (true) {
-                    Arrays.fill(work, 0);
                     int flowVal = dfs(source, INF);
                     if (flowVal == 0) break;
                     maxFlow += flowVal;
@@ -44,13 +44,13 @@ public class BOJ13161 {
         
         boolean bfs() {
             Queue<Integer> que = new ArrayDeque<>();
-            Arrays.fill(level, -1);
+            level = new int[size];
             que.add(source);
-            level[source] = 0;
+            level[source] = 1;
             while (!que.isEmpty()) {
                 int crnt = que.poll();
                 for (int next : graph[crnt]) {
-                    if (level[next] != -1 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
+                    if (level[next] != 0 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
                     level[next] = level[crnt] + 1;
                     que.add(next);
                     if (next == sink) return true;
@@ -63,8 +63,9 @@ public class BOJ13161 {
             if (crnt == sink) return flowVal;
             for (; work[crnt] < graph[crnt].size(); work[crnt]++) {
                 int next = graph[crnt].get(work[crnt]);
-                if (level[next] != level[crnt]+1 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
-                int ret = dfs(next, Integer.min(flowVal, capacity[crnt][next] - flow[crnt][next]));
+                int residual = capacity[crnt][next] - flow[crnt][next];
+                if (level[next] != level[crnt]+1 || residual <= 0) continue;
+                int ret = dfs(next, Integer.min(flowVal, residual));
                 if (ret > 0) {
                     flow[crnt][next] += ret;
                     flow[next][crnt] -= ret;
@@ -79,8 +80,8 @@ public class BOJ13161 {
         }
 
         int[] getLevel() {
-            Arrays.fill(level, 0);
-            Queue<Integer> que = new LinkedList<>();
+            level = new int[size];
+            Queue<Integer> que = new ArrayDeque<>();
             que.add(source);
             level[source] = 1;
             while (!que.isEmpty()) {
