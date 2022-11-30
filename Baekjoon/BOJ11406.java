@@ -38,8 +38,8 @@ public class BOJ11406 {
         int run() {
             int totalMaxFlow = 0;
             while (bfs()) {
+                Arrays.fill(work, 0);
                 while (true) {
-                    Arrays.fill(work, 0);
                     int flowValue = dfs(source, INF);
                     if (flowValue == 0) break;
                     totalMaxFlow += flowValue;
