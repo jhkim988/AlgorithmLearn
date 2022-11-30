@@ -69,6 +69,7 @@ public class BOJ13161 {
                     // return ret;
                     flowVal -= ret;
                     sum += ret;
+                    if (flowVal <= 0) break;
                 }
             }
             return sum;
