@@ -34,11 +34,7 @@ public class BOJ13161 {
             maxFlow = 0;
             while (bfs()) {
                 work = new int[size];
-                while (true) {
-                    int flowVal = dfs(source, INF);
-                    if (flowVal == 0) break;
-                    maxFlow += flowVal;
-                }
+                maxFlow += dfs(source, INF);
             }
         }
         
@@ -61,6 +57,7 @@ public class BOJ13161 {
 
         int dfs(int crnt, int flowVal) {
             if (crnt == sink) return flowVal;
+            int sum = 0;
             for (; work[crnt] < graph[crnt].size(); work[crnt]++) {
                 int next = graph[crnt].get(work[crnt]);
                 int residual = capacity[crnt][next] - flow[crnt][next];
@@ -69,10 +66,12 @@ public class BOJ13161 {
                 if (ret > 0) {
                     flow[crnt][next] += ret;
                     flow[next][crnt] -= ret;
-                    return ret;
+                    // return ret;
+                    flowVal -= ret;
+                    sum += ret;
                 }
             }
-            return 0;
+            return sum;
         }
 
         int getMaxFlow() {
