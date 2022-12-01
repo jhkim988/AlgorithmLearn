@@ -35,9 +35,11 @@ public class BOJ2365 {
             int totalMaxFlow = 0;
             while (bfs()) {
                 Arrays.fill(work, 0);
-                int flowVal = dfs(source, INF);
-                if (flowVal == 0) break;
-                totalMaxFlow += flowVal;
+                while (true) {
+                    int flowVal = dfs(source, INF);
+                    if (flowVal == 0) break;
+                    totalMaxFlow += flowVal;    
+                }
             }
             return totalMaxFlow;
         }
@@ -52,8 +54,8 @@ public class BOJ2365 {
                 for (int next : graph[crnt]) {
                     if (level[next] != -1 || capacity[crnt][next] - flow[crnt][next] <= 0) continue;
                     level[next] = level[crnt] + 1;
-                    que.add(next);
                     if (next == sink) return true;
+                    que.add(next);
                 }
             }
             return false;
@@ -73,8 +75,14 @@ public class BOJ2365 {
             return 0;
         }
 
-        int[][] getFlow() {
-            return flow;
+        int[][] getFlow(int n) {
+            int[][] ret = new int[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    ret[i][j] = flow[i][n+j];
+                }
+            }
+            return ret;
         }
 
         void initFlow() {
@@ -101,23 +109,18 @@ public class BOJ2365 {
             colVal[i] = Integer.parseInt(st.nextToken());
         }
 
-        final int size = 2*n*n+2*n+2;
-        final int source = 2*n*n+2*n;
-        final int sink = 2*n*n+2*n+1;
+        final int size = 2*n+2;
+        final int source = 2*n;
+        final int sink = 2*n+1;
 
         MaxFlow maxFlow = new MaxFlow(size, source, sink);
         for (int i = 0; i < n; i++) {
-            maxFlow.add(source, 2*n*n+i, rowVal[i]);
+            if (rowVal[i] == 0) continue;
+            maxFlow.add(source, i, rowVal[i]);
         }
         for (int i = 0; i < n; i++) {
-            maxFlow.add(2*n*n+n+i, sink, colVal[i]);
-        }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                maxFlow.add(2*n*n+i, i*n+j, INF);
-                // maxFlow.add(i*n+j, i*n+j+n*n, 100);
-                maxFlow.add(i*n+j+n*n, 2*n*n+n+j, INF);
-            }
+            if (colVal[i] == 0) continue;
+            maxFlow.add(n+i, sink, colVal[i]);
         }
         int lo = 0, hi = 10_000;
         while (lo+1 < hi) {
@@ -130,12 +133,12 @@ public class BOJ2365 {
         }
         int max = hi;
         possible(maxFlow, max, sum);
-        int[][] flow = maxFlow.getFlow();
+        int[][] flow = maxFlow.getFlow(n);
         bw.write(Integer.toString(max));
         bw.newLine();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                bw.write(Integer.toString(flow[i*n+j][i*n+j+n*n]));
+                bw.write(Integer.toString(flow[i][j]));
                 bw.write(' ');
             }
             bw.newLine();
@@ -146,7 +149,7 @@ public class BOJ2365 {
         maxFlow.initFlow();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                maxFlow.add(i*n+j, i*n+j+n*n, maxVal);
+                maxFlow.add(i, j+n, maxVal);
             }
         }
         return maxFlow.run() == fullFlow;
