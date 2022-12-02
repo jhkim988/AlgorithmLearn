@@ -12,23 +12,39 @@ public class BOJ11111 {
         , {1, 1, 1, 1, 0, 0}
     };
     private static final int[] rowDi = {-1, 0, 1, 0}, colDi = {0, -1, 0, 1};
+    private static class Edge {
+        int to, cap, flow, cost;
+        Edge reverse;
+        Edge (int to, int cap, int cost) {
+            this.to = to;
+            this.cap = cap;
+            this.flow = 0;
+            this.cost = cost;
+        }
+        
+        int residual() {
+            return cap-flow;
+        }
+
+        void setReverse(Edge reverse) {
+            this.reverse = reverse;
+        }
+    }
     private static class MaxFlow {
         private final int size, source, sink;
-        private final int[][] capacity, flow, cost;
-        private final int[] dist, work;
-        private final ArrayList<Integer>[] graph;
+        private final int[] dist, work, level;
+        private final ArrayList<Edge>[] graph;
+        private final Queue<Integer> que = new ArrayDeque<>();
+        private final boolean[] inQue;
         MaxFlow(int size, int source, int sink) {
             this.size = size;
             this.source = source;
             this.sink = sink;
             
-            capacity = new int[size][size];
-            flow = new int[size][size];
-            cost = new int[size][size];
-
             dist = new int[size];
             work = new int[size];
-
+            level = new int[size];
+            inQue = new boolean[size];
             graph = new ArrayList[size];
             for (int i = 0; i < size; i++) {
                 graph[i] = new ArrayList<>();
@@ -36,42 +52,48 @@ public class BOJ11111 {
         }
 
         void add(int from, int to, int cap, int cst) {
-            graph[from].add(to);
-            graph[to].add(from);
-            capacity[from][to] = cap;
-            cost[from][to] = cst;
-            cost[to][from] = -cst;
+            Edge edge = new Edge(to, cap, cst);
+            Edge reverse = new Edge(from, 0, -cst);
+            graph[from].add(edge);
+            graph[to].add(reverse);
+            edge.setReverse(reverse);
+            reverse.setReverse(edge);
         }
 
         int run() {
             int minCost = 0;
             while (spfa()) {
+                int sumFlow = 0;
                 Arrays.fill(work, 0);
                 while (true) {
                     int flowVal = dfs(source, INF);
                     if (flowVal == 0) break;
-                    minCost += dist[sink];                    
+                    sumFlow += flowVal;
                 }
+                minCost += dist[sink] * sumFlow;
             }
             return minCost;
         }
 
         boolean spfa() {
-            Queue<Integer> que = new ArrayDeque<>();
-            boolean[] inQue = new boolean[size];
+            que.clear();
+            Arrays.fill(inQue, false);
             Arrays.fill(dist, INF);
+            Arrays.fill(level, 0);
             que.add(source);
             dist[source] = 0;
+            inQue[source] = true;
+            level[source] = 1;
             while (!que.isEmpty()) {
                 int crnt = que.poll();
                 inQue[crnt] = false;
-                for (int next : graph[crnt]) {
-                    if (dist[next] <= dist[crnt] + cost[crnt][next]) continue;
-                    if (capacity[crnt][next] <= flow[crnt][next]) continue;
-                    dist[next] = dist[crnt] + cost[crnt][next];
-                    if (!inQue[next]) {
-                        inQue[next] = true;
-                        que.add(next);
+                for (Edge next : graph[crnt]) {
+                    if (dist[next.to] <= dist[crnt] + next.cost || next.residual() <= 0) continue;
+                    dist[next.to] = dist[crnt] + next.cost;
+                    level[next.to] = level[crnt] + 1;
+                    if (!inQue[next.to]) {
+                        inQue[next.to] = true;
+                        que.add(next.to);
                     }
                 }
             }
@@ -81,12 +103,12 @@ public class BOJ11111 {
         int dfs(int crnt, int flowVal) {
             if (crnt == sink) return flowVal;
             for (; work[crnt] < graph[crnt].size(); work[crnt]++) {
-                int next = graph[crnt].get(work[crnt]);
-                if (dist[next] != dist[crnt]+cost[crnt][next] || capacity[crnt][next] <= flow[crnt][next]) continue;
-                int ret = dfs(next, Integer.min(flowVal, capacity[crnt][next] - flow[crnt][next]));
+                Edge next = graph[crnt].get(work[crnt]);
+                if (level[next.to] != level[crnt]+1 || dist[next.to] != dist[crnt]+next.cost|| next.residual() <= 0) continue;
+                int ret = dfs(next.to, Integer.min(flowVal, next.residual()));
                 if (ret > 0) {
-                    flow[crnt][next] += ret;
-                    flow[next][crnt] -= ret;
+                    next.flow += ret;
+                    next.reverse.flow -= ret;
                     return ret;
                 }
             }
@@ -100,12 +122,9 @@ public class BOJ11111 {
         StringTokenizer st = new StringTokenizer(br.readLine());
         int numRow = Integer.parseInt(st.nextToken());
         int numCol = Integer.parseInt(st.nextToken());
-        int[][] board = new int[numRow][numCol];
+        char[][] board = new char[numRow][numCol];
         for (int i = 0; i < numRow; i++) {
-            char[] input = br.readLine().toCharArray();
-            for (int j = 0; j < numCol; j++) {
-                board[i][j] = input[j] - 'A';
-            }
+            board[i] = br.readLine().toCharArray();
         }
         final int size = numRow*numCol+2;
         final int source = numRow*numCol;
@@ -115,17 +134,15 @@ public class BOJ11111 {
         for (int i = 0; i < numRow; i++) {
             for (int j = 0; j < numCol; j++) {
                 if (((i+j) & 1) == 0) {
-                    maxFlow.add(source, i*numCol + j, 1, 0);
-                    maxFlow.add(i*numCol+j, sink, 1, 0);
+                    maxFlow.add(source, i*numCol+j, 1, 0);
                     for (int k = 0; k < 4; k++) {
                         int adjRow = i + rowDi[k];
                         int adjCol = j + colDi[k];
                         if (adjRow < 0 || adjRow >= numRow || adjCol < 0 || adjCol >= numCol) continue;
-                        maxFlow.add(i*numCol + j, adjRow * numCol + adjCol, 1, -score[board[i][j]][board[adjRow][adjCol]]);
+                        maxFlow.add(i*numCol+j, adjRow*numCol+adjCol, 1, -score[board[i][j]-'A'][board[adjRow][adjCol]-'A']);
                     }
-                } else {
-                    maxFlow.add(i*numCol + j, sink, 1, 0);
                 }
+                maxFlow.add(i*numCol+j, sink, 1, 0);
             }
         }
         bw.write(Integer.toString(-maxFlow.run()));
