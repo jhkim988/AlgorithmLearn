@@ -16,7 +16,8 @@ public class BOJ2548 {
         }
         copy = new int[n];
         // Arrays.sort(arr);
-        mergeSort(arr, 0, n);
+        // mergeSort(arr, 0, n);
+        countSort(arr, 10_001);
         for (int i = 1; i <= n; i++) {
             psum[i] = psum[i-1] + arr[i];
         }
@@ -50,6 +51,20 @@ public class BOJ2548 {
             }
             arr[ptr] = copy[lptr];
             ptr++;
+        }
+    }
+
+    private static void countSort(int[] arr, int bound) {
+        int[] count = new int[bound];
+        for (int i = 0; i < arr.length; i++) {
+            count[arr[i]]++;
+        }
+        int ptr = 0;
+        for (int i = 0; i < bound; i++) {
+            while (count[i] > 0) {
+                arr[ptr++] = i;
+                count[i]--;
+            }
         }
     }
 }
