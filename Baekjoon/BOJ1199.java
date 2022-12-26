@@ -9,17 +9,17 @@ public class BOJ1199 {
     private static class Edge {
         private final int v;
         private final int w;
-        private boolean isUsed;
+        int count;
 
-        public Edge(int v, int w) {
+        public Edge(int v, int w, int count) {
             this.v = v;
             this.w = w;
-            isUsed = false;
+            this.count = count;
         }
 
         // returns the other vertex of the edge
         public int other(int vertex) {
-            if      (vertex == v) return w;
+            if (vertex == v) return w;
             else if (vertex == w) return v;
             else throw new IllegalArgumentException("Illegal endpoint");
         }
@@ -41,11 +41,9 @@ public class BOJ1199 {
                 if (val == 0) continue;
                 degree[i] += val;
                 degree[j] += val;
-                while (val-- > 0) {
-                    Edge edge = new Edge(i, j);
-                    adj[i].add(edge);
-                    adj[j].add(edge);
-                }
+                Edge edge = new Edge(i, j, val);
+                adj[i].add(edge);
+                adj[j].add(edge);
             }
         }
         for (int i = 0; i < n; i++) {
@@ -84,8 +82,11 @@ public class BOJ1199 {
             int v = stack.pop();
             while (!adj[v].isEmpty()) {
                 Edge edge = adj[v].poll();
-                if (edge.isUsed) continue;
-                edge.isUsed = true;
+                if (edge.count <= 0) continue;
+                edge.count--;
+                if (edge.count > 0) {
+                    adj[v].add(edge);
+                }
                 stack.push(v);
                 v = edge.other(v);
             }
