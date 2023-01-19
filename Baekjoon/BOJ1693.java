@@ -27,11 +27,12 @@ public class BOJ1693 {
         dp = new int[n+1][nColor];
         visit = new boolean[n+1];
 
+        int root = (int) ((Math.random()*n) + 1);
         int answer = Integer.MAX_VALUE;
         for (int c = 1; c < nColor; c++) {
             Arrays.fill(visit, false);
-            visit[1] = true;
-            answer = Integer.min(answer, recur(1, c));
+            visit[root] = true;
+            answer = Integer.min(answer, recur(root, c));
         }
 
         bw.write(Integer.toString(answer));
