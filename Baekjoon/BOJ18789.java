@@ -115,4 +115,20 @@ public class BOJ18789 {
         }
         return board;
     }
+
+    private static int[] permutation() {
+        int[] ret = new int[10];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = i;
+        }
+        for (int i = ret.length-1; i >= 0; i--) {
+            swap(ret, i, rand.nextInt(0, i+1));
+        }
+        return ret;
+    }
+    private static void swap(int[] arr, int idx1, int idx2) {
+        int tmp = arr[idx1];
+        arr[idx1] = arr[idx2];
+        arr[idx2] = tmp;
+    }
 }
