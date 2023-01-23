@@ -1,159 +1,149 @@
 package BOJ20100;
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class BOJ20100 {
     private static int n, p;
+    private static List<Map<Integer, Integer>> init;
     private static ThreadLocalRandom rand = ThreadLocalRandom.current();
-    private static Set<Pair> set;
     private static int[][] board;
     private static boolean[] check;
 
-    @FunctionalInterface
-    private static interface Lambda {
-        double score();
-    }
-
-    private static class Pair {
-        int row, col;
-        Pair(int row, int col) {
-            this.row = row;
-            this.col = col;
-        }
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + row;
-            result = prime * result + col;
-            return result;
-        }
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            Pair other = (Pair) obj;
-            if (row != other.row)
-                return false;
-            if (col != other.col)
-                return false;
-            return true;
-        }
-    }
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader("./BOJ20100/07.in"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter("./BOJ20100/07.out"));
-        
         n = Integer.parseInt(br.readLine());
-        set = new HashSet<>();
-        board = new int[n*n][n*n];
-        check = new boolean[n*n+1];
+        init = new ArrayList<>();
+        for (int i = 0; i < n*n; i++) {
+            init.add(new HashMap<>());
+        }
+
+        board = new int[n * n][n * n];
+        check = new boolean[n * n + 1];
 
         p = 0;
-        for (int i = 0; i < n*n; i++) {
+        for (int i = 0; i < n * n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < n*n; j++) {
+            for (int j = 0; j < n * n; j++) {
                 board[i][j] = Integer.parseInt(st.nextToken());
-                if (board[i][j] != 0) set.add(new Pair(i, j));
-                else p++;
+                if (board[i][j] != 0) {
+                    init.get(i).put(j, board[i][j]);
+                } else {
+                    p++;
+                }
             }
         }
 
-        for (int i = 0; i < 100_000; i++) {
-            simulatedAnnealing(1, 0.0001, 0.9999, 10, () -> score());
-            System.out.println("score: " + score());
-            simulatedAnnealing(1, 0.01, 0.99, 10, () -> numCandidate());
-            System.out.println("numCandidate: " + numCandidate());
-            print(bw);
+        for (int cellRow = 0; cellRow < n*n; cellRow += n) {
+            for (int cellCol = 0; cellCol < n*n; cellCol += n) {
+                Arrays.fill(check, false);
+                for (int i = cellRow; i < cellRow + n; i++) {
+                    for (int j = cellCol; j < cellCol + n; j++) {
+                        check[board[i][j]] = true;
+                    }
+                }
+                int id = 1;
+                for (int i = cellRow; i < cellRow + n; i++) {
+                    for (int j = cellCol; j < cellCol + n; j++) {
+                        if (board[i][j] == 0) {
+                            while (check[id]) id++;
+                            board[i][j] = id;
+                            check[id] = true;
+                        }
+                    }
+                }
+            }
         }
+
+        System.out.println("score: " + score());
+        simulatedAnnealingNumAbsent(n*n*n*n, 0.0001, 0.9999, 10);
+        System.out.println("numAbsent: " + numAbsent());
+        System.out.println("score: " + score());
+        print();
     }
 
-    private static void print(BufferedWriter bw) throws IOException {
-        for (int i = 0; i < n*n; i++) {
-            for (int j = 0; j < n*n; j++) {
-                bw.write(Integer.toString(board[i][j]));
-                bw.write(' ');
-            }
-            bw.newLine();
-        }
-        bw.flush();
-    }
-    
-    private static void simulatedAnnealing(double t, double lim, double d, double k, Lambda lambda) {
+    private static void simulatedAnnealingNumAbsent(double t, double lim, double d, double k) throws IOException{
+        double e1 = Double.POSITIVE_INFINITY;
         while (t > lim) {
-            double e1 = lambda.score();
-            int count = 0;
-            int rowRand = rand.nextInt(0, n*n);
-            int colRand = rand.nextInt(0, n*n);
-            while (set.contains(new Pair(rowRand, colRand)) && count < 100_000) {
-                rowRand = rand.nextInt(0, n*n);
-                colRand = rand.nextInt(0, n*n);
-                count++;
+            e1 = numAbsent();
+            int cellId = rand.nextInt(0, n*n);
+            int rowRand1 = (cellId/n)*n + rand.nextInt(0, n);
+            int colRand1 = (cellId%n)*n + rand.nextInt(0, n);
+            while (init.get(rowRand1).containsKey(colRand1)) {
+                rowRand1 = (cellId/n)*n + rand.nextInt(0, n);
+                colRand1 = (cellId%n)*n + rand.nextInt(0, n);
             }
-            count = 0;
-            List<Integer> candidate = candidate(rowRand, colRand);
-            int prev = board[rowRand][colRand];
-            if (candidate.size() > 0) {
-                board[rowRand][colRand] = candidate.get(rand.nextInt(0, candidate.size()));
+
+            int rowRand2 = (cellId/n)*n + rand.nextInt(0, n);
+            int colRand2 = (cellId%n)*n + rand.nextInt(0, n);
+            while (init.get(rowRand2).containsKey(colRand2)) {
+                rowRand2 = (cellId/n)*n + rand.nextInt(0, n);
+                colRand2 = (cellId%n)*n + rand.nextInt(0, n);
             }
-            double e2 = lambda.score();
-            double prob = Math.exp((e2-e1)/(k*t));
+            swap(board, rowRand1, colRand1, rowRand2, colRand2);
+            double e2 = numAbsent();
+            double prob = Math.exp((e1 - e2) / (k * t));
             if (prob < rand.nextDouble()) {
-                board[rowRand][colRand] = prev;
+                swap(board, rowRand1, colRand1, rowRand2, colRand2);
+
             }
             t *= d;
         }
     }
 
-    private static List<Integer> candidate(int row, int col) {
-        Arrays.fill(check, false);
-        for (int i = 0; i < n*n; i++) {
-            check[board[row][i]] = check[board[i][col]] = true;
-        }
-        for (int i = (row/n)*n; i < (row/n)*n + n; i++) {
-            for (int j = (col/n)*n; j < (col/n)*n + n; j++) {
-                check[board[i][j]] = true;
+    private static double numAbsent() {
+        int ret = 0;
+        for (int row = 0; row < n*n; row++) {
+            Arrays.fill(check, false);
+            for (int col = 0; col < n*n; col++) {
+                check[board[row][col]] = true;
+            }
+            for (int x = 1; x <= n*n; x++) {
+                if (!check[x]) ret++;
             }
         }
-        return IntStream.rangeClosed(1, n*n).filter(x -> !check[x]).boxed().collect(Collectors.toList());
+        for (int col = 0; col < n*n; col++) {
+            Arrays.fill(check, false);
+            for (int row = 0; row < n*n; row++) {
+                check[board[row][col]] = true;
+            }
+            for (int x = 1; x <= n*n; x++) {
+                if (!check[x]) ret++;
+            }
+        }
+        return ret;
+    }
+
+    private static void swap(int[][] arr, int row1, int col1, int row2, int col2) {
+        int tmp = arr[row1][col1];
+        arr[row1][col1] = arr[row2][col2];
+        arr[row2][col2] = tmp;
     }
 
     private static double score() {
-        for (int i = 0; i < n*n; i++) {
-            if (!rowCheck(i) || !colCheck(i) || !cellCheck(i/n, i%n)) return 0;
+        for (int i = 0; i < n * n; i++) {
+            if (!rowCheck(i) || !colCheck(i) || !cellCheck(i / n, i % n))
+                return 0;
         }
         int q = 0;
-        for (int i = 0; i < n*n; i++) {
-            for (int j = 0; j <n*n; j++) {
-                if (board[i][j] == 0) q++;
+        for (int i = 0; i < n * n; i++) {
+            for (int j = 0; j < n * n; j++) {
+                if (board[i][j] == 0)
+                    q++;
             }
         }
 
-        return 10 * ((double) p - (double) q)/((double) p);
-    }
-
-    private static int numCandidate() {
-        int num = 0;
-        for (int i = 0; i < n*n; i++) {
-            for (int j = 0; j < n*n; j++) {
-                num += candidate(i, j).size();
-            }
-        }
-        return num;
+        return 10 * ((double) p - (double) q) / ((double) p);
     }
 
     private static boolean rowCheck(int row) {
         Arrays.fill(check, false);
-        for (int i = 0; i < n*n; i++) {
-            if (board[row][i] == 0) continue;
-            if (check[board[row][i]]) return false;
+        for (int i = 0; i < n * n; i++) {
+            if (board[row][i] == 0)
+                continue;
+            if (check[board[row][i]])
+                return false;
             check[board[row][i]] = true;
         }
         return true;
@@ -161,23 +151,39 @@ public class BOJ20100 {
 
     private static boolean colCheck(int col) {
         Arrays.fill(check, false);
-        for (int i = 0; i < n*n; i++) {
-            if (board[i][col] == 0) continue;
-            if (check[board[i][col]]) return false;
+        for (int i = 0; i < n * n; i++) {
+            if (board[i][col] == 0)
+                continue;
+            if (check[board[i][col]])
+                return false;
             check[board[i][col]] = true;
         }
         return true;
-    } 
+    }
 
     private static boolean cellCheck(int cellRow, int cellCol) {
         Arrays.fill(check, false);
-        for (int i = cellRow*n; i < n + cellRow*n; i++) {
-            for (int j = cellCol*n; j < n + cellCol*n; j++) {
-                if (board[i][j] == 0) continue;
-                if (check[board[i][j]]) return false;
+        for (int i = cellRow * n; i < n + cellRow * n; i++) {
+            for (int j = cellCol * n; j < n + cellCol * n; j++) {
+                if (board[i][j] == 0)
+                    continue;
+                if (check[board[i][j]])
+                    return false;
                 check[board[i][j]] = true;
             }
         }
         return true;
+    }
+
+    private static void print() throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter("./BOJ20100/07.out", false));
+        for (int i = 0; i < n * n; i++) {
+            for (int j = 0; j < n * n; j++) {
+                bw.write(Integer.toString(board[i][j]));
+                bw.write(' ');
+            }
+            bw.newLine();
+        }
+        bw.flush();
     }
 }
