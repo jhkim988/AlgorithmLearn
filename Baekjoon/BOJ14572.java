@@ -33,7 +33,7 @@ public class BOJ14572 {
 
         Arrays.sort(students, (s1, s2) -> Integer.compare(s1.power, s2.power));
         
-        int[] set = new int[31];
+        int[] set = new int[k+1];
 
         int lo = 0, hi = 0;
         int num = 0, numUnion = 0, numIntersection = 0, e = 0;
