@@ -44,7 +44,7 @@ public class BOJ15678 {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        bw.write(Long.toString(useSegTree(arr, d)));
+        bw.write(Long.toString(useDeque(arr, d)));
         bw.flush();
     }
 
@@ -58,6 +58,24 @@ public class BOJ15678 {
             long val = arr[i] + seg.get(1, 0, n-1, start, i-1);
             seg.update(1, 0, n-1, i, val);
             if (max < val) max = val;
+        }
+        return max;
+    }
+
+    private static long useDeque(int[] arr, int d) {
+        int n = arr.length;
+        Deque<Integer> deq = new ArrayDeque<>();
+        deq.addFirst(0);
+        long[] dp = new long[n];
+        dp[0] = arr[0];
+
+        long max = arr[0];
+        for (int i = 1; i < n; i++) {
+            while (!deq.isEmpty() && i - deq.peekLast() > d) deq.removeLast();
+            dp[i] = Long.max(dp[deq.getLast()], 0) + arr[i];
+            if (max < dp[i]) max = dp[i];
+            while (!deq.isEmpty() && dp[deq.peekFirst()] < dp[i]) deq.removeFirst();
+            deq.addFirst(i);
         }
         return max;
     }
