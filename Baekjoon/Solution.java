@@ -1,57 +1,68 @@
 import java.io.*;
 import java.util.*;
 
-/*
-
-3
-6 1
-0 400 300 200 100 500 700 900 500 500 400 300 700 400 800 900 200 300 300 400
-6 1
-0 500 400 500 600 700 800 900 1000 600 400 300 700 1500 400 100 0 700 200 500 
-11 2
-0 500 100 200 300 500 700 500 600 300 400 500 100 200 800 100 500 600 400 300 200 0 400 100 300 800 700 200 300 400 700 600 0 300 200 500 400 300 1000 2000
-
-*/
-
 public class Solution {
-    private static long INF = Long.MAX_VALUE/2;
+    private static int d = 1_000_000_009;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        int numTest = Integer.parseInt(br.readLine());
-        for (int testId = 1; testId <= numTest; testId++) {
+        int nTest = Integer.parseInt(br.readLine());
+        for (int test = 1; test <= nTest; test++) {
+            int n = Integer.parseInt(br.readLine());
+            int[] arr = new int[n];
             StringTokenizer st = new StringTokenizer(br.readLine());
-            int n = Integer.parseInt(st.nextToken());
-            int m = Integer.parseInt(st.nextToken());
-            int[] cost = new int[4*(n-1)];
-            st = new StringTokenizer(br.readLine());
-            for (int i = 0; i < cost.length; i++) {
-                cost[i] = Integer.parseInt(st.nextToken());
+            for (int i = 0; i < n; i++) {
+                arr[i] = Integer.parseInt(st.nextToken());
             }
-            int[] remainCount = new int[7];
-            Arrays.fill(remainCount, m);
-            long answer = recur(0, cost, remainCount);
-            bw.write("#" + testId + " ");
-            bw.write(Long.toString(answer));
+            int[] answer = answer(arr);
+            int sum = 0;
+            for (int i = 0; i < n; i++) {
+                sum = (sum + answer[i]) % d;
+            }
+            bw.write("#" + test + " " + sum);
             bw.newLine();
         }
         bw.flush();
     }
-    private static long recur(int pos, int[] cost, int[] remainCount) {
-        if (pos >= cost.length) {
-            return 0;
-        }
-        
-        boolean dice = false;
-        long min = INF;
-        for (int i = 1; i <= 6; i++) {
-            if (remainCount[i] == 0) continue;
-            dice = true;
-            remainCount[i]--;
-            min = Long.min(recur(pos + i, cost, remainCount), min);
-            remainCount[i]++;
+
+    private static int[] answer(int[] arr) {
+        int n = arr.length;
+        int[] psum = new int[n];
+        int[] ret = new int[n];
+
+        psum[0] = arr[0]; // arr.length > 0
+        for (int i = 1; i < n; i++) {
+            psum[i] = psum[i-1] + arr[i];
         }
 
-        return dice ? min + cost[pos] : INF;
+        int[] rightMax = new int[n];
+        int[] rightMaxExceptOne = new int[n];
+        int min = Integer.min(0, arr[n-1]);
+        rightMax[n-1] = psum[n-1];
+        rightMaxExceptOne[n-1] = rightMax[n-1];
+        for (int i = n-2; i >= 0; i--) {
+            rightMax[i] = Integer.max(rightMax[i+1], psum[i]);
+            rightMaxExceptOne[i] = rightMax[i] - min;
+            min = Integer.min(min, arr[i]);
+        }
+
+        int[] leftMin = new int[n];
+        int[] leftMinExceptOne = new int[n];
+        min = Integer.min(0, arr[0]);
+        leftMin[0] = psum[0];
+        leftMinExceptOne[0] = psum[0];
+        for (int i = 1; i < n; i++) {
+            leftMin[i] = Integer.min(leftMin[i-1], psum[i]);
+            leftMinExceptOne[i] = leftMin[i] - min;
+            min = Integer.min(min, arr[i]);
+        }
+        System.out.println(Arrays.toString(rightMaxExceptOne));
+        for (int i = 0; i < n; i++) {
+            int leftMinVal = i > 0 ? leftMin[i-1] : 0;
+            int leftMinExceptOneVal = i > 0 ? leftMinExceptOne[i-1] : 0;
+            leftMinVal = Integer.max(0, leftMinVal);
+            ret[i] = Integer.max(rightMax[i] - leftMinVal, Integer.max(rightMaxExceptOne[i] - leftMinVal, rightMax[i] - leftMinExceptOneVal));
+        }
+        return ret;
     }
 }
