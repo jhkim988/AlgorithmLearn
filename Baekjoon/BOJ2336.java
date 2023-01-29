@@ -2,85 +2,98 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ2336 {
-  private static class Pair {
-    int id, t1, t2;
-    Pair(int id, int t1, int t2) {
-      this.id = id;
-      this.t1 = t1;
-      this.t2 = t2;
-    }
-  }
-  private static class SegTree {
-    int size;
-    int[] tree;
-    SegTree(int n) {
-      size = 1;
-      while (size < n) size <<= 1;
-      size <<= 1;
-      tree = new int[size];
-    }
-    void update(int node, int start, int end, int idx, int val) {
-      if (start > idx || end < idx) return;
-      if (start == end) {
-        tree[node] = val;
-        return;
-      }
-      int mid = (start + end) >> 1;
-      update(node<<1, start, mid, idx, val);
-      update(node<<1|1, mid+1, end, idx, val);
-      tree[node] = tree[node<<1] + tree[node<<1|1];
-    }
-    int get(int node, int start, int end, int left, int right) {
-      if (start > right || end < left) return 0;
-      if (left <= start && end <= right) return tree[node];
-      int mid = (start + end) >> 1;
-      return get(node<<1, start, mid, left, right) + get(node<<1|1, mid+1, end, left, right);
-    }
-  }
-  public static void main(String[] args) throws IOException {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    int n = Integer.parseInt(br.readLine());
-    boolean[] isGreat = new boolean[n];
-    Arrays.fill(isGreat, true);
-    int[][] rank = new int[3][n];
-    for (int i = 0; i < 3; i++) {
-      StringTokenizer st = new StringTokenizer(br.readLine());
-      for (int j = 0; j < n; j++) { 
-        rank[i][j] = Integer.parseInt(st.nextToken()) - 1;
-      }
-    }
-    for (int test1 = 0; test1 < 3; test1++) {
-      for (int test2 = test1+1; test2 < 3; test2++) {
-        ArrayList<Pair> relative = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-          relative.add(new Pair(i, rank[test1][i], rank[test2][i]));
-        }
-        Collections.sort(relative, (a, b) -> a.t1-b.t1);
-        for (Pair p : relative) {
-          System.out.print(p.t2 + " ");
-        }
-        System.out.println();
-        SegTree sg = new SegTree(n);
-        for (int i = n-1; i >= 0; i--) {
-          Pair p = relative.get(i);
-          int ic = sg.get(1, 0, n-1, 0, p.t2);
-          if (ic > 0) {
-            isGreat[p.id] = false;
-          }
-          sg.update(1, 0, n-1, p.t2, 1);
-        }
-      }
-    }
+	private static final int nTest = 3;
+	private static class Pair {
+		int id;
+		int[] test = new int[nTest];
+		Pair(int id) {
+			this.id = id;
+		}
 
-    int num = 0;
-    for (boolean great : isGreat) {
-      if (great) num++;
-    }
-    bw.write(Integer.toString(num));
-    bw.newLine();
-    bw.flush();
+		@Override
+		public String toString() {
+			return id + ":" + Arrays.toString(test);
+		}
+	}
+	private static class SegTree {
+		private static final int INF = Integer.MAX_VALUE >> 2;
+		private int n;
+		private int[] tree;
+		SegTree(int n) {
+			this.n = n;
+			int treeSize = 1;
+			while (treeSize < n) treeSize <<= 1;
+			treeSize <<= 1;
+			tree = new int[treeSize];
+			init(1, 0, n-1);
+		}
 
-    System.out.println("isGreat: " + Arrays.toString(isGreat));
-  }
+		void init(int node, int start, int end) {
+			if (start == end) {
+				tree[node] = INF;
+				return;
+			}
+			int mid = (start + end) >> 1;
+			init(node<<1, start, mid);
+			init(node<<1|1, mid+1, end);
+			tree[node] = Integer.min(tree[node<<1], tree[node<<1|1]);
+		}
+
+		void update(int idx, int val) {
+			update(1, 0, n-1, idx, val);
+		}
+
+		int get(int left, int right) {
+			return get(1, 0, n-1, left, right);
+		}
+
+		private void update(int node, int start, int end, int idx, int val) {
+			if (idx < start || end < idx) return;
+			if (start == end) {
+				tree[node] = val;
+				return;
+			}
+			int mid = (start + end) >> 1;
+			update(node<<1, start, mid, idx, val);
+			update(node<<1|1, mid+1, end, idx, val);
+			tree[node] = Integer.min(tree[node<<1], tree[node<<1|1]);
+		}
+
+		private int get(int node, int start, int end, int left, int right) {
+			if (right < start || end < left) return INF;
+			if (left <= start && end <= right) return tree[node];
+			int mid = (start + end) >> 1;
+			return Integer.min(get(node<<1, start, mid, left, right), get(node<<1|1, mid+1, end, left, right));
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		int n = Integer.parseInt(br.readLine());
+
+		List<Pair> test = new ArrayList<>();
+		for (int i = 1; i <= n; i++) {
+			test.add(new Pair(i));
+		}
+		for (int i = 0; i < 3; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			for (int j = 1; j <= n; j++) {
+				int student = Integer.parseInt(st.nextToken());
+				test.get(student-1).test[i] = j;
+			}
+		}
+		Collections.sort(test, (p1, p2) -> Integer.compare(p1.test[0], p2.test[0]));
+
+		int nAmazing = 0;
+		SegTree seg = new SegTree(n+1);
+		for (Pair p : test) {
+			if (seg.get(1, p.test[1]) > p.test[2]) {
+				nAmazing++;
+			}
+			seg.update(p.test[1], p.test[2]);
+		}
+		bw.write(Integer.toString(nAmazing));
+		bw.flush();
+	}
 }
