@@ -103,8 +103,7 @@ public class BOJ18227 {
             if (type == 1) {
                 sg.update(1, 0, n, in[id], 1);
             } else {
-                System.out.println("Id: " + id);
-                bw.write(Long.toString(sg.get(1, 0, n, in[id], out[id])));
+                bw.write(Long.toString(sg.get(1, 0, n, in[id])));
                 bw.newLine();
             }
         }
