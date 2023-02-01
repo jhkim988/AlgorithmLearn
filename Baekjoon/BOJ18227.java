@@ -4,33 +4,27 @@ import java.util.*;
 public class BOJ18227 {
     private static class SegTree {
         private long[] tree;
-        private int[] level;
         SegTree(int n, int[] level) {
             int treeSize = 1;
             while (treeSize < n) treeSize <<= 1;
             treeSize <<= 1;
             tree = new long[treeSize];
-            this.level = level;
         }
 
-        void update(int node, int start, int end, int idx, int depth) {
+        void update(int node, int start, int end, int idx) {
             if (idx < start || end < idx) return;
-            if (start == end) {
-                tree[node] += level[idx];
-                return;
-            }
+            tree[node]++;
+            if (start == end) return;
             int mid = (start + end) >> 1;
-            update(node<<1, start, mid, idx, depth+1);
-            update(node<<1|1, mid+1, end, idx, depth+1);
-            tree[node] = tree[node<<1] + tree[node<<1|1] + level[idx] - depth;
+            update(node<<1, start, mid, idx);
+            update(node<<1|1, mid+1, end, idx);
         }
         
-        long get(int node, int start, int end, int idx) {
-            if (idx < start || end < idx) return 0;
-            if (start == end) return tree[node];
-            int mid = (start + end) >> 1;
-            if (idx <= mid) return get(node<<1, start, mid, idx) + tree[node];
-            else return get(node<<1|1, mid+1, end, idx) + tree[node];
+        long get(int node, int start, int end, int left, int right) {
+            if (right < start || end < left) return 0;
+            if (left <= start && end <= right) return tree[node];
+            int mid = (start+end) >> 1;
+            return get(node<<1, start, mid, left, right) + get(node<<1|1, mid+1, end, left, right);
         }
     }
 
@@ -101,9 +95,9 @@ public class BOJ18227 {
             int type = Integer.parseInt(st.nextToken());
             int id = Integer.parseInt(st.nextToken());
             if (type == 1) {
-                sg.update(1, 0, n, in[id], 1);
+                sg.update(1, 0, n, in[id]);
             } else {
-                bw.write(Long.toString(sg.get(1, 0, n, in[id])));
+                bw.write(Long.toString(sg.get(1, 0, n, in[id], out[id])*level[id]));
                 bw.newLine();
             }
         }
