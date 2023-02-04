@@ -3,15 +3,29 @@ import java.util.*;
 
 public class BOJ17387 {
   private static class Point implements Comparable<Point> {
-    int x;
-    int y;
-    Point(int x, int y) {
+    double x;
+    double y;
+    Point(double x, double y) {
       this.x = x;
       this.y = y;
     }
+    Point diff(Point other) {
+      return new Point(this.x - other.x, this.y - other.y);
+    }
+    Point add(Point other) {
+      return new Point(this.x + other.x, this.y + other.y);
+    }
+    Point perp() {
+      return new Point(-this.y, this.x);
+    }
+    double dot(Point other) {
+      return this.x * other.x + this.y * other.y; 
+    }
+    Point scalar(double c) {
+      return new Point(c * this.x, c * this.y);
+    }
     @Override
     public int compareTo(Point other) {
-      // y-axis
       if (this.y < other.y) {
         return -1;
       } else if (this.y > other.y) {
@@ -40,25 +54,40 @@ public class BOJ17387 {
       }
       return false;
     }
-    Point diff(Point other) {
-      return new Point(this.x - other.x, this.y - other.y);
+    @Override
+    public String toString() {
+      return x + " " + y;
+    }
+    static int ccw(Point[] points, int start) {
+      int len = points.length;
+      Point vec1 = points[(start + 1) % len].diff(points[start % len]);
+      Point vec2 = points[(start + 2) % len].diff(points[(start + 1) % len]);
+      double det = vec1.x * vec2.y - vec1.y * vec2.x;
+      return det > 0 ? 1 : det < 0 ? -1 : 0;
     }
   }
   private static class LineSeg implements Comparable<LineSeg> {
-    Point[] endpoint;
+    Point[] end;
     LineSeg(Point p1, Point p2) {
-      endpoint = new Point[2];
+      end = new Point[2];
       if (p1.compareTo(p2) < 0) {
-        endpoint[0] = p1;
-        endpoint[1] = p2;
+        end[0] = p1;
+        end[1] = p2;
       } else {
-        endpoint[0] = p2;
-        endpoint[1] = p1;
+        end[0] = p2;
+        end[1] = p1;
       }
+    }
+    Point intersection(LineSeg other) {
+      // simple calculate, Not determine whether they intersect or not.
+      Point vec1 = this.end[1].diff(this.end[0]);
+      Point vec2 = other.end[1].diff(other.end[0]);
+      Point constant = other.end[0].diff(this.end[0]);
+      return vec2.scalar(-constant.dot(vec1.perp()) / vec2.dot(vec1.perp())).add(other.end[0]);
     }
     @Override
     public int compareTo(LineSeg other) {
-      return this.endpoint[0].compareTo(other.endpoint[0]);
+      return this.end[0].compareTo(other.end[0]);
     }
   }
   public static void main(String[] args) throws IOException {
@@ -67,59 +96,58 @@ public class BOJ17387 {
     LineSeg[] line = new LineSeg[2];
     for (int i = 0; i < 2; i++) {
       StringTokenizer st = new StringTokenizer(br.readLine());
-      Point p1 = new Point(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
-      Point p2 = new Point(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
-      line[i] = new LineSeg(p1, p2);
+      Point start = new Point(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+      Point end = new Point(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+      line[i] = new LineSeg(start, end);
     }
 
-    // has common end point?
-    boolean hasCommonEndPoint = false;
+    Arrays.sort(line);
+    Point[] points = {line[0].end[0], line[1].end[0], line[0].end[1], line[1].end[1]};
+    boolean isParallel = isParallel(points);
+    // same end point
     for (int i = 0; i < 2; i++) {
       for (int j = 0; j < 2; j++) {
-        hasCommonEndPoint = hasCommonEndPoint || line[0].endpoint[i].equals(line[1].endpoint[j]);
+        if (line[0].end[i].equals(line[1].end[j])) {
+          bw.write("1\n");
+          bw.flush();
+          return;
+        }
       }
     }
-    if (hasCommonEndPoint) {
-      bw.write("1\n");
-      bw.flush();
-      return;
-    }
-
-    // y-axis sort
-    Arrays.sort(line);
-
+    
     // same line
     for (int i = 0; i < 2; i++) {
-      if (ccw(new Point[] {line[0].endpoint[0], line[0].endpoint[1], line[1].endpoint[i]}, 0) == 0) {
-        if (line[0].endpoint[1].compareTo(line[1].endpoint[i]) < 0) {
+      if (Point.ccw(new Point[] {line[0].end[0], line[0].end[1], line[1].end[i]}, 0) == 0) {
+        if (line[0].end[1].compareTo(line[1].end[i]) < 0) {
           bw.write("0\n");
+          bw.flush();
+          return;
         } else {
           bw.write("1\n");
+          bw.flush();
+          return;
         }
+      }
+    } 
+    if (Point.ccw(new Point[] {line[1].end[0], line[0].end[1], line[1].end[1]}, 0) == 0) {
+      if (line[1].end[0].compareTo(line[0].end[1]) > 0 || line[1].end[1].compareTo(line[0].end[1]) < 0) {
+        bw.write("0\n");
+        bw.flush();
+        return;
+      } else {
+        bw.write("1\n");
         bw.flush();
         return;
       }
     }
-    for (int i = 0; i < 2; i++) {
-      if (ccw(new Point[] {line[1].endpoint[0], line[1].endpoint[1], line[0].endpoint[i]}, 0) == 0) {
-        if (line[1].endpoint[1].compareTo(line[0].endpoint[1]) < 0 || line[1].endpoint[0].compareTo(line[0].endpoint[1]) > 0) {
-          bw.write("0\n");
-        } else {
-          bw.write("1\n");
-        }
-        bw.flush();
-        return;
-      }
-    }
-
-    Point[] points = {line[0].endpoint[0], line[1].endpoint[0], line[0].endpoint[1], line[1].endpoint[1]};
+    int prev = Point.ccw(points, 0);
     boolean sameDirection = true;
-    int prev = ccw(points, 0);
     for (int i = 1; i < 4; i++) {
-      int crnt = ccw(points, i);
+      int crnt = Point.ccw(points, i);
       sameDirection = sameDirection && (crnt == prev);
       prev = crnt;
     }
+
     if (sameDirection) {
       bw.write("1\n");
     } else {
@@ -127,11 +155,12 @@ public class BOJ17387 {
     }
     bw.flush();
   }
-  static int ccw(Point[] points, int start) {
-    int numPoints = points.length;
-    Point vec1 = points[(1 + start) % numPoints].diff(points[start % numPoints]);
-    Point vec2 = points[(2 + start) % numPoints].diff(points[(1 + start) % numPoints]);
-    long det = ((long) vec1.x) * ((long) vec2.y) - ((long) vec1.y) * ((long) vec2.x);
-    return det > 0 ? 1 : (det < 0 ? -1 : 0);
+  static boolean isParallel(Point[] points) {
+    for (int i = 0; i < points.length; i++) {
+      if (Point.ccw(points, i) != 0) {
+        return false;
+      }
+    }
+    return true;
   }
 }
