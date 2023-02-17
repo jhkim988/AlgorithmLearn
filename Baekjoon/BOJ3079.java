@@ -13,21 +13,14 @@ public class BOJ3079 {
       cost[i] = Integer.parseInt(br.readLine());
     }
 
-    long min = cost[0];
-    long max = cost[0];
-    for (int i = 0; i < numWindow; i++) {
-      min = Long.min(min, cost[i]);
-      max = Long.max(max, cost[i]);
-    }
-
-    long lo = min - 1;
-    long hi = max * numFriend + 1;
-    while (lo + 1 < hi) {
-      long mid = (lo + hi) / 2;
-      if (!possible(mid, cost, numFriend)) {
-        lo = mid;
-      } else {
+    long lo = -1;
+    long hi = Long.MAX_VALUE;
+    while (lo+1 < hi) {
+      long mid = lo/2 + hi/2 + addVal(lo, hi);
+      if (possible(mid, cost, numFriend)) {
         hi = mid;
+      } else {
+        lo = mid;
       }
     }
 
@@ -35,9 +28,13 @@ public class BOJ3079 {
     bw.newLine();
     bw.flush();
   }
+  private static long addVal(long a, long b) {
+    return (a%2 == 1 && b%2 == 1) ? 1 : 0;
+  }
   static boolean possible(long time, long[] cost, long numFriend) {
-    long numPass = 0;
+    int numPass = 0;
     for (long c : cost) {
+      if (numFriend - time/c <= numPass) return true;
       numPass += time / c;
     }
     return numFriend <= numPass;
