@@ -8,6 +8,7 @@ public class BOJ17212 {
         int n = Integer.parseInt(br.readLine());
         int[] dp = new int[100_001];
         Arrays.fill(dp, 100_000);
+        dp[0] = 0;
         dp[1] = dp[2] = dp[5] = dp[7] = 1;
         for (int i = 3; i <= n; i++) {
             dp[i] = Integer.min(dp[i], dp[i-1]+1);
