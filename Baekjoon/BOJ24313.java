@@ -35,6 +35,6 @@ public class BOJ24313 {
         io.flush();
     }
     private static boolean isSatisfy(int a1, int a2, int c, int n0) {
-        return a1 * n0 + a2 <= c * n0;
+        return (a1 * n0 + a2 <= c * n0) && a1 <= c;
     }
 }
