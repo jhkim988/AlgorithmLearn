@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class MinimizeWithUpperbound {
+public class MinimizeWithLowerbound {
     private static class Subject {
         int totalTime;
         int numLecture;
