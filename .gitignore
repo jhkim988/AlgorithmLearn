@@ -2,4 +2,12 @@
 Algorithm_Sedgewick/lib/
 .vscode/
 .classpath
-Algorithm_Sedgewick/LecturePart2/.metadata/
+Algorithm_Sedgewick/LecturePart2/.metadata/unpacked_*
+sample_keynote
+test_*.py
+parse_*.py
+get_sample.sh
+out_slidev
+out_test
+__pycache__
+*.pyc
